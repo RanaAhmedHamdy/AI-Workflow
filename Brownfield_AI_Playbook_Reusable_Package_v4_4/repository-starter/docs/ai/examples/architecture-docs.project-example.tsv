@@ -1,0 +1,14 @@
+# order<TAB>document_id<TAB>display_name<TAB>output_path<TAB>spec_path<TAB>prerequisite_path
+10	data-flow	Data Flow	docs/wiki/architecture/DATA_FLOW.md	docs/ai/architecture-specs/data-flow.md	docs/wiki/project/ARCHITECTURE.md
+20	state-management	State Management	docs/wiki/architecture/STATE_MANAGEMENT.md	docs/ai/architecture-specs/state-management.md	docs/wiki/architecture/DATA_FLOW.md
+30	persistence-and-cache	Persistence and Cache	docs/wiki/architecture/PERSISTENCE_AND_CACHE.md	docs/ai/architecture-specs/persistence-and-cache.md	docs/wiki/architecture/STATE_MANAGEMENT.md
+40	navigation	Navigation	docs/wiki/architecture/NAVIGATION.md	docs/ai/architecture-specs/navigation.md	docs/wiki/architecture/STATE_MANAGEMENT.md
+50	dependency-injection	Dependency Injection	docs/wiki/architecture/DEPENDENCY_INJECTION.md	docs/ai/architecture-specs/dependency-injection.md	docs/wiki/architecture/DATA_FLOW.md
+60	error-handling	Error Handling	docs/wiki/architecture/ERROR_HANDLING.md	docs/ai/architecture-specs/error-handling.md	docs/wiki/architecture/PERSISTENCE_AND_CACHE.md
+70	design-system-and-components	Design System and UI Components	docs/wiki/architecture/DESIGN_SYSTEM_AND_UI_COMPONENTS.md	docs/ai/architecture-specs/design-system-and-components.md	docs/wiki/architecture/ERROR_HANDLING.md
+80	ui-adaptation-and-accessibility	UI Adaptation and Accessibility	docs/wiki/architecture/UI_ADAPTATION_AND_ACCESSIBILITY.md	docs/ai/architecture-specs/ui-adaptation-and-accessibility.md	docs/wiki/architecture/DESIGN_SYSTEM_AND_UI_COMPONENTS.md
+90	configuration-and-environments	Configuration and Environments	docs/wiki/architecture/CONFIGURATION_AND_ENVIRONMENTS.md	docs/ai/architecture-specs/configuration-and-environments.md	docs/wiki/architecture/UI_ADAPTATION_AND_ACCESSIBILITY.md
+100	security-boundaries	Security Boundaries	docs/wiki/architecture/SECURITY_BOUNDARIES.md	docs/ai/architecture-specs/security-boundaries.md	docs/wiki/architecture/CONFIGURATION_AND_ENVIRONMENTS.md
+110	build-and-release	Build and Release	docs/wiki/architecture/BUILD_AND_RELEASE.md	docs/ai/architecture-specs/build-and-release.md	docs/wiki/architecture/SECURITY_BOUNDARIES.md
+120	code-style-and-conventions	Code Style and Conventions	docs/wiki/architecture/CODE_STYLE_AND_CONVENTIONS.md	docs/ai/architecture-specs/code-style-and-conventions.md	docs/wiki/architecture/BUILD_AND_RELEASE.md
+130	testability-roadmap	Testability Roadmap	docs/wiki/testing/TESTABILITY_ROADMAP.md	docs/ai/architecture-specs/testability-roadmap.md	docs/wiki/architecture/CODE_STYLE_AND_CONVENTIONS.md

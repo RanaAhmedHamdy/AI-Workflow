@@ -1,0 +1,30 @@
+# checklist_concern<TAB>planned_current_home<TAB>phase_3_treatment
+Application/module/target structure	docs/wiki/project/MODULES.md; docs/wiki/project/ARCHITECTURE.md	Use existing reviewed homes; do not create a duplicate Phase 3 map.
+Domain and feature ownership boundaries	docs/wiki/project/MODULES.md; docs/wiki/architecture/DATA_FLOW.md	Extend with cross-feature ownership only where data flow supplies new evidence.
+Dependency direction, cycles, and isolation	docs/wiki/architecture/DEPENDENCY_INJECTION.md; docs/wiki/architecture/CODE_STYLE_AND_CONVENTIONS.md	Document construction and observed layering; classify unmeasured cycles honestly.
+Data flow and external integrations	docs/wiki/architecture/DATA_FLOW.md	Create focused map.
+API/backend contracts	docs/wiki/architecture/DATA_FLOW.md	Check for current contracts and record Not observed only if inspection supports it.
+Persistence, secure storage, cache, offline, migrations	docs/wiki/architecture/PERSISTENCE_AND_CACHE.md	Create focused map.
+State ownership, concurrency, lifecycle, restoration	docs/wiki/architecture/STATE_MANAGEMENT.md	Create focused map.
+Navigation, deep links, external entry points	docs/wiki/architecture/NAVIGATION.md	Create focused map.
+Dependency injection/service location	docs/wiki/architecture/DEPENDENCY_INJECTION.md	Create focused map.
+Error, retry, recovery, degraded behavior	docs/wiki/architecture/ERROR_HANDLING.md	Create focused map.
+Design system and shared components	docs/wiki/architecture/DESIGN_SYSTEM_AND_UI_COMPONENTS.md	Create focused map and distinguish product direction from implemented source.
+UI adaptation and supported form factors	docs/wiki/architecture/UI_ADAPTATION_AND_ACCESSIBILITY.md	Create focused map with evidence-status matrix.
+Localization/internationalization	docs/wiki/architecture/UI_ADAPTATION_AND_ACCESSIBILITY.md	Consolidate with adaptation and accessibility.
+Accessibility	docs/wiki/architecture/UI_ADAPTATION_AND_ACCESSIBILITY.md	Consolidate with adaptation and localization.
+Permissions and platform capabilities	docs/wiki/architecture/SECURITY_BOUNDARIES.md	Consolidate with privacy/security; classify absence without inferring non-applicability.
+Background execution and sync	docs/wiki/architecture/SECURITY_BOUNDARIES.md	Check for implementation and classify; do not create an empty standalone map.
+Notifications and platform integrations	docs/wiki/architecture/SECURITY_BOUNDARIES.md	Check for implementation and classify; do not create an empty standalone map.
+Configuration and environment strategy	docs/wiki/architecture/CONFIGURATION_AND_ENVIRONMENTS.md	Create focused map.
+Feature flags, experiments, rollout, rollback	docs/wiki/architecture/CONFIGURATION_AND_ENVIRONMENTS.md	Check and classify within configuration rather than creating an empty map.
+Analytics, consent, and privacy boundaries	docs/wiki/architecture/SECURITY_BOUNDARIES.md; docs/wiki/architecture/CONFIGURATION_AND_ENVIRONMENTS.md	Document privacy authority and provider/configuration presence separately.
+Logging and diagnostics	docs/wiki/architecture/ERROR_HANDLING.md; docs/wiki/architecture/BUILD_AND_RELEASE.md	Document app handling and artifact/operational boundaries separately.
+Metrics, tracing, and operational observability	docs/wiki/architecture/BUILD_AND_RELEASE.md	Check and classify; do not create an empty standalone map.
+Crash/incident reporting and symbols/mappings	docs/wiki/architecture/BUILD_AND_RELEASE.md	Check provider and artifact handling; preserve release-evidence limits.
+Performance, memory, rendering, network, battery	docs/wiki/architecture/UI_ADAPTATION_AND_ACCESSIBILITY.md; docs/wiki/testing/TESTABILITY_ROADMAP.md	Document observed UI/resource behavior and verification gaps without inventing budgets.
+Security and sensitive-data boundaries	docs/wiki/architecture/SECURITY_BOUNDARIES.md	Create focused map.
+Build, signing, release, distribution, rollback	docs/wiki/architecture/BUILD_AND_RELEASE.md	Create focused map.
+Testing/testability and runtime evidence	docs/wiki/testing/TESTABILITY_ROADMAP.md	Create final Phase 3 map after the other maps are reviewed.
+AI context, skills, hooks, documentation workflow	AGENTS.md; AI_CONTEXT.md; docs/ai/DOCUMENTATION_CHECKPOINT.md; docs/ai/SKILL_MAINTENANCE.md	Use existing current homes; assess them during Phase 3.4 without creating a duplicate map.
+Project-specific cross-cutting concern	docs/wiki/architecture/DATA_FLOW.md; docs/wiki/architecture/STATE_MANAGEMENT.md; docs/wiki/architecture/SECURITY_BOUNDARIES.md	Route lesson identity, variable activity counts, parent-guided privacy, and independent local-data controls to the closest map.

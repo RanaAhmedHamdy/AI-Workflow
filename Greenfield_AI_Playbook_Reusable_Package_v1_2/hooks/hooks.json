@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/documentation-impact.py\" --event UserPromptSubmit",
+            "timeout": 5,
+            "statusMessage": "Loading documentation-impact guidance"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/env python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/documentation-impact.py\" --event Stop",
+            "timeout": 30,
+            "statusMessage": "Checking documentation-impact completion"
+          }
+        ]
+      }
+    ]
+  }
+}

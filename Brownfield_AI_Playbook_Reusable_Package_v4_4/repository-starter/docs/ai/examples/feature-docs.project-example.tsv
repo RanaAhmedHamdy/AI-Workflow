@@ -1,0 +1,15 @@
+# order<TAB>feature_id<TAB>display_name<TAB>output_path
+10	today	Today	docs/wiki/features/TODAY.md
+20	lessons-map	Lessons Map	docs/wiki/features/LESSONS_MAP.md
+30	lesson-overview	Lesson Overview	docs/wiki/features/LESSON_OVERVIEW.md
+40	activities-list	Activities List	docs/wiki/features/ACTIVITIES_LIST.md
+50	activity-detail	Activity Detail	docs/wiki/features/ACTIVITY_DETAIL.md
+60	parent-scripts	Parent Scripts	docs/wiki/features/PARENT_SCRIPTS.md
+70	notebook	Notebook	docs/wiki/features/NOTEBOOK.md
+80	activity-completion	Activity Completion	docs/wiki/features/ACTIVITY_COMPLETION.md
+90	lesson-completed	Lesson Completed	docs/wiki/features/LESSON_COMPLETED.md
+100	progress	Progress and Badges	docs/wiki/features/PROGRESS.md
+110	parent-settings	Parent Settings	docs/wiki/features/PARENT_SETTINGS.md
+120	unlock-bundles	Unlock Bundles	docs/wiki/features/UNLOCK_BUNDLES.md
+130	welcome	Welcome / Guest Entry	docs/wiki/features/WELCOME.md
+140	navigation	Navigation Shell	docs/wiki/features/NAVIGATION.md
