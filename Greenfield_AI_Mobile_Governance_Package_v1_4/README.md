@@ -1,6 +1,6 @@
 # Greenfield AI Mobile Governance Package
 
-**Version:** 1.4  
+**Version:** 1.5  
 **Platforms:** Native Android and native iOS  
 **Model:** Repository-owned, contract-first, architecture-synchronized, evidence-gated
 

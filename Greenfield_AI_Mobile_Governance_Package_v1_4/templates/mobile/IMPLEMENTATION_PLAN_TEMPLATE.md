@@ -5,13 +5,18 @@
 **Status:** Draft — plan review required  
 **Implementation Authorization:** NOT GRANTED
 
+Header status fields above are summary mirrors only. The canonical current-state fields live in this status section; if a mirror and canonical field disagree, the artifact is inconsistent and must fail review.
+
 ## 1. Authority and Status
 
 - Authoring verdict: `{{AUTHORING_VERDICT}}`
 - Review verdict: `{{REVIEW_VERDICT}}`
 - Owner approval: `PENDING`
 - Implementation authorization: `NOT GRANTED`
+- Current lifecycle state: `PLAN DRAFT`
 - Android architecture baseline: {{ANDROID_ARCHITECTURE_BASELINE}}
+
+Current lifecycle state and implementation authorization are canonical current-state fields. Historical authoring/review verdicts are stage-specific history and must never contradict these current-state fields.
 
 ## 2. Scope and Exclusions
 
@@ -365,7 +370,21 @@ Address applicable permissions, exported components, intent filters, app links, 
 
 Previews and screenshots may support visual review only and do not replace runtime evidence.
 
-## 23. Dependency-Ordered Implementation Sequence
+## 23. Verification Matrix
+
+Use stable unique IDs (`VM-001`, `VM-002`, ...). Keep the detailed verification definitions in this plan; implementation tasks reference these IDs rather than duplicating the matrix. Include only applicable scenarios and do not create a per-row lifecycle status machine.
+
+| ID | Requirement / Claim | Scenario | Environment / Destination | Preconditions | Expected Observable Result | Evidence Path | Method / Limitation |
+|---|---|---|---|---|---|---|---|
+| `VM-001` | {{REQUIREMENT_OR_CLAIM}} | {{SCENARIO}} | {{ENVIRONMENT}} | {{PRECONDITIONS}} | {{EXPECTED_RESULT}} | {{EVIDENCE_PATH}} | {{METHOD_OR_LIMITATION}} |
+
+Rules:
+- Every runtime-only claim must map to at least one runtime-capable `VM-*` scenario.
+- Every row must trace to approved feature/architecture/design authority and must not invent behavior.
+- Evidence paths must be concrete enough for later task execution and convergence review.
+- If a scenario is not applicable, omit it rather than creating ceremonial rows.
+
+## 24. Dependency-Ordered Implementation Sequence
 
 1. {{STEP}}
 2. {{STEP}}
@@ -373,35 +392,35 @@ Previews and screenshots may support visual review only and do not replace runti
 
 This defines dependency order only, not implementation tasks, estimates, assignments, or code.
 
-## 24. Technical Risks and Mitigations
+## 25. Technical Risks and Mitigations
 
 | Risk | Trigger | Impact | Mitigation | Stop Condition |
 |---|---|---|---|---|
 | {{RISK}} | {{TRIGGER}} | {{IMPACT}} | {{MITIGATION}} | {{STOP}} |
 
-## 25. Unresolved Technical Decisions
+## 26. Unresolved Technical Decisions
 
 | ID | Decision | Supported Options | Recommendation | Status | Blocking Scope |
 |---|---|---|---|---|---|
 | TD-001 | {{DECISION}} | {{OPTIONS}} | {{RECOMMENDATION}} | Needs owner decision / Needs verification | {{SCOPE}} |
 
-## 26. Readiness Implications
+## 27. Readiness Implications
 
 | Gate | Plan Impact | Current Status | Required Evidence / Remediation |
 |---|---|---|---|
 | {{GATE}} | {{IMPACT}} | PASS / BLOCKED / NEEDS VERIFICATION / N/A by owner authority | {{EVIDENCE}} |
 
-## 27. Prohibited Patterns
+## 28. Prohibited Patterns
 
 {{PROHIBITED_PATTERNS}}
 
 At minimum consider hardcoded strings, ad hoc dependencies, service locators, repositories/DAOs in leaf UI, side effects during composition, ViewModel recreation, duplicate state, `GlobalScope`, unowned jobs, hardcoded dispatchers contrary to authority, phone-only layouts, left/right assumptions, fixed-height text, previews as runtime proof, fake release services, in-memory release persistence substitutes, unapproved permissions/components, and silent simulated success.
 
-## 28. Documentation Impact
+## 29. Documentation Impact
 
 {{DOCUMENTATION_IMPACT}}
 
-## 29. Final Verdict
+## 30. Final Verdict
 
 **Authoring verdict:** `{{AUTHORING_VERDICT}}`
 

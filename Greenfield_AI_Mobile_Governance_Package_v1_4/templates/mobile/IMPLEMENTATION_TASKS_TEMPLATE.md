@@ -9,6 +9,8 @@
 
 ---
 
+Header status fields above are summary mirrors only. The canonical current-state fields live in this status section; if a mirror and canonical field disagree, the artifact is inconsistent and must fail review.
+
 ## 1. Task-Set Authority and Status
 
 ### 1.1 Authority
@@ -29,6 +31,7 @@
 - Task review verdict: `{{REVIEW_VERDICT}}`
 - Owner approval: `PENDING`
 - Implementation authorization: `NOT GRANTED`
+- Current lifecycle state: `TASK DRAFT`
 
 ---
 
@@ -87,6 +90,11 @@ Implementation notes may apply approved architecture but must not reopen decisio
 **Acceptance criteria**
 1. {{CRITERION}}
 2. {{CRITERION}}
+
+**Verification Matrix Coverage**
+- {{VM_ID_OR_NA}}
+
+Use only `VM-*` IDs defined by the approved implementation plan. Do not duplicate the full matrix scenario here. Use `N/A — {{RATIONALE}}` only when no plan scenario applies.
 
 **Verification**
 - Observable contract: {{OBSERVABLE_CONTRACT}}

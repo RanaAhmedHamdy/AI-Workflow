@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.5
+
+- Added stable `VM-*` verification IDs inside implementation plans without introducing separate verification artifacts or per-scenario lifecycle bureaucracy.
+- Implementation tasks now map bounded work to approved `VM-*` IDs instead of repeating full verification-matrix prose.
+- Plan/task reviews now block contradictory current lifecycle, approval, readiness, or implementation-authorization assertions within the same artifact.
+- Runtime-evidence readiness now checks `VM-*` scenario executability before evidence collection.
+- Feature implementation convergence now verifies whole-feature `VM-*` evidence closure once, without duplicating bounded implementation.
+- Updated implementation plan/task templates with canonical current-state fields and verification-ID mapping.
+- README now includes an ordered how-to-use-the-skills lifecycle table.
+
+
 ## 1.4
 
 - Added platform-specific `bounded-feature-implementation` skills for iOS and Android.
