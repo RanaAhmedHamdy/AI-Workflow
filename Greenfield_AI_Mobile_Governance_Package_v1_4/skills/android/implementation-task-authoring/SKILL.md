@@ -168,6 +168,13 @@ Each task must define:
 
 A task is not complete merely because Kotlin files, resources, manifest entries, modules, previews, or tests exist.
 
+### 6A. Verification-Matrix Mapping and Current-State Integrity
+
+- Every task that implements or proves matrix-covered behavior must list `Verification Matrix Coverage` with the applicable approved `VM-*` IDs from the implementation plan, or an explicit `N/A` rationale when no matrix scenario applies.
+- Do not copy the full matrix scenario into each task; reference stable IDs and keep the detailed definition authoritative in the approved plan.
+- Do not invent new `VM-*` IDs in the task set.
+- Keep current task-set lifecycle/status/authorization truth in one canonical status block. Historical authoring/review verdicts may remain only when clearly labeled as stage-specific history; they must not contradict the current state.
+
 ### 7. Android Cross-Cutting Requirements Are First-Class
 
 Do not defer these to final polish:

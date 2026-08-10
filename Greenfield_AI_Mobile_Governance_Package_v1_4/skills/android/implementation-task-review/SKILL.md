@@ -318,6 +318,13 @@ Verify final tasks cover:
 - clean CI and current Android-native machine-readable reports/artifacts;
 - APK/AAB/manifest/R8/signing inspection where applicable.
 
+### Verification-Matrix Traceability and Current-State Consistency
+
+- Verify every task that implements or proves matrix-covered behavior lists the applicable approved `VM-*` IDs.
+- Verify every referenced `VM-*` ID exists in the approved implementation plan and is relevant to the task.
+- Reject invented IDs, required matrix scenarios with no implementation/evidence owner, and unnecessary duplication of full matrix scenario prose inside tasks.
+- Search the complete task artifact for lifecycle, approval, readiness, and implementation-authorization assertions. If two assertions both claim to describe the current state and conflict, return a blocking finding. Historical stage verdicts are allowed only when clearly labeled as historical/stage-specific.
+
 ## Finding Format
 
 - Finding ID;

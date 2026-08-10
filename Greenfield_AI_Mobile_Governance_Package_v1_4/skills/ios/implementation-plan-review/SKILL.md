@@ -29,6 +29,13 @@ Read the plan, owner-approved contract, feature input, feature map, decision reg
 11. Fail task IDs, estimates, assignments, file-by-file checklists, production code, or generated migrations/schemas.
 12. Verify blocked gates are reported honestly and implementation is not authorized.
 
+### Verification-Matrix Traceability and State Consistency
+
+- Verify unique stable `VM-*` IDs cover every applicable runtime-only claim with an executable scenario.
+- Verify every row traces to approved authority and does not invent behavior.
+- Verify environment/destination, preconditions, expected observable result, evidence path, and method/limitation are concrete enough to execute.
+- Search the complete artifact for lifecycle/status/approval/readiness/authorization assertions. If two assertions both claim to describe the current state and conflict, return a blocking finding. Historical stage verdicts are allowed only when clearly labeled as historical/stage-specific.
+
 ## Finding Format
 Finding ID; severity; plan section; contract requirement; authority; problem; correction; verdict impact.
 

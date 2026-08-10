@@ -284,6 +284,19 @@ Reject:
 - stale result artifacts;
 - generic “tests passed” claims without commands and paths.
 
+### 13A. Verification-Matrix Closure
+
+When the approved implementation plan defines `VM-*` scenarios, verify whole-feature closure once at convergence:
+
+- every required `VM-*` ID is accounted for by current evidence or an explicit blocking/needs-verification limitation;
+- evidence matches the scenario environment, procedure, expected observable result, and declared evidence path closely enough to prove the claim;
+- task-level `Verification Matrix Coverage` references resolve to approved IDs;
+- no required scenario silently disappears because tasks were marked complete;
+- evidence is not reassigned to a different scenario merely because it is convenient;
+- convergence does not rerun bounded implementation or manufacture missing evidence.
+
+A required `VM-*` scenario with no valid evidence and no explicit blocking limitation prevents a ready verdict.
+
 ### 14. Documentation Synchronization
 
 Verify current status and evidence are synchronized across:

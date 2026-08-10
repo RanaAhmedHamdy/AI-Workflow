@@ -33,3 +33,9 @@ Every task must name:
 - limitations.
 
 A task marked complete without matching evidence is improperly closed and must be reopened.
+## Verification-Matrix Executability
+
+When the approved implementation plan contains `VM-*` scenarios, verify before evidence execution that each applicable scenario is runnable: the ID exists and traces to approved authority; the named simulator/device/OS/locale/accessibility condition is available or has an approved equivalent; preconditions are reproducible; the procedure is concrete; the expected observable result is explicit; the evidence path is usable; and runtime-only claims use runtime-capable evidence. Report unavailable scenarios as blocked/needs verification rather than silently substituting evidence.
+
+This skill checks executability only. It does not maintain a second per-scenario lifecycle status system and does not manufacture `PASS` evidence.
+

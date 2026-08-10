@@ -329,6 +329,16 @@ For every requirement, select all necessary layers:
 
 Every evidence item must name the procedure, destination, expected result, artifact path, and limitation.
 
+### 15A. Define a Compact Verification Matrix
+
+Inside `IMPLEMENTATION_PLAN.md`, define stable unique IDs such as `VM-001` for applicable behavioral/runtime verification scenarios. Each row must name the approved requirement/claim, executable scenario, environment/destination, reproducible preconditions, expected observable result, evidence path, and verification method or known limitation. Runtime-only claims require runtime-capable evidence. Keep the matrix inside the plan; do not create a separate verification artifact solely for it.
+
+`VM-*` rows are planned verification definitions, not a second lifecycle state machine. Do not add per-row `READY`/`PASS` workflow statuses during plan authoring.
+
+### 15B. Keep Current Lifecycle State Internally Consistent
+
+Keep current lifecycle/status/authorization truth in one canonical status block. Historical authoring/review verdicts may remain only when clearly labeled as stage-specific history. Never emit incompatible current-state assertions in different parts of the same artifact.
+
 ### 16. Define Implementation Order Only
 
 The plan may define dependency order but must not generate:

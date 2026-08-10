@@ -42,6 +42,14 @@ Return one:
 14. Define implementation order only; do not generate tasks, estimates, assignments, or code.
 15. Do not claim implementation authorization.
 
+### Verification Matrix and Current-State Integrity
+
+- Define a compact verification matrix inside `IMPLEMENTATION_PLAN.md` using stable unique IDs such as `VM-001`.
+- Each applicable row must identify the approved requirement/claim, executable scenario, environment/destination, required preconditions, expected observable result, evidence path, and verification method or known limitation.
+- Runtime-only claims must map to runtime-capable evidence. Do not create a separate verification artifact solely for this matrix.
+- Treat `VM-*` rows as planned verification definitions, not a second lifecycle state machine; do not add per-row `READY`/`PASS` workflow statuses during plan authoring.
+- Keep current lifecycle/status/authorization truth in one canonical status block. Historical authoring/review verdicts may remain only when clearly labeled as stage-specific history. Never emit incompatible current-state assertions in the same artifact.
+
 ## Mandatory Sections
 Authority/status; scope/exclusions; assumptions; traceability; architecture; modules; domain; persistence; presentation state; navigation; screen mapping; adaptive UI; localization/RTL; accessibility; error/recovery/offline/cancellation; tests; evidence; dependency order; risks; unresolved decisions; readiness; prohibited patterns; documentation impact.
 
