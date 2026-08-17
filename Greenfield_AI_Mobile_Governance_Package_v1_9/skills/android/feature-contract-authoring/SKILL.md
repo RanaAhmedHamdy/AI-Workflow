@@ -1,3 +1,8 @@
+---
+name: feature-contract-authoring
+description: "Authors a bounded, owner-reviewable Android feature contract from approved feature input and repository authority. Use when turning product requirements into a tool-neutral behavioral contract without leaking implementation details or expanding scope."
+---
+
 # Skill: Android Feature Contract Authoring v1
 
 ## Purpose

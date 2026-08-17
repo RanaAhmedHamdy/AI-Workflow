@@ -1,3 +1,8 @@
+---
+name: feature-contract-review
+description: "Independently reviews an Android feature contract for exact scope, source authority, behavioral completeness, design fidelity, governance, and implementation leakage. Use after contract authoring and before owner approval or implementation planning."
+---
+
 # Skill: Android Feature Contract Review v1
 
 ## Purpose

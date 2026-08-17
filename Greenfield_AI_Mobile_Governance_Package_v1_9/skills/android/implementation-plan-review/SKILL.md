@@ -1,3 +1,8 @@
+---
+name: implementation-plan-review
+description: "Independently reviews an Android implementation plan for contract fidelity, architecture, lifecycle, dependency composition, coroutines, persistence, adaptive UI, localization, accessibility, permissions, testing, and evidence. Use before owner plan approval."
+---
+
 # Skill: Android Implementation Plan Review v1
 
 ## Purpose

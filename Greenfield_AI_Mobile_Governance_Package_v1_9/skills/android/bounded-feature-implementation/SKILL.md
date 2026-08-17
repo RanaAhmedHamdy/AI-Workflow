@@ -1,3 +1,8 @@
+---
+name: bounded-feature-implementation
+description: "Executes an explicitly authorized, dependency-valid group of Android implementation tasks and produces task-level verification evidence. Use only when the feature contract, plan, tasks, readiness audit, and exact implementation slice are already approved."
+---
+
 # Skill: Bounded Feature Implementation v1
 
 ## Purpose

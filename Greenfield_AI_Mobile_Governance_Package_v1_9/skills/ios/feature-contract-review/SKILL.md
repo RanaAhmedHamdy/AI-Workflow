@@ -1,3 +1,8 @@
+---
+name: feature-contract-review
+description: "Independently reviews an iOS feature contract for authority fidelity, behavioral completeness, design conformance, adaptive UI, localization, RTL, accessibility, protected boundaries, evidence quality, and implementation leakage. Use after authoring and before owner approval."
+---
+
 # Skill: Feature Contract Review
 
 ## Purpose

@@ -1,3 +1,8 @@
+---
+name: implementation-task-authoring
+description: "Authors a dependency-ordered iOS implementation task set from an approved feature contract and approved implementation plan. Use after plan approval to create reviewable task definitions only, without modifying production code, tests, schemas, migrations, or project files."
+---
+
 # Skill: Implementation Task Authoring v1
 
 ## Purpose

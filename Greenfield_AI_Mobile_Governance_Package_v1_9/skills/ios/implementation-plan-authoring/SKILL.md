@@ -1,3 +1,8 @@
+---
+name: implementation-plan-authoring
+description: "Authors an architecture-aware, design-traceable, evidence-ready iOS implementation plan from an owner-approved feature contract. Use after contract approval and technical readiness; it creates the plan only, not production code or implementation tasks."
+---
+
 # Skill: Implementation Plan Authoring v1
 
 ## Purpose

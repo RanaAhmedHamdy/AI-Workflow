@@ -1,3 +1,8 @@
+---
+name: implementation-task-authoring
+description: "Authors a dependency-ordered Android implementation task set from an approved feature contract and approved implementation plan. Use after plan approval to create reviewable task definitions only, without modifying production code or project artifacts."
+---
+
 # Skill: Android Implementation Task Authoring v1
 
 ## Purpose

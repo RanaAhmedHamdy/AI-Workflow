@@ -8,7 +8,7 @@ Contents:
 - `skills/` — reusable governance, testing, review, adaptive UI, and publishing skills.
 - `repository-starter/` — prompt templates, guarded runners, focused architecture-spec examples, Graphify policy, and clearly labeled project-specific examples.
 
-Read `repository-starter/README.md` before copying workflow files into another repository. Shell mechanics and policy text may be reusable, but manifests, checkpoints, Graphify override rows, evidence paths, revisions, decisions, test counts, and project status must be regenerated or adapted.
+For the **exact operational flow**—which runner comes first, which prompt it selects, whether it invokes an agent, expected status transitions, and the next command—start with `repository-starter/README.md`. The full playbook is the deeper governance/rationale reference. Shell mechanics and policy text may be reusable, but manifests, checkpoints, Graphify override rows, evidence paths, revisions, decisions, test counts, and project status must be regenerated or adapted.
 
 ## Canonical brownfield lifecycle
 

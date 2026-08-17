@@ -1,5 +1,5 @@
 ---
-name: runtime-evidence-readiness
+name: android-runtime-evidence-readiness
 description: Requires exact evidence scenarios and concrete artifacts before tasks can be completed.
 ---
 # Runtime Evidence Readiness

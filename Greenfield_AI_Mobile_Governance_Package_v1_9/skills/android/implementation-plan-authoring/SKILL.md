@@ -1,3 +1,8 @@
+---
+name: implementation-plan-authoring
+description: "Authors an Android architecture-aware, design-traceable, evidence-ready implementation plan from an owner-approved feature contract. Use after contract approval and technical readiness; it creates the plan only, not code or implementation tasks."
+---
+
 # Skill: Android Implementation Plan Authoring v1
 
 ## Purpose

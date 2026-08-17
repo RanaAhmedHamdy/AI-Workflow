@@ -1,3 +1,8 @@
+---
+name: android-permission-capability-readiness
+description: "Reviews Android permissions, manifest exposure, exported components, deep links, background capabilities, and protected configuration. Use when adding or changing permissions, capabilities, external entry points, services, alarms, workers, SDK configuration, or release manifests."
+---
+
 # Android Permission and Capability Readiness
 
 ## Purpose

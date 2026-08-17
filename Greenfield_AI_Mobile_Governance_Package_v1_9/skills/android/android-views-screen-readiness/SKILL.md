@@ -1,3 +1,8 @@
+---
+name: android-views-screen-readiness
+description: "Reviews XML and View-based Android screens for state ownership, lifecycle safety, resources, RTL, adaptive layouts, accessibility, and runtime evidence. Use when a feature uses Views, Fragments, Activities, or a Compose-Views hybrid boundary."
+---
+
 # Android Views Screen Readiness
 
 ## Purpose

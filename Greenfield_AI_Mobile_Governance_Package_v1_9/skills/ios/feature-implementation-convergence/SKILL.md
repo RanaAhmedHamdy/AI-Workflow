@@ -1,3 +1,8 @@
+---
+name: feature-implementation-convergence
+description: "Audits a completed iOS feature against the approved contract, implementation plan, tasks, architecture, design, cross-cutting requirements, and evidence. Use after implementation to detect drift before owner acceptance; it does not authorize release."
+---
+
 # Skill: Feature Implementation Convergence v1
 
 ## Purpose

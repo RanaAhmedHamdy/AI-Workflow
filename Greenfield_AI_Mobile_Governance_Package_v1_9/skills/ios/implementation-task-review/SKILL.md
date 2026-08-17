@@ -1,3 +1,8 @@
+---
+name: implementation-task-review
+description: "Independently reviews iOS implementation tasks for scope fidelity, dependency correctness, task sizing, architecture conformance, design traceability, evidence sufficiency, and authorization honesty. Use before owner task approval."
+---
+
 # Skill: Implementation Task Review v1
 
 ## Purpose

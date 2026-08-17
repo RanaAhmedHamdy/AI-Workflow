@@ -1,5 +1,5 @@
 ---
-name: localization-rtl-readiness
+name: android-localization-rtl-readiness
 description: Prevents hardcoded user-facing text, locale-key drift, RTL layout assumptions, and unverified mixed-direction/large-font behavior.
 ---
 # Localization and RTL Readiness

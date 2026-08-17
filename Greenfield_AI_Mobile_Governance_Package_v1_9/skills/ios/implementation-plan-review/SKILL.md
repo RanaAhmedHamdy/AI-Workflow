@@ -1,3 +1,8 @@
+---
+name: implementation-plan-review
+description: "Independently reviews an iOS implementation plan for contract fidelity, architecture, design traceability, persistence, adaptive UI, localization, accessibility, testing, evidence, and readiness honesty. Use before owner plan approval."
+---
+
 # Skill: Implementation Plan Review v1
 
 ## Purpose

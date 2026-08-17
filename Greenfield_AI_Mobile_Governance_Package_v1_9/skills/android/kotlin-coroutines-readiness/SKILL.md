@@ -1,3 +1,8 @@
+---
+name: kotlin-coroutines-readiness
+description: "Reviews Android coroutine and Flow ownership, scopes, cancellation, dispatchers, lifecycle collection, error handling, and concurrency boundaries. Use before planning, implementation, or convergence when Kotlin coroutines, Flow, or asynchronous work are involved."
+---
+
 # Kotlin Coroutines Readiness
 
 ## Purpose

@@ -1,3 +1,8 @@
+---
+name: agent-drift-detection
+description: "Detects divergence between approved repository authority and generated specifications, plans, tasks, code, tests, documentation, or completion claims. Use after any iOS lifecycle phase when checking for scope, architecture, evidence, or governance drift."
+---
+
 # Skill: Agent Drift Detection
 
 ## Purpose

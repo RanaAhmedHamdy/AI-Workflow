@@ -1,3 +1,8 @@
+---
+name: feature-complexity-classification
+description: "Classifies one bounded Android feature as SMALL, STANDARD, or COMPLEX from risk and dependency signals. Use before feature-contract authoring to select the required governance depth; it does not authorize planning or implementation."
+---
+
 # Skill: Feature Complexity Classification v1
 
 ## Purpose

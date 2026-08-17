@@ -1,3 +1,8 @@
+---
+name: feature-contract-authoring
+description: "Authors a bounded, owner-reviewable iOS feature contract from repository feature input and approved authority. Use when converting requirements into a tool-neutral behavioral contract while preventing product, architecture, design, localization, accessibility, persistence, and evidence drift."
+---
+
 # Skill: Feature Contract Authoring
 
 ## Purpose

@@ -1,5 +1,5 @@
 ---
-name: adaptive-compose
+name: android-adaptive-accessibility-readiness
 description: Establishes and verifies a concrete Compose screen adaptation contract across approved windows, orientations, inputs, RTL, and large text.
 ---
 # Adaptive Compose

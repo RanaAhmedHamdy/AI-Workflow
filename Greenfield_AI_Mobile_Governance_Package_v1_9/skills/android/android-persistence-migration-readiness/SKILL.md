@@ -1,3 +1,8 @@
+---
+name: android-persistence-migration-readiness
+description: "Reviews Android durable-data architecture, schema ownership, migrations, transactions, recovery, backup, deletion, process-death behavior, and test isolation. Use when planning, implementing, or verifying Room, DataStore, files, secure storage, or other persistent state."
+---
+
 # Android Persistence and Migration Readiness
 
 ## Purpose

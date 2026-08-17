@@ -1,3 +1,8 @@
+---
+name: feature-readiness-review
+description: "Independently reviews the final iOS feature state, readiness report, and evidence package for owner acceptance. Use after implementation convergence to decide PASS, FAIL, BLOCKED, owner-decision, or verification status without authorizing release or distribution."
+---
+
 # Skill: Feature Readiness Review v1
 
 ## Purpose

@@ -1,3 +1,8 @@
+---
+name: implementation-task-review
+description: "Independently reviews Android implementation tasks for scope, dependencies, sizing, architecture, state ownership, coroutines, lifecycle, persistence, design traceability, localization, accessibility, permissions, evidence, and authorization. Use before owner task approval."
+---
+
 # Skill: Android Implementation Task Review v1
 
 ## Purpose
