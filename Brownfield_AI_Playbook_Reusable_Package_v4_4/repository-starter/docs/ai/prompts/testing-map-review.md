@@ -5,7 +5,7 @@
 - Verify every material claim against current source, tests, build files, or reviewed project documents.
 - Apply `docs/ai/GRAPHIFY_USAGE.md` and `docs/ai/graphify-context-overrides.tsv`.
 - Do not edit production code, tests, AGENTS.md, existing product documents, Graphify installation files, or `graphify-out/`.
-- Do not mark the target document reviewed during creation.
+- This review is read-only. Do not edit the target or change its status.
 - Record provenance, inspected revision, commands run, exclusions, and Needs verification.
 - Repository-relative paths only; never use `file://` links.
 - You may use bounded research subagents. Subagents must not edit files. One main agent synthesizes and writes the target document.
@@ -28,4 +28,11 @@ Check:
 - weak provenance;
 - stale commands or paths.
 
-Return blocking findings, non-blocking findings, smallest revision scope, and promotion recommendation.
+Return:
+1. Blocking findings.
+2. Non-blocking findings.
+3. Smallest revision scope.
+4. Promotion recommendation: `Promote`, `Revise`, or `Blocked`.
+5. Evidence inspected and commands run.
+
+Recommend `Promote` only when no blocking documentation correction is required.

@@ -49,5 +49,6 @@ Rules:
 - Do not infer runtime Hilt behavior from provider declarations alone.
 - Do not invent backend, Room, billing, login, camera, sharing, or cloud architecture.
 - Do not turn this into a redesign proposal.
+- If the target already exists as `Draft`, revise only that file using current evidence and supplied review findings.
 - Set status to Draft.
 - Show the final diff.

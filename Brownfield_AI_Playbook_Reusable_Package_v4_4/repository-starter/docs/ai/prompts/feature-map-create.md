@@ -53,5 +53,6 @@ Rules:
 - Confirm route/screen mappings directly.
 - Confirm tests from actual test files.
 - Keep this a map, not a duplicate PRD.
+- If the target already exists as `Draft`, revise only that file using current evidence and supplied review findings.
 - Set status to Draft.
 - Show the final diff.

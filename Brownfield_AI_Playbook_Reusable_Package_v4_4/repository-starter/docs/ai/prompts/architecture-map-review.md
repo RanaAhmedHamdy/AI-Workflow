@@ -1,67 +1,33 @@
 # Phase 3 architecture map read-only review
 
-Perform a separate read-only review of exactly one Draft architecture map.
+Perform a separate read-only review of exactly one Draft architecture map. No runner is required.
 
-## Selected document
+## Resolve the target
 
-- ID: `{{DOCUMENT_ID}}`
-- Name: `{{DOCUMENT_NAME}}`
-- Target: `{{OUTPUT_PATH}}`
-- Scope specification: `{{SPEC_PATH}}`
-- Reviewed prerequisite: `{{PREREQUISITE_PATH}}`
-- Revision at prompt generation: `{{GIT_REVISION}}`
+1. Read `docs/ai/DOCUMENTATION_CHECKPOINT.md` and `docs/ai/architecture-docs.tsv`.
+2. Select the single Draft map the checkpoint authorizes for review.
+3. Verify its manifest row, scope specification, and reviewed prerequisite.
+4. If the checkpoint does not authorize exactly one Draft map review, stop without editing.
 
-## Read first
-
-1. `AGENTS.md`
-2. `AI_CONTEXT.md`
-3. `.agents/skills/documentation-review/SKILL.md`
-4. `.agents/skills/documentation-impact-assessment/SKILL.md`
-5. `docs/ai/DOCUMENTATION_CHECKPOINT.md`
-6. `docs/ai/GRAPHIFY_USAGE.md`
-7. `docs/ai/graphify-context-overrides.tsv`
-8. `docs/ai/architecture-docs.tsv`
-9. `{{SPEC_PATH}}`
-10. `{{OUTPUT_PATH}}`
-11. Only the directly relevant reviewed evidence and current source/configuration
-
-Apply `documentation-review` to the target. Use
-`documentation-impact-assessment` only to identify stale current documents
-affected by a material finding; it does not authorize edits.
+Read the repository policy/context, documentation-review guidance when installed, checkpoint, Graphify policy/overrides, manifest, selected scope specification, selected Draft, and only directly relevant reviewed evidence/current source.
 
 ## Review procedure
 
-1. Record current revision, worktree state, review scope, and exclusions.
-2. Run a scoped Graphify query for disputed or high-risk relationships only.
-3. Verify material claims directly against source, tests, build/configuration,
-   reviewed documents, or explicit owner decisions.
-4. Check every required concern and source group in `{{SPEC_PATH}}`.
-5. Check current-versus-planned separation, ownership, dependency direction,
-   lifetimes, error/fallback behavior, protected boundaries, test-evidence
-   limits, runtime/release limits, links, provenance, and `Needs verification`.
-6. Identify checklist concerns that are missing, fragmented, duplicated, or
-   incorrectly classified, but do not run the Phase 3.4 coverage gate.
+Verify material claims directly against source, tests, build/configuration, reviewed documents, or explicit owner decisions. Use scoped Graphify discovery only for disputed/high-risk relationships. Check every required concern/source group in the scope specification, current-versus-planned separation, ownership/dependency direction, lifetimes, fallback/error behavior, protected boundaries, test-evidence limits, runtime/release limits, links, provenance, and `Needs verification`.
 
 ## No-edit contract
 
-Do not edit any file. Do not fix the Draft, change its status, update the
-checkpoint, create review artifacts, or authorize the next map.
+Do not edit any file. Do not fix the Draft, change status, update checkpoint, create review artifacts, or authorize the next map.
 
 Return:
-
 - blocking findings;
 - non-blocking findings;
-- unsupported or stale claims;
+- unsupported/stale claims;
 - missing material coverage;
 - provenance/link issues;
 - smallest required correction scope;
 - promotion recommendation: `Promote`, `Revise`, or `Blocked`;
 - exact evidence inspected and commands run;
-- unverified runtime, device, backend, security, or release layers.
+- unverified runtime/device/backend/security/release layers.
 
-If the recommendation is `Promote`, state explicitly that no blocking
-documentation correction is required. A later promotion task must still update
-status and checkpoint.
-
-Stop without staging, committing, pushing, publishing, promoting, or reviewing
-another map.
+Recommend `Promote` only when no blocking documentation correction is required. If `Promote`, the next task is `docs/ai/prompts/architecture-map-promote.md` and it must have access to this review result. Stop without editing, staging, committing, pushing, publishing, promoting, or reviewing another map.

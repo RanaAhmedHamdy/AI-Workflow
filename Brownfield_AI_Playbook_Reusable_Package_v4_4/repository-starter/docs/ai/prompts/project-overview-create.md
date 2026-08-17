@@ -39,5 +39,6 @@ Rules:
 - Summarize; do not duplicate full PRD, design system, or architecture.
 - Separate product intent from implemented evidence.
 - Do not promote unresolved behavior to fact.
+- If the target already exists as `Draft`, revise only that file using current evidence and supplied review findings.
 - Set status to Draft.
 - Show the final diff.

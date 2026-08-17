@@ -1,86 +1,41 @@
 # Phase 3 architecture map creation
 
-Create exactly one Draft architecture map.
+Create exactly one Draft architecture map. This prompt is self-routing and can run directly with any repository-aware AI coding agent.
 
-## Selected document
+## Resolve the selected map
 
-- ID: `{{DOCUMENT_ID}}`
-- Name: `{{DOCUMENT_NAME}}`
-- Output: `{{OUTPUT_PATH}}`
-- Scope specification: `{{SPEC_PATH}}`
-- Required reviewed prerequisite: `{{PREREQUISITE_PATH}}`
-- Inspected revision at prompt generation: `{{GIT_REVISION}}`
+1. Read `docs/ai/architecture-docs.tsv` and `docs/ai/DOCUMENTATION_CHECKPOINT.md`.
+2. Prefer the checkpoint's single next authorized architecture-map creation target and verify it exists in the manifest.
+3. Correction exception: if the checkpoint currently authorizes review of exactly one existing `Draft` map and the current task context includes that map's completed review with recommendation `Revise`, select that same map for bounded correction. Do not select a different map.
+4. If the checkpoint does not name a target, select the first manifest row in numeric order whose output does not exist, but only when all earlier required prerequisites are `Reviewed` and there is no conflicting authorized task.
+5. From the selected row, resolve document ID, display name, output path, scope-spec path, and prerequisite path.
+6. Verify the prerequisite exists and is `Reviewed` or `Reviewed orientation`.
+7. If selection is ambiguous or out of sequence, stop without editing.
+
+Record the current revision/worktree state before writing.
 
 ## Read first
 
-1. `AGENTS.md`
-2. `AI_CONTEXT.md`
-3. `.agents/skills/documentation-impact-assessment/SKILL.md`
-4. `docs/ai/DOCUMENTATION_CHECKPOINT.md`
-5. `docs/ai/GRAPHIFY_USAGE.md`
-6. `docs/ai/graphify-context-overrides.tsv`
-7. `docs/ai/architecture-docs.tsv`
-8. `{{SPEC_PATH}}`
-9. `{{PREREQUISITE_PATH}}`
-10. Only the reviewed project, feature, testing, product, and architecture documents routed by the scope specification
-
-Apply `documentation-impact-assessment` before writing. The expected authorized
-surface is `{{OUTPUT_PATH}}` plus
-`docs/ai/DOCUMENTATION_CHECKPOINT.md`; stop if the assessment requires an
-unapproved current-document change.
+Read `AGENTS.md`, repository context/index files, documentation-impact guidance when installed, checkpoint, Graphify policy/overrides, architecture manifest, selected scope specification, selected prerequisite, and only the reviewed project/feature/testing/product/architecture evidence routed by that scope specification.
 
 ## Evidence workflow
 
-1. Record the current revision and worktree state. Preserve unrelated changes.
-2. Run a scoped Graphify query using the discovery question in `{{SPEC_PATH}}`.
-3. Treat Graphify only as a routing aid. Verify every material claim directly
-   against current source, tests, build/configuration files, or reviewed
-   documentation.
-4. Inspect only the files needed for this map. Absence of a graph edge is not
-   evidence that a dependency or behavior is absent.
-5. Distinguish current implementation, approved product constraints,
-   recommendations, historical execution evidence, and `Needs verification`.
+Use Graphify only as a scoped routing aid. Verify every material claim directly against current source, tests, build/configuration, reviewed documentation, or explicit owner decisions. Missing graph edges are not evidence of absence.
 
 ## Creation contract
 
-- Create only `{{OUTPUT_PATH}}`.
-- Set its status to `Draft`.
+- Create or revise only the selected manifest output path.
+- Set/keep status `Draft`.
 - Describe current architecture first; do not turn the map into a redesign plan.
-- Include scope, authority, evidence limits, exclusions, inspected revision,
-  current behavior, exceptions, protected boundaries, related reviewed pages,
-  `Needs verification`, and provenance.
+- Follow the selected scope specification's required concerns, evidence limits, and non-goals.
+- Include scope/authority, evidence limits, exclusions, inspected revision, current behavior, exceptions, protected boundaries, related reviewed pages, `Needs verification`, and provenance.
 - Use repository-relative links only.
-- Use the smallest useful diagrams or tables. Do not duplicate entire feature
-  documents.
-- Do not create empty sections to satisfy the checklist. For absent concerns,
-  record `Not observed` only when the scope specification assigns that concern
-  to this document and current inspection supports the classification.
-- Do not mark the map Reviewed during creation.
+- Do not create another architecture map.
 
-## Checkpoint update
+Update `docs/ai/DOCUMENTATION_CHECKPOINT.md` only to record that the selected map is Draft and authorize a separate read-only review of that same file. Do not authorize the next map during creation.
 
-Update `docs/ai/DOCUMENTATION_CHECKPOINT.md` only to record that
-`{{OUTPUT_PATH}}` was created as Draft and that the next authorized task is a
-separate read-only review of the same file.
+Do not edit source, tests, build/configuration, existing reviewed documents, policy/skills/checklists, manifests, hooks/CI, Graphify source, or generated Graphify output.
 
-Do not authorize `{{NEXT_OUTPUT_PATH}}` during creation.
+## Completion
 
-## Prohibited changes
-
-Do not edit source, tests, Gradle/configuration, existing reviewed documents,
-`AGENTS.md`, `AI_CONTEXT.md`, skills, checklists, scripts, manifests, hooks, CI,
-Graphify source, or generated Graphify output. Do not create another
-architecture map.
-
-## Verification and completion
-
-- Check all material claims against cited evidence.
-- Check repository-relative links.
-- Run `git diff --check`.
-- Do not run Android builds or tests unless the scope specification identifies a
-  claim that cannot be made honest without current execution evidence.
-- Show the diff for `{{OUTPUT_PATH}}` and the checkpoint.
-- Report evidence inspected, documentation-impact classification, exclusions,
-  important `Needs verification`, and the exact next authorized task.
-- Stop without staging, committing, pushing, publishing, reviewing, or promoting
-  the Draft.
+Run `git diff --check` when available. Show the selected map/checkpoint diff, evidence inspected, exclusions, important `Needs verification`, and state that the exact next task is `docs/ai/prompts/architecture-map-review.md`. Stop without staging, committing, pushing, publishing, reviewing, or promoting.

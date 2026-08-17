@@ -144,17 +144,20 @@ Once the initial context foundation exists, move repeated instructions
 out of chat and into version-controlled repository artifacts. The
 repository should become the durable task interface: an agent policy,
 context index, checkpoint, focused scope specifications, prompt
-templates, manifests, and deterministic runners.
+templates, and manifests.
 
 A checkpoint records completed reviewed artifacts, the current phase,
 the next single authorized task, blockers, and prohibited work. Create
 it during Phase 1 or Phase 1.5, not after implementation begins. Advance
 it only after the relevant review or promotion gate passes.
 
-Use a manifest plus a runner when a phase contains a repeatable ordered
-batch. The runner should resolve the next checkpoint-authorized item,
-verify prerequisites and target status, render one task prompt, limit
-allowed file changes, and stop without committing or publishing.
+Prefer self-contained, repository-owned prompts that can run directly
+with any repository-aware AI coding agent. For repeatable ordered
+batches, the prompt should resolve the single checkpoint-authorized item
+from the manifest, verify prerequisites and target status, limit allowed
+file changes, and stop without committing or publishing. Optional local
+scripts or client adapters may automate selection/copying, but they are
+convenience layers only and must not become a second workflow authority.
 
 Graph tools such as Graphify may accelerate file and symbol discovery,
 but they are not architecture authority. Verify every material
@@ -258,19 +261,22 @@ Goal: Teach humans and AI what exists before asking for improvements.
 > mark uncertainty, and do not modify code, tests, dependencies, or
 > project configuration.
 
-## Reusable foundation-document automation
+## Reusable foundation-document prompt workflow
 
-For repeated discovery documents, use small create and read-only review
-templates selected by a deterministic phase runner. Each task works on
-one document, checks that its prerequisite is Reviewed or Reviewed
-orientation, records the inspected revision, and stops before approval,
-commit, or publication.
+For repeated discovery documents, use small repository-owned create,
+read-only-review, and status-promotion prompts. Each task works on one
+document, checks that its prerequisite is Reviewed or Reviewed
+orientation, records the inspected revision, and stops before commit or
+publication. Review and promotion remain separate so a read-only review
+cannot silently approve its own edits.
 
-A reusable foundation set usually includes phase runner logic and
-create/review templates for MODULES, FEATURE_MAP, TESTING_MAP,
-DEPENDENCIES, PROJECT_OVERVIEW, and ARCHITECTURE. Copy the workflow
-structure into another brownfield repository, but adapt platform names,
-expected paths, product-authority files, and commands.
+A reusable foundation set should include prompts for MODULES,
+FEATURE_MAP, TESTING_MAP, DEPENDENCIES, PROJECT_OVERVIEW, and
+ARCHITECTURE, plus a small generic foundation-promotion prompt. The
+prompts should be directly runnable; no provider-specific CLI or shell
+runner is required. Copy the workflow structure into another brownfield
+repository, but adapt platform names, expected paths, product-authority
+files, and commands.
 
 Do not ask a general chat model to regenerate these prompts for every
 project run once the templates are checked into the repository.
@@ -401,10 +407,11 @@ verification, and recommendations.
 ## Reusable feature-document batch
 
 A feature manifest may define order, stable ID, feature name, and output
-path. A runner may select the next missing page, launch one fresh agent
-session for creation and another for review, permit edits only to the
-selected page and—during review—the checkpoint, and stop when unexpected
-files change.
+path. The creation and review prompts should resolve the next single
+authorized page directly from the manifest plus checkpoint, use a fresh
+agent session for creation and another for review, permit edits only to
+the selected page and—during review—the checkpoint, and stop when
+repository state is ambiguous.
 
 The creation template should read the reviewed project maps, relevant
 product authority, the feature’s directly related source/tests, and one
@@ -418,10 +425,10 @@ are supported, and authorize exactly the next feature page in the
 checkpoint.
 
 This pattern is reusable across brownfield projects. Copy the
-runner/template pattern as a baseline; adapt feature IDs, product
-documents, source-language terminology, model/agent invocation, and
+prompt/manifest/checkpoint pattern as a baseline; adapt feature IDs,
+product documents, source-language terminology, repository paths, and
 platform-specific evidence checks. Do not copy a project’s feature
-manifest as universal truth.
+manifest as universal truth or require one particular AI provider.
 
 # 9. Phase 3 — Architecture, design system, and cross-feature rules
 
@@ -538,9 +545,11 @@ nothing and returns Promote, Revise, or Blocked. Promotion changes
 status/checkpoint only and must not perform substantive correction.
 
 Use an architecture manifest with order, ID, name, output path, focused
-scope specification, and reviewed prerequisite. A runner should reject
-out-of-sequence work unless explicit authorization is supplied, verify
-the checkpoint target, and render exactly one prompt.
+scope specification, and reviewed prerequisite. The self-routing create,
+review, and promotion prompts should reject out-of-sequence work unless
+explicit authorization is supplied, verify the checkpoint target, and
+operate on exactly one manifest row. A local runner may be added for
+convenience, but it is not required by the workflow.
 
 Focused scope specifications are a high-value reusable pattern because
 they reduce broad repository scans. Each specification defines the
@@ -720,7 +729,7 @@ After Phase 3.6, the repository normally contains the owner answers,
 reviewed architecture, the decision-to-source audit, classifications,
 checkpoint, agent policy, and reusable skills. At this point, stop
 switching to an external chat solely to generate increasingly detailed
-Codex prompts.
+provider-specific execution prompts.
 
 Use the repository agent for the next plan because it can inspect the
 current worktree, source, tests, reviewed contracts, and audit evidence
@@ -1131,20 +1140,19 @@ remote side effects:
 
 - Do not import or expose every available upstream skill.
 
-## 13.11 Reusable documentation automation package
+## 13.11 Reusable documentation workflow package
 
 The following artifacts are reusable patterns and may be copied as a
 starter kit when the receiving repository adopts the same directory
 contract:
 
-Foundation phase runner plus one-document create/review templates.
+Foundation one-document create/read-only-review/promotion prompts,
+including MODULES.
 
-Feature-document manifest, creation template, review template, and
-guarded runner.
+Feature-document manifest plus self-routing creation and review prompts.
 
-Architecture-map manifest, focused scope specifications,
-create/read-only-review/promotion templates, and checkpoint-aware
-runner.
+Architecture-map manifest, focused scope specifications, and
+self-routing create/read-only-review/promotion prompts.
 
 Documentation checkpoint format and status vocabulary.
 
@@ -1152,21 +1160,22 @@ Graph discovery usage policy stating that generated relationships are
 routing aids only.
 
 Copy-as-is is appropriate only for truly platform-neutral policy text
-and shell mechanics whose paths and command dependencies match the new
-repository. In most projects, copy the files as a baseline commit and
-immediately adapt repository paths, platform terminology, authority
-documents, model invocation, status parsing, test commands, and
-allowed-change rules.
+whose directory contract matches the new repository. In most projects,
+copy the files as a baseline commit and immediately adapt repository
+paths, platform terminology, authority documents, status vocabulary,
+test commands, and allowed-change rules.
 
 Never copy these as universal project facts: feature manifests,
 architecture ordering, graph override rows, source paths, product
 contracts, test counts, reviewed revisions, checkpoint state, or
-model/provider defaults. These are project-specific and must be
+provider/client defaults. These are project-specific and must be
 regenerated or edited from evidence.
 
 Prefer a small reusable package over prompts pasted from chat history.
-Version it, review changes to it like code, and let runners render the
-current task from repository state.
+Version it, review changes to it like code, and let the checked-in
+prompts resolve the current task from repository state. Optional scripts
+or client adapters should remain thin convenience layers around that
+contract.
 
 ## 13.12 Adoption rule for future projects
 
@@ -1699,16 +1708,18 @@ different owner or verification layer.
   and create a new document only when the concern is material and has no
   suitable home.
 
-Integrated repository-owned documentation runners, manifests, focused
+Integrated repository-owned documentation prompts, manifests, focused
 scope specifications, and checkpoint sequencing into Phases 1–3 rather
-than treating them as optional appendices.
+than treating them as optional appendices. The reusable starter now
+uses self-routing prompts as the primary interface; provider-specific
+runners are optional convenience only.
 
 Added Graphify guidance: discovery/routing only, direct source
 verification, project-owned limitation supplements, and no edits to
 generated graph output.
 
 Defined the Phase 3.6 transition point at which external prompt
-generation should stop and Codex/repository agents should plan,
+generation should stop and repository-aware agents should plan,
 implement, and review from durable context.
 
 Added reusable cross-project prompts for planning, implementation,

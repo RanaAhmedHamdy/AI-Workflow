@@ -1,624 +1,370 @@
 # Brownfield repository starter kit
 
-This is the **execution guide** for the v4.4 repository-owned documentation workflow.
+This starter is **prompt-first and AI-tool agnostic**. You do not need any provider-specific CLI or bundled shell runner.
 
-Use it to answer: **what runs first, which prompt is selected, whether the script invokes the AI, what may change, what status to expect, and what to do next.**
+Use a repository-aware AI coding agent and run the checked-in prompts directly. A normal instruction can be as small as:
 
-You should not need the full playbook for the normal execution path. Use `../playbook/BROWNFIELD_PLAYBOOK.md` for rationale, governance details, and edge cases.
+```text
+Follow docs/ai/prompts/modules-create.md exactly.
+```
+
+You can also paste a prompt's contents into your preferred agent. The agent must be able to inspect the repository evidence referenced by the prompt.
+
+The full playbook explains rationale, governance, protected boundaries, and later implementation phases. This README is the execution path.
 
 ---
 
-## 1. Know the three runners
+## 1. What is reusable vs project-specific
 
-They do not behave the same way.
-
-| Workflow | Runner | Invokes AI? | Normal lifecycle |
-|---|---|---|---|
-| Foundation maps | `scripts/run-doc-phase.sh` | **No** | create Draft -> read-only review -> separate approval/promotion |
-| Feature pages | `scripts/generate-feature-docs.sh` | **Only with `--execute`**; invokes OpenCode | create -> review/correct -> `Reviewed` + checkpoint |
-| Phase 3 architecture maps | `scripts/run-architecture-doc.sh` | **No** | create Draft -> read-only review -> promote |
+Reusable workflow files:
 
 ```text
-Foundation
-  runner -> printed prompt -> run agent yourself -> Draft
-         -> printed review prompt -> fresh read-only review
-         -> separate promotion/approval -> Reviewed
-
-Features
-  runner --execute -> fresh OpenCode create
-                   -> fresh OpenCode review
-                   -> Reviewed + checkpoint update
-
-Phase 3 architecture maps
-  runner -> rendered prompt -> run Codex yourself -> Draft
-         -> fresh read-only review -> Promote / Revise / Blocked
-         -> promotion prompt -> Reviewed + next checkpoint task
+docs/ai/prompts/
+docs/ai/architecture-specs/
+docs/ai/GRAPHIFY_USAGE.md
 ```
 
----
-
-## 2. Two important v4.4 starter gaps
-
-### `MODULES.md` must already be reviewed
-
-The playbook expects `MODULES.md` as part of the reusable foundation, but this starter does **not** include:
-
-```text
-modules-create.md
-modules-review.md
-./scripts/run-doc-phase.sh modules ...
-```
-
-Before the first bundled foundation command, this must already exist:
-
-```text
-docs/wiki/project/MODULES.md
-```
-
-with a status accepted by the runner, normally:
-
-```markdown
-**Status:** Reviewed
-```
-
-or:
-
-```markdown
-**Status:** Reviewed orientation
-```
-
-For a new repository, create and independently review `MODULES.md` using the repository's approved documentation procedure. If you want the entire foundation flow automated, add MODULES create/review routing during adoption.
-
-### Foundation review does not promote the Draft
-
-The foundation `*-review.md` prompts are read-only. A successful review recommends promotion, but the v4.4 starter has no generic foundation promotion runner/template.
-
-So foundation flow is:
-
-```text
-create Draft
--> separate read-only review
--> correct and re-review if needed
--> separately authorize/promote to Reviewed or Reviewed orientation
--> next document
-```
-
-Do not assume `./scripts/run-doc-phase.sh ... review` changes the file.
-
----
-
-## 3. Adapt before the first run
-
-Copy `scripts/` and `docs/ai/prompts/` only when the receiving repository uses the same directory contract. Review paths, product/platform terminology, model invocation, allowed-change rules, status parsing, and evidence sources before execution.
-
-The files in `docs/ai/examples/` are **examples only**. Do not reuse their revisions, feature order, source paths, test counts, owner decisions, or checkpoint state as project truth.
-
-Create/adapt live files such as:
+Project-specific state that must be created or adapted from evidence:
 
 ```text
 docs/ai/DOCUMENTATION_CHECKPOINT.md
 docs/ai/feature-docs.tsv
 docs/ai/architecture-docs.tsv
-docs/ai/GRAPHIFY_USAGE.md
+docs/ai/architecture-coverage-routing.tsv
 docs/ai/graphify-context-overrides.tsv
-docs/ai/prompts/
-docs/ai/architecture-specs/
 ```
 
-`docs/ai/GRAPHIFY_USAGE.md` can be a policy baseline, but update the Graphify version/limitations for the receiving project. The architecture scope specs are reusable in structure, not in project-specific evidence or assumptions.
+Files under `docs/ai/examples/` are examples only. Never copy their revisions, paths, feature order, decisions, test counts, or checkpoint state as project truth.
+
+Before execution, adapt platform terminology, authoritative product/context paths, output paths, manifests, architecture scope specs, Graphify limitations, and repository policy.
+
+---
+
+## 2. Core rule: prompts are the workflow
+
+There is no required script layer.
+
+Each prompt either:
+- names one fixed foundation document; or
+- resolves one authorized feature/architecture target from the repository manifest + checkpoint.
+
+The prompts enforce one-document scope, evidence boundaries, status transitions, and stop conditions. Optional local automation may be added later, but it must only select/render the same checked-in prompts and must not become a second source of workflow truth.
 
 ---
 
 # Exact execution flow
 
-## 4. Recommended order from a fresh repository
+## 3. Foundation sequence
 
-```text
-1. Safe repository setup / baseline
-2. MODULES.md reviewed                          <- bootstrap outside bundled runner
-3. FEATURE_MAP.md reviewed
-4. TESTING_MAP.md reviewed
-5. DEPENDENCIES.md reviewed
-6. PROJECT_OVERVIEW.md reviewed
-7. high-level ARCHITECTURE.md reviewed
-8. feature pages from feature-docs.tsv
-9. focused Phase 3 architecture maps
-10. Phase 3.4 architecture coverage review
-11. owner verification/decisions when required
-12. Phase 3.6 no-edit implementation audit
-13. bounded implementation only after authorization
-```
-
-The foundation dependency shape is:
+Run foundation documents in this order:
 
 ```text
 MODULES
-  ├─> FEATURE_MAP ─> TESTING_MAP
-  └─> DEPENDENCIES
-          └─> PROJECT_OVERVIEW
-                  └─> ARCHITECTURE
+  -> FEATURE_MAP
+  -> TESTING_MAP
+  -> DEPENDENCIES
+  -> PROJECT_OVERVIEW
+  -> ARCHITECTURE
 ```
 
-The `PROJECT_OVERVIEW.md` creation prompt also expects the feature/testing maps, so the order above is the safest normal sequence.
-
----
-
-# Foundation documents
-
-## 5. What `run-doc-phase.sh` actually does
-
-Usage:
-
-```bash
-./scripts/run-doc-phase.sh <phase> <create|review>
-```
-
-Supported phases:
+A foundation document uses three passes:
 
 ```text
-feature-map
-testing-map
-dependencies
-project-overview
-architecture
+create/revise Draft
+-> fresh read-only review
+-> promote status only
 ```
 
-The script verifies the selected prerequisite, prints the prompt, and copies it to the clipboard when possible. It **does not invoke Codex/another agent, edit files, approve status, update the checkpoint, commit, or publish.**
+Do not combine review and promotion. If review returns `Revise`, rerun the matching create prompt against the existing Draft, then perform a fresh review again.
 
-After each command, run the printed prompt in the intended agent session yourself.
-
-## 6. Exact foundation command sequence
-
-### A. Feature map
+### 3.1 MODULES
 
 Create:
 
-```bash
-./scripts/run-doc-phase.sh feature-map create
-```
-
-Uses:
-
 ```text
-docs/ai/prompts/feature-map-create.md
+Follow docs/ai/prompts/modules-create.md exactly.
 ```
-
-Requires:
-
-```text
-docs/wiki/project/MODULES.md -> Reviewed / Reviewed orientation
-```
-
-Expected output:
-
-```text
-docs/wiki/project/FEATURE_MAP.md -> Draft
-```
-
-Then run a separate review:
-
-```bash
-./scripts/run-doc-phase.sh feature-map review
-```
-
-Uses `feature-map-review.md`. The review is read-only. Correct only the target if needed, re-review, then separately promote/approve it before continuing.
-
-### B. Testing map
-
-```bash
-./scripts/run-doc-phase.sh testing-map create
-./scripts/run-doc-phase.sh testing-map review
-```
-
-Uses:
-
-```text
-testing-map-create.md
-testing-map-review.md
-```
-
-Requires reviewed `FEATURE_MAP.md`.
 
 Expected target:
 
 ```text
-docs/wiki/testing/TESTING_MAP.md -> Draft -> separately reviewed/promoted
+docs/wiki/project/MODULES.md -> Draft
 ```
 
-### C. Dependencies
-
-```bash
-./scripts/run-doc-phase.sh dependencies create
-./scripts/run-doc-phase.sh dependencies review
-```
-
-Uses:
+Fresh read-only review:
 
 ```text
-dependencies-create.md
-dependencies-review.md
+Follow docs/ai/prompts/modules-review.md exactly.
 ```
 
-Runner requires reviewed `MODULES.md`.
+The review returns `Promote`, `Revise`, or `Blocked` and edits nothing.
+
+If it returns `Promote`, in a context that contains that completed review run:
+
+```text
+Follow docs/ai/prompts/foundation-promote.md exactly.
+```
+
+Expected status:
+
+```text
+docs/wiki/project/MODULES.md -> Reviewed orientation
+```
+
+### 3.2 FEATURE_MAP
+
+Create/revise:
+
+```text
+Follow docs/ai/prompts/feature-map-create.md exactly.
+```
+
+Review:
+
+```text
+Follow docs/ai/prompts/feature-map-review.md exactly.
+```
+
+Promote only after a `Promote` verdict:
+
+```text
+Follow docs/ai/prompts/foundation-promote.md exactly.
+```
 
 Expected target:
 
 ```text
-docs/wiki/project/DEPENDENCIES.md -> Draft -> separately reviewed/promoted
+docs/wiki/project/FEATURE_MAP.md
 ```
 
-### D. Project overview
-
-Run only after `MODULES.md`, `FEATURE_MAP.md`, `TESTING_MAP.md`, and `DEPENDENCIES.md` are reviewed.
-
-```bash
-./scripts/run-doc-phase.sh project-overview create
-./scripts/run-doc-phase.sh project-overview review
-```
-
-Uses:
+### 3.3 TESTING_MAP
 
 ```text
-project-overview-create.md
-project-overview-review.md
+Follow docs/ai/prompts/testing-map-create.md exactly.
+Follow docs/ai/prompts/testing-map-review.md exactly.
+Follow docs/ai/prompts/foundation-promote.md exactly.   # only after Promote
 ```
-
-Runner directly checks reviewed `DEPENDENCIES.md`; the prompt itself expects the other reviewed maps too.
 
 Expected target:
 
 ```text
-docs/wiki/project/PROJECT_OVERVIEW.md -> Draft -> separately reviewed/promoted
+docs/wiki/testing/TESTING_MAP.md
 ```
 
-### E. High-level architecture
-
-This is the **Phase 1 orientation architecture page**, not the later focused Phase 3 map pipeline.
-
-```bash
-./scripts/run-doc-phase.sh architecture create
-./scripts/run-doc-phase.sh architecture review
-```
-
-Uses:
+### 3.4 DEPENDENCIES
 
 ```text
-architecture-create.md
-architecture-review.md
+Follow docs/ai/prompts/dependencies-create.md exactly.
+Follow docs/ai/prompts/dependencies-review.md exactly.
+Follow docs/ai/prompts/foundation-promote.md exactly.   # only after Promote
 ```
-
-Runner requires reviewed `PROJECT_OVERVIEW.md`. The create prompt expects the full reviewed foundation.
 
 Expected target:
 
 ```text
-docs/wiki/project/ARCHITECTURE.md -> Draft -> separately reviewed/promoted
+docs/wiki/project/DEPENDENCIES.md
 ```
 
-At this point preserve/checkpoint the reviewed foundation before relying on it for deeper work.
+### 3.5 PROJECT_OVERVIEW
 
-## 7. Foundation lookup table
-
-| Scenario | Command | Prompt | Runner invokes AI? |
-|---|---|---|---|
-| Create feature map | `run-doc-phase.sh feature-map create` | `feature-map-create.md` | No |
-| Review feature map | `run-doc-phase.sh feature-map review` | `feature-map-review.md` | No |
-| Create testing map | `run-doc-phase.sh testing-map create` | `testing-map-create.md` | No |
-| Review testing map | `run-doc-phase.sh testing-map review` | `testing-map-review.md` | No |
-| Create dependencies | `run-doc-phase.sh dependencies create` | `dependencies-create.md` | No |
-| Review dependencies | `run-doc-phase.sh dependencies review` | `dependencies-review.md` | No |
-| Create overview | `run-doc-phase.sh project-overview create` | `project-overview-create.md` | No |
-| Review overview | `run-doc-phase.sh project-overview review` | `project-overview-review.md` | No |
-| Create high-level architecture | `run-doc-phase.sh architecture create` | `architecture-create.md` | No |
-| Review high-level architecture | `run-doc-phase.sh architecture review` | `architecture-review.md` | No |
-
----
-
-# Feature documents
-
-## 8. Prepare the feature batch
-
-Before execution:
-
-- foundation pages referenced by `feature-doc-create.md` should be reviewed;
-- adapt `docs/ai/feature-docs.tsv` from the example;
-- adapt `docs/ai/DOCUMENTATION_CHECKPOINT.md` to the real project state;
-- verify the feature prompts' `AGENTS.md`, `ai-context/`, source, and platform assumptions;
-- prefer a clean Git worktree.
-
-Manifest format:
+Run only after MODULES, FEATURE_MAP, TESTING_MAP, and DEPENDENCIES are reviewed.
 
 ```text
-# order<TAB>feature_id<TAB>display_name<TAB>output_path
-10<TAB>today<TAB>Today<TAB>docs/wiki/features/TODAY.md
+Follow docs/ai/prompts/project-overview-create.md exactly.
+Follow docs/ai/prompts/project-overview-review.md exactly.
+Follow docs/ai/prompts/foundation-promote.md exactly.   # only after Promote
 ```
 
-Use real tab characters.
+Expected target:
 
-## 9. Dry run first
-
-```bash
-./scripts/generate-feature-docs.sh --next
+```text
+docs/wiki/project/PROJECT_OVERVIEW.md
 ```
 
-Without `--execute`, the script selects the first missing feature and prints the OpenCode create/review commands it would run. It does not change files.
+### 3.6 High-level ARCHITECTURE
 
-## 10. Execute one feature
-
-Recommended normal command:
-
-```bash
-./scripts/generate-feature-docs.sh --next --execute
+```text
+Follow docs/ai/prompts/architecture-create.md exactly.
+Follow docs/ai/prompts/architecture-review.md exactly.
+Follow docs/ai/prompts/foundation-promote.md exactly.   # only after Promote
 ```
 
-With `--execute`, the script invokes OpenCode itself.
-
-For the selected feature it:
-
-1. reads `feature-docs.tsv` and selects the first missing page;
-2. renders `feature-doc-create.md` with feature/revision values;
-3. runs a fresh `opencode run` creation session;
-4. allows only the selected feature page to change;
-5. verifies the page was created;
-6. renders `feature-doc-review.md`;
-7. runs a separate fresh `opencode run` review session;
-8. allows only the selected page plus `DOCUMENTATION_CHECKPOINT.md` to change;
-9. requires the normal successful review pass to mark the page `Reviewed`;
-10. leaves changes uncommitted for human review.
-
-The feature review is intentionally different from foundation review: it may **correct the selected feature page, promote it to `Reviewed`, and advance the checkpoint**.
-
-If unexpected files change, automation stops.
-
-### Other useful feature scenarios
-
-Specific feature:
-
-```bash
-./scripts/generate-feature-docs.sh --feature today --execute
-```
-
-Create only, no review:
-
-```bash
-./scripts/generate-feature-docs.sh --next --create-only --execute
-```
-
-Review an existing page:
-
-```bash
-./scripts/generate-feature-docs.sh --feature today --review-only --execute
-```
-
-All missing pages:
-
-```bash
-./scripts/generate-feature-docs.sh --all          # dry run
-./scripts/generate-feature-docs.sh --all --execute
-```
-
-For first adoption, prefer repeated `--next --execute` so each resulting page/checkpoint can be inspected before continuing.
-
-Default model/agent are defined in the script and may be overridden by `--model`, `--agent`, `OPENCODE_DOC_MODEL`, and `OPENCODE_DOC_AGENT`.
-
-## 11. End of feature batch
-
-On the final feature, the rendered review receives `NEXT_OUTPUT_PATH=NONE`. It records the feature batch as complete and routes the checkpoint onward; it does **not** automatically perform the Phase 3.4 coverage review.
-
-Before the focused architecture pipeline, adapt the architecture manifest, scope specs, and checkpoint to the actual project.
-
----
-
-# Phase 3 focused architecture maps
-
-## 12. Do not confuse the two architecture workflows
-
-```bash
-./scripts/run-doc-phase.sh architecture create
-```
-
-is for:
+Expected target:
 
 ```text
 docs/wiki/project/ARCHITECTURE.md
 ```
 
-The later focused maps use:
+At this point the reusable foundation is complete.
 
-```bash
-./scripts/run-architecture-doc.sh ...
+---
+
+## 4. Feature-document batch
+
+Before starting, create/adapt:
+
+```text
+docs/ai/feature-docs.tsv
 ```
 
-with project-specific entries from `docs/ai/architecture-docs.tsv`, such as `DATA_FLOW.md`, `STATE_MANAGEMENT.md`, `SECURITY_BOUNDARIES.md`, or `TESTABILITY_ROADMAP.md`.
+Use `docs/ai/examples/feature-docs.project-example.tsv` only as a format example.
 
-## 13. Prepare the architecture pipeline
+Recommended columns:
 
-Before execution:
+```text
+order<TAB>feature_id<TAB>display_name<TAB>output_path
+```
 
-- adapt `docs/ai/architecture-docs.tsv`;
-- adapt the matching files under `docs/ai/architecture-specs/`;
-- make sure every manifest prerequisite exists and is reviewed;
-- make sure the checkpoint's `## Next authorized task` contains the exact authorized `docs/wiki/...md` path;
-- verify paths such as `AI_CONTEXT.md`, required skills, and Graphify files referenced by the prompts exist.
+Also maintain `docs/ai/DOCUMENTATION_CHECKPOINT.md` so it names the single next authorized task whenever possible.
 
-Manifest columns:
+### Create one feature page
+
+Start a fresh creation session:
+
+```text
+Follow docs/ai/prompts/feature-doc-create.md exactly.
+```
+
+The prompt resolves exactly one feature from the manifest/checkpoint. It creates or corrects only that page and leaves it `Draft`. It does **not** advance the checkpoint.
+
+### Review one feature page
+
+Start a fresh review session:
+
+```text
+Follow docs/ai/prompts/feature-doc-review.md exactly.
+```
+
+The review prompt resolves the single Draft page awaiting review, verifies/corrects only that page, and may mark it `Reviewed` when evidence supports promotion. On success it updates the checkpoint to authorize exactly the next manifest item.
+
+Repeat create -> review until the feature manifest batch is complete.
+
+If selection is ambiguous, the prompts stop instead of guessing. Fix the checkpoint/manifest state, then rerun the same prompt.
+
+---
+
+## 5. Phase 3 focused architecture maps
+
+Before starting, create/adapt:
+
+```text
+docs/ai/architecture-docs.tsv
+docs/ai/architecture-specs/
+docs/ai/DOCUMENTATION_CHECKPOINT.md
+```
+
+Use the project example manifest only as a format example:
 
 ```text
 order<TAB>document_id<TAB>display_name<TAB>output_path<TAB>spec_path<TAB>prerequisite_path
 ```
 
-## 14. List state first
+Every focused architecture map uses three separate passes.
 
-```bash
-./scripts/run-architecture-doc.sh --list
-```
-
-This is read-only and shows each manifest document's current status.
-
-## 15. Exact lifecycle for every focused map
-
-### Create
-
-```bash
-./scripts/run-architecture-doc.sh --next create
-```
-
-The runner verifies checkpoint order, manifest entry, scope spec, reviewed prerequisite, and that the target does not already exist. It renders:
+### Create Draft
 
 ```text
-docs/ai/prompts/architecture-map-create.md
+Follow docs/ai/prompts/architecture-map-create.md exactly.
 ```
 
-It **does not invoke Codex**. Paste/run the rendered prompt yourself.
+The prompt resolves the checkpoint-authorized manifest row, verifies its reviewed prerequisite, creates exactly one Draft map, and updates the checkpoint only to authorize review of that same Draft.
 
-Expected result:
+### Fresh read-only review
 
 ```text
-selected map -> Draft
-DOCUMENTATION_CHECKPOINT.md -> authorize review of the same Draft only
+Follow docs/ai/prompts/architecture-map-review.md exactly.
 ```
 
-### Review in a separate fresh session
-
-```bash
-./scripts/run-architecture-doc.sh --next review
-```
-
-The target must exist with status exactly `Draft`. The runner renders:
+This edits nothing and returns:
 
 ```text
-docs/ai/prompts/architecture-map-review.md
+Promote | Revise | Blocked
 ```
 
-Run it in a fresh review session. The review is **no-edit** and returns:
+If `Revise`, run `architecture-map-create.md` again to correct the same Draft, then perform another fresh read-only review.
+
+### Promote
+
+Only after a review returned `Promote`, run the promotion prompt in a context that contains that completed review result:
 
 ```text
-Promote
-Revise
-Blocked
+Follow docs/ai/prompts/architecture-map-promote.md exactly.
 ```
 
-### If review says `Promote`
+Promotion changes only review metadata/status + checkpoint. It must not make substantive corrections. The checkpoint then authorizes exactly the next architecture-map row, or Phase 3.4 when the manifest is complete.
 
-```bash
-./scripts/run-architecture-doc.sh --next promote
-```
-
-This renders:
-
-```text
-docs/ai/prompts/architecture-map-promote.md
-```
-
-Run the promotion task with the completed separate review result available. Promotion may only change status/review metadata and the checkpoint; it must not make substantive corrections.
-
-Expected result:
-
-```text
-selected map -> Reviewed
-checkpoint -> next map create authorization
-```
-
-Then repeat from `--list` / `--next create`.
-
-### If review says `Revise`
-
-Do not promote. Make only the separately authorized corrections to the Draft, then run another fresh:
-
-```bash
-./scripts/run-architecture-doc.sh --next review
-```
-
-Promote only after a review returns `Promote` with no blocking correction.
-
-### If review says `Blocked`
-
-Stop and resolve the blocker. Do not force promotion and do not create the next map.
-
-## 16. Architecture runner lookup
-
-| Scenario | Command | Prompt | Runner invokes AI? | Files expected to change after agent task |
-|---|---|---|---|---|
-| Inspect state | `run-architecture-doc.sh --list` | None | No | None |
-| Create authorized map | `run-architecture-doc.sh --next create` | `architecture-map-create.md` | No | Draft map + checkpoint |
-| Review Draft | `run-architecture-doc.sh --next review` | `architecture-map-review.md` | No | **None** |
-| Promote passed Draft | `run-architecture-doc.sh --next promote` | `architecture-map-promote.md` | No | status/review metadata + checkpoint |
-
-A specific ID can be used instead of `--next`, but the runner still enforces the checkpoint target by default. `--allow-out-of-sequence` bypasses that sequence guard and should be used only with explicit authorization.
-
-When the final planned map is promoted, the promotion prompt routes the checkpoint to `PHASE_3_4`; it does not run the coverage gate itself.
+Repeat create -> review -> promote one map at a time.
 
 ---
 
-# What happens after these runners
+## 6. Prompt routing reference
 
-## 17. Documentation completion is not coding authorization
-
-After applicable focused maps are reviewed:
-
-```text
-Phase 3.4 architecture coverage review
--> verification questions / accountable owner decisions when needed
--> Phase 3.6 no-edit implementation audit
--> protected-boundary preflight when applicable
--> one bounded authorized implementation item
--> verification
--> documentation impact
--> independent PR review
--> explicit publish
-```
-
-The three documentation runners do not automatically perform those later stages.
-
-Do not treat “all expected files exist” as permission to implement.
-
----
-
-# Common questions
-
-## “I ran `run-doc-phase.sh` and nothing changed.”
-
-Expected. It only prints/copies the selected prompt. Run that prompt in the agent yourself.
-
-## “Foundation review passed but the page is still Draft.”
-
-Expected. Foundation review is read-only. Separately promote/approve the page before the next prerequisite-dependent phase.
-
-## “Which script actually invokes an AI?”
-
-Only this runner, and only with `--execute`:
-
-```bash
-./scripts/generate-feature-docs.sh ... --execute
-```
-
-The foundation and architecture runners only render/print/copy prompts.
-
-## “Why does `feature-map create` fail immediately?”
-
-Most likely `docs/wiki/project/MODULES.md` is missing or not marked `Reviewed` / `Reviewed orientation`. MODULES automation is not bundled in v4.4.
-
-## “Why does architecture `--next` fail?”
-
-The checkpoint's authorized output must match a row in `architecture-docs.tsv`, and that row's prerequisite must be reviewed. Fix/adapt workflow state deliberately instead of bypassing the guard.
-
-## “Architecture review says `Revise`. Can promotion fix it?”
-
-No. Revision and promotion are separate. Correct the Draft, run another read-only review, then promote only after `Promote`.
+| Scenario | Prompt | Edits files? | Expected result |
+|---|---|---:|---|
+| Build module topology | `modules-create.md` | Yes | `MODULES.md` Draft |
+| Review module topology | `modules-review.md` | No | Promote / Revise / Blocked |
+| Create feature map | `feature-map-create.md` | Yes | `FEATURE_MAP.md` Draft |
+| Review feature map | `feature-map-review.md` | No | Promote / Revise / Blocked |
+| Create testing map | `testing-map-create.md` | Yes | `TESTING_MAP.md` Draft |
+| Review testing map | `testing-map-review.md` | No | Promote / Revise / Blocked |
+| Create dependency map | `dependencies-create.md` | Yes | `DEPENDENCIES.md` Draft |
+| Review dependency map | `dependencies-review.md` | No | Promote / Revise / Blocked |
+| Create project overview | `project-overview-create.md` | Yes | `PROJECT_OVERVIEW.md` Draft |
+| Review project overview | `project-overview-review.md` | No | Promote / Revise / Blocked |
+| Create high-level architecture | `architecture-create.md` | Yes | `ARCHITECTURE.md` Draft |
+| Review high-level architecture | `architecture-review.md` | No | Promote / Revise / Blocked |
+| Promote reviewed foundation Draft | `foundation-promote.md` | Status/checkpoint only | Reviewed orientation |
+| Create next feature page | `feature-doc-create.md` | Yes | One feature page Draft |
+| Review next feature page | `feature-doc-review.md` | Yes, bounded | Reviewed page + next checkpoint |
+| Create next focused architecture map | `architecture-map-create.md` | Yes | One map Draft + review checkpoint |
+| Review focused architecture map | `architecture-map-review.md` | No | Promote / Revise / Blocked |
+| Promote focused architecture map | `architecture-map-promote.md` | Status/checkpoint only | Reviewed + next checkpoint |
 
 ---
 
-# Final safety reminders
+## 7. What happens after the documentation maps
 
-- Start with dry runs when supported.
-- Prefer a clean worktree.
-- Work on one document or one bounded task at a time.
-- Keep create/review/promotion separate where the workflow defines them separately.
-- Preserve `Needs verification` instead of inventing certainty.
-- Treat Graphify as routing/discovery support, not architecture authority.
-- Stop on unexpected file changes or state mismatches.
-- Never copy example manifests/checkpoints/revisions as project truth.
-- Do not let documentation automation silently become refactoring or feature implementation.
-- Commit, push, merge, sign, release, and publish only when separately authorized.
+After the feature and focused architecture maps are reviewed:
 
-For normal execution, start here. Open the full playbook when you need the reasoning behind a gate, a non-standard path, or the later brownfield governance procedures.
+1. Run the Phase 3.4 cross-feature architecture coverage review using the reusable `architecture-coverage-review` skill/checklist.
+2. Route unresolved owner-sensitive behavior to explicit verification questions/decisions.
+3. Run the Phase 3.6 no-edit implementation audit for one bounded feature/contract.
+4. Use protected-boundary preflight when applicable.
+5. Implement only one authorized bounded item.
+6. Run focused verification and documentation-impact assessment.
+7. Run independent implementation/documentation review as applicable.
+8. Publish only after explicit human authorization.
+
+See the full playbook for these later phases and their rationale.
+
+---
+
+## 8. Failure/stop cases
+
+Stop rather than guessing when:
+
+- a required reviewed prerequisite is missing;
+- a manifest/checkpoint names different targets;
+- more than one Draft could be the review target;
+- a promotion prompt cannot see the completed review result;
+- a review returns `Revise` or `Blocked`;
+- repository evidence cannot support a material claim;
+- the prompt would need to edit outside its allowed boundary;
+- runtime/backend/device/release evidence is required but unavailable.
+
+Classify unresolved claims as `Needs verification` and route them to the correct evidence owner/layer.
+
+---
+
+## 9. Optional automation
+
+You may add local shell/CI/client automation later, but it is optional. Good automation may:
+
+- choose the same next manifest row the prompt would choose;
+- verify prerequisite/status state;
+- open/copy the checked-in prompt;
+- detect unexpected file changes.
+
+It should **not** embed a specific AI provider as a requirement, duplicate the prompt's policy, automatically approve/promote content, commit/push, or silently advance workflow state.
+
+The checked-in prompt + manifest + checkpoint remain the durable workflow contract.

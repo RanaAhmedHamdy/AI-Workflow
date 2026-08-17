@@ -19,7 +19,7 @@ staging/production/rollout capabilities are absent or owner-dependent?
 - version catalog, Gradle properties, settings, wrapper, and local ignore rules
 - manifest and resource configuration files
 - build types, application ID/namespace, SDK levels, and packaging rules
-- `.codex/config.toml` only as AI tooling configuration, clearly separated from
+- AI-client configuration only as tooling configuration, clearly separated from
   Android runtime configuration
 - repository searches for endpoints, BuildConfig, flags, analytics, crash,
   remote config, and secrets

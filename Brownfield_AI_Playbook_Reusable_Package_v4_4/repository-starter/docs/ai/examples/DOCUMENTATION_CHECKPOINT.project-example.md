@@ -107,9 +107,9 @@ Do not create architecture maps merely to complete a list. Each map must be just
 
 `docs/ai/architecture-docs.tsv` is the canonical order and prompt-routing
 manifest for this phase. Each entry has a focused scope specification under
-`docs/ai/architecture-specs/`. `scripts/run-architecture-doc.sh` may render the
-authorized create, read-only review, or promotion prompt for one map at a time;
-it does not invoke Codex or advance workflow state.
+`docs/ai/architecture-specs/`. The self-routing prompts under `docs/ai/prompts/`
+resolve the authorized map from this checkpoint and
+`docs/ai/architecture-docs.tsv`; no runner is required.
 
 `docs/ai/architecture-coverage-routing.tsv` maps every canonical checklist
 concern to an existing or planned current home. It is planning/routing input,
@@ -198,7 +198,7 @@ Skills must describe verified project procedures. They must not become another c
 * Do not claim runtime behavior from static inspection alone.
 * Keep temporary audit output outside durable documentation unless its findings are approved for capture.
 
-## Resume instruction for Codex
+## Resume instruction for a repository-aware AI agent
 
 Before continuing documentation work:
 

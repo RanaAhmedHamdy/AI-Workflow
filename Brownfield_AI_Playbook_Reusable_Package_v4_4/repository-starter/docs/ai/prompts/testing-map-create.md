@@ -38,5 +38,6 @@ Rules:
 - Never claim a test passes unless run successfully in this task or supported by current verified evidence.
 - Separate existence, execution, and behavioral proof.
 - Do not infer UI correctness from local JVM tests.
+- If the target already exists as `Draft`, revise only that file using current evidence and supplied review findings.
 - Set status to Draft.
 - Show the final diff.

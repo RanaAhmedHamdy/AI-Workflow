@@ -18,7 +18,7 @@ Graphify v0.9.22 can omit or incompletely represent relationships involving:
 
 Absence of a graph edge is not evidence of absence. Agents must consult `docs/ai/graphify-context-overrides.tsv` when working in scopes affected by these limitations and must verify dependency-sensitive claims against current source.
 
-The override file records only relationships directly verified from repository-relative source paths. It supplements Codex context selection and review; it does not change Graphify queries, extraction, traversal, or generated output.
+The override file records only relationships directly verified from repository-relative source paths. It supplements repository-agent context selection and review; it does not change Graphify queries, extraction, traversal, or generated output.
 
 ## Generated-output boundary
 
