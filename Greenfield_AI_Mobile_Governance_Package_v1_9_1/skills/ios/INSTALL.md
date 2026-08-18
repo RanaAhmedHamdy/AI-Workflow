@@ -1,23 +1,28 @@
 # Installation
 
-Copy the package's `.agents/skills/` structure into the repository root.
+Install the iOS package under a platform-scoped skill directory so it remains self-contained and can coexist with the Android package.
 
 Recommended repository layout:
 
 ```text
 .agents/
   skills/
-    README.md
-    shared/
     ios/
+      README.md
+      INSTALL.md
+      AI_CONTEXT.skill-routing.template.md
+      <skill-name>/SKILL.md
 AI_CONTEXT.md
 AGENTS.md
 ```
 
+If the repository also contains native Android, install that package separately under `.agents/skills/android/`. Do not flatten the two platform packs into the same directory because several cross-cutting skill names intentionally exist in both packs so either platform can be installed independently.
+
 Then:
 
-1. Add the routing rows from `AI_CONTEXT.skill-routing.template.md` to the project `AI_CONTEXT.md`.
-2. Ensure `AGENTS.md` references the required iOS skills and stop behavior.
-3. Replace no placeholders in the skills themselves; project-specific facts belong in `AGENTS.md`, ADRs, architecture maps, and `AI_CONTEXT.md`.
-4. Run `documentation-consistency-review` after installation.
-5. Treat any missing required skill or failing verdict as an implementation-readiness blocker.
+1. Copy the contents of this package's `skills/ios/` directory to `.agents/skills/ios/` in the receiving repository.
+2. Add or adapt the routing rows from `AI_CONTEXT.skill-routing.template.md` in the project `AI_CONTEXT.md`.
+3. Ensure the root `AGENTS.md` and modular policies route the required iOS procedures and stop behavior.
+4. Keep project-specific facts in `AGENTS.md`, ADRs, architecture maps, and `AI_CONTEXT.md`; do not rewrite reusable skill procedures with project facts.
+5. Run `documentation-consistency-review` after installation.
+6. Treat any missing required skill or failing verdict as an implementation-readiness blocker.

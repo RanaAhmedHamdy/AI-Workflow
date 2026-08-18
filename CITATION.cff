@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+title: "AI-Workflow: Native Mobile AI Governance for Greenfield and Brownfield Development"
+message: "If you use or extend this repository in research, talks, articles, or derivative governance work, please cite the project."
+type: software
+authors:
+  - family-names: Hamdy
+    given-names: Rana Ahmed
+    alias: RanaAhmedHamdy
+repository-code: "https://github.com/RanaAhmedHamdy/AI-Workflow"
+url: "https://github.com/RanaAhmedHamdy/AI-Workflow"
+license: Apache-2.0

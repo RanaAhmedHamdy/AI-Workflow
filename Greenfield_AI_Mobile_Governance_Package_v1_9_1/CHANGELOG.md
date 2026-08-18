@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased repository hardening
+
+- Corrected iOS skill installation and routing documentation to use the self-contained `.agents/skills/ios/` package instead of a non-existent `shared/` directory.
+- Updated the iOS skill-package heading and layout guidance to v1.9.1 and documented intentional platform-scoped duplicate skill names for Android/iOS standalone installation.
+- Removed an accidental iOS `plist`/entitlement reference from the Android bounded implementation procedure.
+- Added repository-level validation/CI so macOS metadata and cross-platform routing leaks are caught before public distribution.
+
 ## 1.9.1
 
 - Expanded the root README into an operational start-here guide covering PRD-first repository bootstrap, Architecture Spine/ADR usage, architecture synchronization, canonical repository layout, and project-level versus feature-level artifacts.

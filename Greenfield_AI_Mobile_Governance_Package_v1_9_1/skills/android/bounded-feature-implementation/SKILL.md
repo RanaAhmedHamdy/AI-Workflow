@@ -55,7 +55,7 @@ Modify only artifacts authorized by the selected tasks. These may include, when 
 - tests and fixtures;
 - resources and localization catalogs;
 - persistence schemas and migrations;
-- project, target, package, entitlement, plist, or capability configuration that has already passed the required protected-boundary authorization;
+- project, module, package, manifest, permission, signing, or capability configuration that has already passed the required protected-boundary authorization;
 - task-status and evidence references;
 - verification artifacts and implementation-impacted documentation.
 
