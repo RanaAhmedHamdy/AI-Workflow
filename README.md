@@ -81,29 +81,40 @@ AI-Workflow is not positioned as universally better than those projects. Its adv
 
 For the detailed, deliberately balanced comparison, see [`docs/COMPARISON.md`](docs/COMPARISON.md).
 
-## Installation helpers
+## Installation and repository bootstrap
 
-The package documentation remains the authority for full setup. A small repository tool is included for copying the reusable skill packs without flattening platform namespaces.
+The repository installer now performs the **full reusable bootstrap by default**, not only skill copying. The package documentation remains the authority for the lifecycle and for which project-specific artifacts must be created from real evidence and owner decisions.
 
 Greenfield iOS:
 
 ```bash
-python3 tools/install_skills.py greenfield --platform ios --target /path/to/your/repository
+python3 tools/install.py greenfield --platform ios --target /path/to/your/repository
 ```
 
 Greenfield Android:
 
 ```bash
-python3 tools/install_skills.py greenfield --platform android --target /path/to/your/repository
+python3 tools/install.py greenfield --platform android --target /path/to/your/repository
 ```
 
-Brownfield reusable skills:
+A Greenfield bootstrap installs the root `AGENTS.md`, applicable `.agents/policies/`, the selected platform skill pack, governance/architecture/mobile templates, a seeded `AI_CONTEXT.md`, and `docs/decisions/DECISION_REGISTER.md`. It intentionally does **not** fabricate the Architecture Spine, ADRs, feature contracts, plans, tasks, readiness artifacts, runtime evidence, or release records; those depend on the receiving project's approved product authority and explicit decisions.
+
+Brownfield Android or iOS:
 
 ```bash
-python3 tools/install_skills.py brownfield --target /path/to/your/repository
+python3 tools/install.py brownfield --platform android --target /path/to/your/repository
+python3 tools/install.py brownfield --platform ios --target /path/to/your/repository
 ```
 
-Use `--dry-run` to preview and `--force` only when you intentionally want to replace an existing installed path.
+Brownfield installs the reusable repository-starter prompts/specifications, a composed common + platform `AGENTS.md`, the reusable checklist/template material, the applicable reusable skills, and the Markdown playbook as `AI_PLAYBOOK.md`. It leaves project-specific manifests, checkpoints, Graphify overrides, repository facts, and `AI_CONTEXT.md` to be created/adapted from the receiving repository rather than copying example state as truth.
+
+If you intentionally want only the skill pack, retain the narrower behavior with `--skills-only`:
+
+```bash
+python3 tools/install.py greenfield --platform ios --target /path/to/your/repository --skills-only
+```
+
+Use `--dry-run` to preview the complete install plan. The installer refuses to overwrite existing destination paths unless `--force` is supplied. `tools/install_skills.py` remains as a backward-compatible entry point, but it now has the same full-bootstrap default; pass `--skills-only` for its historical behavior.
 
 ## Executable repository validation and evaluation corpus
 

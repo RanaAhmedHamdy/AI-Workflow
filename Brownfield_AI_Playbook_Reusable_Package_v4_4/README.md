@@ -18,6 +18,18 @@ Safe setup → repository discovery → documentation/provenance review → firs
 
 ## Package installation
 
+When this package is used from the full `AI-Workflow` repository, bootstrap the reusable starter with the target platform:
+
+```bash
+python3 tools/install.py brownfield --platform android --target /path/to/repository
+# or
+python3 tools/install.py brownfield --platform ios --target /path/to/repository
+```
+
+The installer copies reusable prompts/specifications, composes the common + selected platform AGENTS policy, installs applicable reusable skills and the reusable architecture checklist/templates, and installs the Markdown playbook as `AI_PLAYBOOK.md`. It deliberately does not promote files under `docs/ai/examples/` into project truth or create project-specific manifests/checkpoints from guessed state. Use `--skills-only` when only the reusable skill layer is wanted.
+
+Manual/bootstrap lifecycle:
+
 1. Read `repository-starter/README.md` and adapt the project-specific example manifests/checkpoint.
 2. Read the canonical playbook in `playbook/BROWNFIELD_PLAYBOOK.md` or the DOCX edition for governance and rationale.
 3. Select/install the AGENTS template appropriate to the target repository.

@@ -308,6 +308,18 @@ A durable mutation is not complete merely because its local repository or screen
 
 ## Installation
 
+When this package is used from the full `AI-Workflow` repository, the recommended bootstrap command is:
+
+```bash
+python3 tools/install.py greenfield --platform ios --target /path/to/repository
+# or
+python3 tools/install.py greenfield --platform android --target /path/to/repository
+```
+
+The installer performs steps 2–5 below using the applicable platform files and seeds `AI_CONTEXT.md` plus the decision register from templates. It does not create project-specific architecture, feature, readiness, evidence, or release artifacts before the receiving repository has the facts and approvals required to author them. Use `--skills-only` only when the repository already owns the rest of the governance/bootstrap structure.
+
+Manual/bootstrap lifecycle:
+
 1. Confirm the approved PRD/product authority path.
 2. Copy `templates/mobile-agent-policy-modular/AGENTS.md` to the repository root and install its `.agents/policies/` modules.
 3. Select the relevant platform policy and skills from `skills/android/` or `skills/ios/` and install them under the repository’s skill location.

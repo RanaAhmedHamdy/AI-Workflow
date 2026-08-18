@@ -1,6 +1,14 @@
 # Installation
 
-Install the iOS package under a platform-scoped skill directory so it remains self-contained and can coexist with the Android package.
+When using the full `AI-Workflow` repository, prefer the repository bootstrap installer:
+
+```bash
+python3 tools/install.py greenfield --platform ios --target /path/to/repository
+```
+
+That command installs the iOS skills **and** the Greenfield governance policies/templates/context scaffold required by the package workflow. Use `--skills-only` only when those other bootstrap assets are already installed and owned by the receiving repository.
+
+For manual or skills-only installation, install the iOS package under a platform-scoped skill directory so it remains self-contained and can coexist with the Android package.
 
 Recommended repository layout:
 

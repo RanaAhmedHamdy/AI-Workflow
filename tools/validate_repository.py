@@ -1,4 +1,3 @@
-\
 #!/usr/bin/env python3
 """Deterministic repository checks for AI-Workflow."""
 from __future__ import annotations

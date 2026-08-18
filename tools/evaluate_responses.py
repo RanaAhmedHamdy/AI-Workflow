@@ -1,4 +1,3 @@
-\
 #!/usr/bin/env python3
 """Keyword smoke-checker for saved agent responses to evals/cases.json."""
 from __future__ import annotations
