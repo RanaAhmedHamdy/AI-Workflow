@@ -3,7 +3,8 @@
 - Work on exactly one requested document.
 - Graphify is a discovery aid, not architecture authority.
 - Verify every material claim against current source, tests, build files, or reviewed project documents.
-- Apply `docs/ai/GRAPHIFY_USAGE.md` and `docs/ai/graphify-context-overrides.tsv`.
+- Apply `docs/ai/GRAPHIFY_USAGE.md`. Graphify output is optional.
+- If `docs/ai/graphify-context-overrides.tsv` exists, apply only directly relevant verified rows.
 - Do not edit production code, tests, AGENTS.md, existing product documents, Graphify installation files, or `graphify-out/`.
 - Do not mark the target document reviewed during creation.
 - Record provenance, inspected revision, commands run, exclusions, and Needs verification.

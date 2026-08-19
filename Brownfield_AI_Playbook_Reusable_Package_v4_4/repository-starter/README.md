@@ -24,19 +24,24 @@ docs/ai/architecture-specs/
 docs/ai/GRAPHIFY_USAGE.md
 ```
 
-Project-specific state that must be created or adapted from evidence:
+Project-specific workflow state that must be created or adapted from repository evidence when the corresponding phase is used:
 
 ```text
 docs/ai/DOCUMENTATION_CHECKPOINT.md
 docs/ai/feature-docs.tsv
 docs/ai/architecture-docs.tsv
 docs/ai/architecture-coverage-routing.tsv
+```
+
+Optional project-specific Graphify state, created **only when a verified extraction/context gap exists**:
+
+```text
 docs/ai/graphify-context-overrides.tsv
 ```
 
-Files under `docs/ai/examples/` are examples only. Never copy their revisions, paths, feature order, decisions, test counts, or checkpoint state as project truth.
+Files under `docs/ai/examples/` are examples only. Never copy their revisions, paths, feature order, decisions, test counts, Graphify limitations, override rows, or checkpoint state as project truth.
 
-Before execution, adapt platform terminology, authoritative product/context paths, output paths, manifests, architecture scope specs, Graphify limitations, and repository policy.
+Before execution, adapt platform terminology, authoritative product/context paths, output paths, manifests, architecture scope specs, and repository policy. If Graphify is used, keep the reusable `GRAPHIFY_USAGE.md` policy and add project-specific overrides only when current evidence demonstrates a need.
 
 ---
 
@@ -53,6 +58,37 @@ The prompts enforce one-document scope, evidence boundaries, status transitions,
 ---
 
 # Exact execution flow
+
+## Before starting: repository root and optional Graphify setup
+
+Run the workflow against the **root of the receiving repository**: the existing application/project being analyzed, not the AI-Workflow source repository. Open that repository as the working directory/root for your repository-aware AI agent.
+
+Graphify is optional. The Brownfield prompts must continue to work when Graphify is not installed or has not produced usable output. Direct source/build/test inspection remains sufficient and authoritative.
+
+If you choose to use Graphify, set it up **before the foundation sequence** so graph-assisted discovery is available from the first map. Use Graphify's current official installation/platform instructions:
+
+- Official project/setup: <https://github.com/Graphify-Labs/graphify>
+- PyPI package name: `graphifyy`; CLI command: `graphify`.
+
+A typical project-scoped setup is:
+
+```bash
+# Run from the receiving repository root.
+uv tool install graphifyy
+
+# Register Graphify for the AI assistant you use. Examples:
+graphify install --project                     # Claude Code default
+graphify install --project --platform codex    # Codex
+graphify install --project --platform agents   # generic Agent-Skills location
+```
+
+Then build the graph from that same repository root using the command appropriate to your assistant. Graphify's current documentation uses `/graphify .` on supported slash-command assistants and `$graphify .` on Codex. Follow the official README when platform commands differ.
+
+If you expect a prompt to use graph-assisted discovery, first confirm Graphify generated usable output (currently including `graphify-out/graph.json`). If it did not, continue with direct repository inspection rather than blocking the workflow.
+
+Do not hand-edit `graphify-out/`. Read and apply `docs/ai/GRAPHIFY_USAGE.md`. Create `docs/ai/graphify-context-overrides.tsv` only after a project-specific Graphify gap has been directly verified.
+
+---
 
 ## 3. Foundation sequence
 

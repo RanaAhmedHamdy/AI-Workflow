@@ -11,7 +11,7 @@ Review exactly one Draft feature document against current repository evidence. T
 
 ## Read first
 
-Read `AGENTS.md`, Graphify policy, checkpoint when present, the manifest, reviewed project/testing maps, the selected feature page, relevant product/context authority, and the exact source/test files cited by the page.
+Read `AGENTS.md`, Graphify policy, any existing verified overrides, checkpoint when present, the manifest, reviewed project/testing maps, the selected feature page, relevant product/context authority, and the exact source/test files cited by the page.
 
 ## Review and correction task
 

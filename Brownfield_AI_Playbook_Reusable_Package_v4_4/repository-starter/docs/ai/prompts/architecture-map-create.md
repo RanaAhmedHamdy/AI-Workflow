@@ -16,7 +16,7 @@ Record the current revision/worktree state before writing.
 
 ## Read first
 
-Read `AGENTS.md`, repository context/index files, documentation-impact guidance when installed, checkpoint, Graphify policy/overrides, architecture manifest, selected scope specification, selected prerequisite, and only the reviewed project/feature/testing/product/architecture evidence routed by that scope specification.
+Read `AGENTS.md`, repository context/index files, documentation-impact guidance when installed, checkpoint, Graphify policy and any existing verified overrides, architecture manifest, selected scope specification, selected prerequisite, and only the reviewed project/feature/testing/product/architecture evidence routed by that scope specification.
 
 ## Evidence workflow
 

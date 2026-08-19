@@ -9,7 +9,7 @@ Perform a separate read-only review of exactly one Draft architecture map. No ru
 3. Verify its manifest row, scope specification, and reviewed prerequisite.
 4. If the checkpoint does not authorize exactly one Draft map review, stop without editing.
 
-Read the repository policy/context, documentation-review guidance when installed, checkpoint, Graphify policy/overrides, manifest, selected scope specification, selected Draft, and only directly relevant reviewed evidence/current source.
+Read the repository policy/context, documentation-review guidance when installed, checkpoint, Graphify policy and any existing verified overrides, manifest, selected scope specification, selected Draft, and only directly relevant reviewed evidence/current source.
 
 ## Review procedure
 

@@ -3,7 +3,8 @@
 - Work on exactly one requested document.
 - Graphify is a discovery aid, not architecture authority.
 - Verify every material claim against current source, tests, build files, or reviewed project documents.
-- Apply `docs/ai/GRAPHIFY_USAGE.md` and `docs/ai/graphify-context-overrides.tsv`.
+- Apply `docs/ai/GRAPHIFY_USAGE.md`. Graphify output is optional.
+- If `docs/ai/graphify-context-overrides.tsv` exists, apply only directly relevant verified rows.
 - Do not edit production code, tests, AGENTS.md, existing product documents, Graphify installation files, or `graphify-out/`.
 - Do not mark the target document reviewed during creation.
 - Record provenance, inspected revision, commands run, exclusions, and Needs verification.
@@ -20,8 +21,8 @@ Use:
 - current source and tests;
 - `docs/wiki/project/MODULES.md`;
 - product requirements, roadmap, content schema, and design system;
-- Graphify query results;
-- Graphify usage and override files.
+- Graphify query results when usable output exists;
+- `docs/ai/GRAPHIFY_USAGE.md` and any existing directly relevant override rows.
 
 For each current feature, include:
 - feature name;
@@ -40,11 +41,10 @@ For each current feature, include:
 - Needs verification;
 - related wiki pages.
 
-Cover at least:
-Welcome/guest entry, Today, Lessons Map, Lesson Overview, Activities List,
-Activity Detail, Guided Lesson, Parent Scripts, Notebook, Progress and badges,
-Parent Settings, Unlock Bundles, Activity Completion, Lesson Completed,
-Share Success preview, and main bottom navigation.
+Coverage rule:
+- derive the feature inventory from current repository/product evidence rather than from example-project feature names;
+- include every materially implemented, partial, placeholder, or explicitly deferred user-facing feature that is in scope for the receiving repository;
+- if product authority and source disagree about whether a feature exists, record the discrepancy as `Needs verification` instead of inventing a status.
 
 Rules:
 - Do not describe planned behavior as implemented.

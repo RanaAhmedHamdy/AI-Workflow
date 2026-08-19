@@ -145,7 +145,7 @@ The installer refuses to overwrite existing destination paths unless `--force` i
 
 A Greenfield bootstrap installs the root `AGENTS.md`, applicable `.agents/policies/`, the selected platform skill pack, governance/architecture/mobile templates, a seeded `AI_CONTEXT.md`, and `docs/decisions/DECISION_REGISTER.md`. It intentionally does **not** fabricate the Architecture Spine, ADRs, feature contracts, plans, tasks, readiness artifacts, runtime evidence, or release records; those depend on the receiving project's approved product authority and explicit decisions.
 
-A Brownfield bootstrap installs the reusable repository-starter prompts/specifications, a composed common + platform `AGENTS.md`, reusable checklist/template material, applicable reusable skills, and the Markdown playbook as `AI_PLAYBOOK.md`. It leaves project-specific manifests, checkpoints, Graphify overrides, repository facts, and `AI_CONTEXT.md` to be created/adapted from the receiving repository rather than copying example state as truth.
+A Brownfield bootstrap installs the reusable repository-starter prompts/specifications, a composed common + platform `AGENTS.md`, reusable checklist/template material, applicable reusable skills, and the Markdown playbook as `AI_PLAYBOOK.md`. It leaves project-specific manifests, checkpoints, repository facts, and `AI_CONTEXT.md` to be created/adapted from the receiving repository rather than copying example state as truth. Graphify overrides are optional and should be created only when a verified project-specific graph gap requires them.
 
 If you intentionally want only the skill pack, add `--skills-only`:
 

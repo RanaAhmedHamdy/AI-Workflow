@@ -10,7 +10,7 @@ Contents:
 
 Start with `repository-starter/README.md` for the exact operational flow. The core starter requires **no provider-specific CLI or shell runner**: checked-in prompts are run directly with the repository-aware AI agent of your choice. Manifests and the documentation checkpoint provide ordered state for feature and architecture batches.
 
-The full playbook is the deeper governance/rationale reference. Project-specific manifests, checkpoints, Graphify overrides, evidence paths, revisions, decisions, test counts, and project status must be regenerated or adapted from the receiving repository.
+The full playbook is the deeper governance/rationale reference. Project-specific manifests, checkpoints, evidence paths, revisions, decisions, test counts, and project status must be regenerated or adapted from the receiving repository. Graphify overrides are optional and should be created only for verified project-specific extraction/context gaps.
 
 ## Canonical brownfield lifecycle
 
@@ -52,7 +52,7 @@ Then run `ai-workflow brownfield --platform ios` or `ai-workflow brownfield --pl
 
 Manual/bootstrap lifecycle:
 
-1. Read `repository-starter/README.md` and adapt the project-specific example manifests/checkpoint.
+1. Read `repository-starter/README.md`, including the pre-start Graphify section, and adapt the project-specific example manifests/checkpoint.
 2. Read the canonical playbook in `playbook/BROWNFIELD_PLAYBOOK.md` or the DOCX edition for governance and rationale.
 3. Select/install the AGENTS template appropriate to the target repository.
 4. Copy only the reusable skills that fit the repository workflow.

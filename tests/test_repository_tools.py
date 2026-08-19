@@ -147,6 +147,31 @@ class RepositoryToolTests(unittest.TestCase):
             self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
             self.assertIn("AI_CONTEXT.md", cp.stdout)
 
+    def test_brownfield_graphify_contract_is_optional_and_reusable(self):
+        starter = ROOT / "Brownfield_AI_Playbook_Reusable_Package_v4_4" / "repository-starter"
+        policy = (starter / "docs/ai/GRAPHIFY_USAGE.md").read_text(encoding="utf-8")
+        readme = (starter / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn("Graphify is an **optional discovery and routing aid**", policy)
+        self.assertIn("graphify-context-overrides.tsv` is optional", policy)
+        self.assertNotIn("stemcampathome", policy.lower())
+        self.assertNotIn("v0.9.22", policy)
+        self.assertIn("Before starting: repository root and optional Graphify setup", readme)
+        self.assertIn("Graphify is optional", readme)
+
+        prompt_root = starter / "docs/ai/prompts"
+        for prompt in prompt_root.glob("*.md"):
+            content = prompt.read_text(encoding="utf-8")
+            self.assertNotIn(
+                "Apply `docs/ai/GRAPHIFY_USAGE.md` and `docs/ai/graphify-context-overrides.tsv`.",
+                content,
+                prompt.name,
+            )
+
+        example = starter / "docs/ai/examples/GRAPHIFY_USAGE.project-example.md"
+        self.assertTrue(example.is_file())
+        self.assertIn("Example only", example.read_text(encoding="utf-8"))
+
     def test_eval_corpus_has_both_packages_and_unique_ids(self):
         cases = json.loads((ROOT / "evals/cases.json").read_text())
         self.assertGreaterEqual(len(cases), 10)
