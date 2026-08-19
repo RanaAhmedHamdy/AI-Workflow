@@ -18,15 +18,37 @@ Safe setup → repository discovery → documentation/provenance review → firs
 
 ## Package installation
 
-When this package is used from the full `AI-Workflow` repository, bootstrap the reusable starter with the target platform:
+The recommended bootstrap path is `uvx`; the user does **not** need to clone AI-Workflow first.
+
+Run the command from the **root of the existing repository you want to analyze and govern**:
 
 ```bash
-python3 tools/install.py brownfield --platform android --target /path/to/repository
+cd /path/to/existing/mobile-app
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow brownfield --platform android
 # or
-python3 tools/install.py brownfield --platform ios --target /path/to/repository
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow brownfield --platform ios
 ```
 
+When `--target` is omitted, the current working directory is the receiving repository. So **yes, normally `cd` into the project root first**.
+
+Alternatively, run from any directory and specify the receiving repository explicitly:
+
+```bash
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow brownfield --platform ios \
+  --target /path/to/existing/mobile-app
+```
+
+Use `--dry-run` to preview the complete install plan, and use `--force` only when replacing existing destination paths is intentional.
+
 The installer copies reusable prompts/specifications, composes the common + selected platform AGENTS policy, installs applicable reusable skills and the reusable architecture checklist/templates, and installs the Markdown playbook as `AI_PLAYBOOK.md`. It deliberately does not promote files under `docs/ai/examples/` into project truth or create project-specific manifests/checkpoints from guessed state. Use `--skills-only` when only the reusable skill layer is wanted.
+
+For frequent use, install the CLI persistently with:
+
+```bash
+uv tool install git+https://github.com/RanaAhmedHamdy/AI-Workflow.git
+```
+
+Then run `ai-workflow brownfield --platform ios` or `ai-workflow brownfield --platform android` from the receiving repository root.
 
 Manual/bootstrap lifecycle:
 

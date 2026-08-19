@@ -308,15 +308,49 @@ A durable mutation is not complete merely because its local repository or screen
 
 ## Installation
 
-When this package is used from the full `AI-Workflow` repository, the recommended bootstrap command is:
+The recommended bootstrap path is `uvx`, which fetches the AI-Workflow CLI directly from GitHub. A user does **not** need to clone AI-Workflow first.
+
+For the simplest installation, first change into the **root of the receiving mobile repository**:
 
 ```bash
-python3 tools/install.py greenfield --platform ios --target /path/to/repository
-# or
-python3 tools/install.py greenfield --platform android --target /path/to/repository
+cd /path/to/your/mobile-app
 ```
 
-The installer performs steps 2–5 below using the applicable platform files and seeds `AI_CONTEXT.md` plus the decision register from templates. It does not create project-specific architecture, feature, readiness, evidence, or release artifacts before the receiving repository has the facts and approvals required to author them. Use `--skills-only` only when the repository already owns the rest of the governance/bootstrap structure.
+Then run one of:
+
+```bash
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios
+# or
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform android
+```
+
+When `--target` is omitted, the current working directory is the receiving repository. In other words, **yes, run the command from the project root** unless you provide `--target` explicitly.
+
+To run the command from somewhere else:
+
+```bash
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios \
+  --target /path/to/your/mobile-app
+```
+
+Preview the complete plan before writing with `--dry-run`:
+
+```bash
+cd /path/to/your/mobile-app
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios --dry-run
+```
+
+The installer performs steps 2–5 below using the applicable platform files and seeds `AI_CONTEXT.md` plus the decision register from templates. It does not create project-specific architecture, feature, readiness, evidence, or release artifacts before the receiving repository has the facts and approvals required to author them. Use `--skills-only` only when the repository already owns the rest of the governance/bootstrap structure. Existing destination paths are not replaced unless `--force` is explicitly supplied.
+
+For frequent use, the CLI may be installed persistently with:
+
+```bash
+uv tool install git+https://github.com/RanaAhmedHamdy/AI-Workflow.git
+```
+
+After that, run `ai-workflow greenfield --platform ios` or `ai-workflow greenfield --platform android` from the receiving repository root.
+
+Contributors working from an AI-Workflow checkout can still use `python3 tools/install.py ...`; when running that script from inside the AI-Workflow checkout, pass `--target /path/to/receiving/repository` so the framework repository itself is not used as the target by accident.
 
 Manual/bootstrap lifecycle:
 

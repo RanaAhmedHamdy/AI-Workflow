@@ -83,38 +83,103 @@ For the detailed, deliberately balanced comparison, see [`docs/COMPARISON.md`](d
 
 ## Installation and repository bootstrap
 
-The repository installer now performs the **full reusable bootstrap by default**, not only skill copying. The package documentation remains the authority for the lifecycle and for which project-specific artifacts must be created from real evidence and owner decisions.
+The recommended installation path is **`uvx`**. You do **not** need to clone AI-Workflow first: `uvx` can fetch and run the CLI directly from this Git repository.
+
+**Prerequisite:** install [`uv`](https://docs.astral.sh/uv/getting-started/installation/) and confirm `uvx --version` works. You do not need to create or activate a Python virtual environment for this bootstrap.
+
+### Where should I run the command?
+
+For the simplest workflow, open a terminal at the **root of the mobile project you want to bootstrap** — the directory that should receive `AGENTS.md`, `.agents/`, `.templates/`, and the other generated/copied files.
+
+```bash
+cd /path/to/your/mobile-app
+```
+
+Then run the installer **without `--target`**. The CLI uses the current working directory as the target by default.
 
 Greenfield iOS:
 
 ```bash
-python3 tools/install.py greenfield --platform ios --target /path/to/your/repository
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios
 ```
 
 Greenfield Android:
 
 ```bash
-python3 tools/install.py greenfield --platform android --target /path/to/your/repository
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform android
 ```
+
+Brownfield:
+
+```bash
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow brownfield --platform ios
+# or
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow brownfield --platform android
+```
+
+**Yes: when `--target` is omitted, you should be inside the receiving project/repository root.** Do not run the command from an unrelated directory, because that directory would become the install target.
+
+### Run from anywhere with `--target`
+
+You do not have to `cd` into the receiving repository if you provide its root explicitly:
+
+```bash
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios \
+  --target /path/to/your/mobile-app
+```
+
+`--target` always wins over the current working directory.
+
+### Preview before writing
+
+Use `--dry-run` to see every destination before anything is copied:
+
+```bash
+cd /path/to/your/mobile-app
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios --dry-run
+```
+
+The installer refuses to overwrite existing destination paths unless `--force` is supplied.
+
+### What the bootstrap installs
 
 A Greenfield bootstrap installs the root `AGENTS.md`, applicable `.agents/policies/`, the selected platform skill pack, governance/architecture/mobile templates, a seeded `AI_CONTEXT.md`, and `docs/decisions/DECISION_REGISTER.md`. It intentionally does **not** fabricate the Architecture Spine, ADRs, feature contracts, plans, tasks, readiness artifacts, runtime evidence, or release records; those depend on the receiving project's approved product authority and explicit decisions.
 
-Brownfield Android or iOS:
+A Brownfield bootstrap installs the reusable repository-starter prompts/specifications, a composed common + platform `AGENTS.md`, reusable checklist/template material, applicable reusable skills, and the Markdown playbook as `AI_PLAYBOOK.md`. It leaves project-specific manifests, checkpoints, Graphify overrides, repository facts, and `AI_CONTEXT.md` to be created/adapted from the receiving repository rather than copying example state as truth.
+
+If you intentionally want only the skill pack, add `--skills-only`:
 
 ```bash
-python3 tools/install.py brownfield --platform android --target /path/to/your/repository
-python3 tools/install.py brownfield --platform ios --target /path/to/your/repository
+cd /path/to/your/mobile-app
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios --skills-only
 ```
 
-Brownfield installs the reusable repository-starter prompts/specifications, a composed common + platform `AGENTS.md`, the reusable checklist/template material, the applicable reusable skills, and the Markdown playbook as `AI_PLAYBOOK.md`. It leaves project-specific manifests, checkpoints, Graphify overrides, repository facts, and `AI_CONTEXT.md` to be created/adapted from the receiving repository rather than copying example state as truth.
+### Optional: install the CLI permanently
 
-If you intentionally want only the skill pack, retain the narrower behavior with `--skills-only`:
+For frequent use, install the tool once with `uv tool install`:
 
 ```bash
-python3 tools/install.py greenfield --platform ios --target /path/to/your/repository --skills-only
+uv tool install git+https://github.com/RanaAhmedHamdy/AI-Workflow.git
 ```
 
-Use `--dry-run` to preview the complete install plan. The installer refuses to overwrite existing destination paths unless `--force` is supplied. `tools/install_skills.py` remains as a backward-compatible entry point, but it now has the same full-bootstrap default; pass `--skills-only` for its historical behavior.
+Then run it directly from the receiving repository root:
+
+```bash
+cd /path/to/your/mobile-app
+ai-workflow greenfield --platform ios
+```
+
+### Contributor/local-checkout fallback
+
+If you are developing AI-Workflow itself, the source-checkout entry point remains available:
+
+```bash
+git clone https://github.com/RanaAhmedHamdy/AI-Workflow.git
+cd AI-Workflow
+python3 tools/install.py greenfield --platform ios --target /path/to/your/mobile-app
+```
+
+Because that example runs from inside the **AI-Workflow source repository**, it supplies `--target` explicitly. `tools/install_skills.py` remains a backward-compatible entry point and has the same full-bootstrap default; pass `--skills-only` for its historical narrow behavior.
 
 ## Executable repository validation and evaluation corpus
 

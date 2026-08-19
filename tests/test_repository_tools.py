@@ -96,6 +96,26 @@ class RepositoryToolTests(unittest.TestCase):
             self.assertFalse((target / ".agents/skills/adaptive-compose").exists())
             self.assertFalse((target / "docs/ai/DOCUMENTATION_CHECKPOINT.md").exists())
 
+    def test_target_defaults_to_current_working_directory(self):
+        with tempfile.TemporaryDirectory() as td:
+            target = Path(td).resolve()
+            cp = subprocess.run(
+                [
+                    sys.executable,
+                    str(INSTALLER),
+                    "greenfield",
+                    "--platform",
+                    "ios",
+                    "--dry-run",
+                ],
+                cwd=target,
+                text=True,
+                capture_output=True,
+            )
+            self.assertEqual(cp.returncode, 0, cp.stdout + cp.stderr)
+            self.assertIn(f"target={target}", cp.stdout)
+            self.assertIn(str(target / "AGENTS.md"), cp.stdout)
+
     def test_installer_refuses_to_overwrite_without_force(self):
         with tempfile.TemporaryDirectory() as td:
             target = Path(td)

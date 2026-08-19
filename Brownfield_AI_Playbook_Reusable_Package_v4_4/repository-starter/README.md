@@ -1,6 +1,6 @@
 # Brownfield repository starter kit
 
-This starter is **prompt-first and AI-tool agnostic**. You do not need any provider-specific CLI or bundled shell runner.
+This starter is **prompt-first and AI-tool agnostic**. The top-level `ai-workflow` CLI may be used once to copy/bootstrap these reusable files into a repository, but the Brownfield workflow itself does not require any provider-specific CLI or bundled shell runner after installation.
 
 Use a repository-aware AI coding agent and run the checked-in prompts directly. A normal instruction can be as small as:
 

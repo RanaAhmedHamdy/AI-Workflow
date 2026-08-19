@@ -1,12 +1,22 @@
 # Installation
 
-When using the full `AI-Workflow` repository, prefer the repository bootstrap installer:
+For a normal repository bootstrap, prefer the top-level AI-Workflow CLI through `uvx`. You do **not** need a local AI-Workflow clone.
+
+Change into the **root of the receiving iOS repository** and run:
 
 ```bash
-python3 tools/install.py greenfield --platform ios --target /path/to/repository
+cd /path/to/your/ios-project
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios
 ```
 
-That command installs the iOS skills **and** the Greenfield governance policies/templates/context scaffold required by the package workflow. Use `--skills-only` only when those other bootstrap assets are already installed and owned by the receiving repository.
+Because `--target` defaults to the current working directory, the command above installs into `/path/to/your/ios-project`. If you are not inside the receiving repository, specify it explicitly instead:
+
+```bash
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios \
+  --target /path/to/your/ios-project
+```
+
+Use `--dry-run` first when you want to inspect the destinations. The full bootstrap installs the iOS skills **and** the Greenfield governance policies/templates/context scaffold required by the package workflow. Use `--skills-only` only when those other bootstrap assets are already installed and owned by the receiving repository.
 
 For manual or skills-only installation, install the iOS package under a platform-scoped skill directory so it remains self-contained and can coexist with the Android package.
 
