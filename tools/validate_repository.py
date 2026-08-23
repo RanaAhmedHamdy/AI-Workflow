@@ -8,8 +8,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-GREEN = ROOT / "Greenfield_AI_Mobile_Governance_Package_v1_9_1"
-BROWN = ROOT / "Brownfield_AI_Playbook_Reusable_Package_v4_4"
+sys.path.insert(0, str(ROOT / "src"))
+from ai_workflow.assets import BROWN_PACKAGE, GREEN_PACKAGE
+
+GREEN = ROOT / GREEN_PACKAGE
+BROWN = ROOT / BROWN_PACKAGE
 
 
 def fail(errors: list[str], message: str) -> None:
@@ -88,6 +91,29 @@ def validate_metadata(errors: list[str]) -> None:
             fail(errors, f"forbidden archive/macOS metadata: {p.relative_to(ROOT)}")
 
 
+
+
+def validate_package_wiring(errors: list[str]) -> None:
+    if not GREEN.is_dir():
+        fail(errors, f"missing bundled Greenfield package: {GREEN_PACKAGE}")
+    if not BROWN.is_dir():
+        fail(errors, f"missing bundled Brownfield package: {BROWN_PACKAGE}")
+
+    for rel in ["README.md", "src/ai_workflow/cli.py", "setup.py"]:
+        text = (ROOT / rel).read_text(encoding="utf-8")
+        refs = set(re.findall(r"Greenfield_AI_Mobile_Governance_Package_v[0-9_]+", text))
+        stale = refs - {GREEN_PACKAGE}
+        for ref in sorted(stale):
+            fail(errors, f"{rel}: stale Greenfield package reference {ref}")
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    if GREEN_PACKAGE not in readme:
+        fail(errors, f"README.md: missing current Greenfield package link {GREEN_PACKAGE}")
+
+    cli = (ROOT / "src/ai_workflow/cli.py").read_text(encoding="utf-8")
+    if 'target / ".templates" / "design"' not in cli:
+        fail(errors, "Greenfield installer does not install templates/design")
+
 def validate_public_files(errors: list[str]) -> None:
     for name in ["README.md", "LICENSE", "NOTICE", "CITATION.cff", "CONTRIBUTING.md", ".gitignore"]:
         if not (ROOT / name).exists():
@@ -116,6 +142,7 @@ def validate_evals(errors: list[str]) -> None:
 def main() -> int:
     errors: list[str] = []
     validate_public_files(errors)
+    validate_package_wiring(errors)
     validate_metadata(errors)
     validate_skills(errors)
     validate_platform_leaks(errors)

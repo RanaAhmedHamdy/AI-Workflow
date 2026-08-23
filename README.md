@@ -6,7 +6,7 @@ This repository contains both packages:
 
 | Package | Use it when | Current package version |
 |---|---|---|
-| [`Greenfield_AI_Mobile_Governance_Package_v1_9_1/`](Greenfield_AI_Mobile_Governance_Package_v1_9_1/) | Starting or establishing architecture/governance for a native Android or iOS application | 1.9.1 |
+| [`Greenfield_AI_Mobile_Governance_Package_v1_10_0/`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/) | Starting or establishing architecture/governance for a native Android or iOS application | 1.10.0 |
 | [`Brownfield_AI_Playbook_Reusable_Package_v4_4/`](Brownfield_AI_Playbook_Reusable_Package_v4_4/) | Understanding, stabilizing, refactoring, or extending an existing repository | 4.4 |
 
 The packages are complementary but intentionally **not merged into one lifecycle**. Greenfield begins from approved product authority and synchronized architecture. Brownfield begins from repository discovery, provenance, characterization, architecture coverage, and a safe change boundary.
@@ -21,16 +21,19 @@ AI-Workflow makes those concerns explicit parts of the delivery lifecycle instea
 
 ```text
 Approved product authority
-→ Architecture Spine + ADRs
-→ architecture coverage/readiness
+→ optional approved design authority
+→ architecture bootstrap (repository evidence → constraints → Draft Spine)
+→ owner-gated ADR lifecycle + synchronization
+→ architecture coverage/consistency
+→ READY FOR BOUNDED FEATURE INTAKE
 → Feature Input
 → complexity classification
 → Feature Contract + independent review + owner approval
-→ Implementation Plan + independent review + owner approval
-→ Implementation Tasks + independent review + owner approval
+→ Implementation Plan + exact design mapping where applicable + independent review + owner approval
+→ Implementation Tasks + Design Lock for design-bound UI + independent review + owner approval
 → implementation-readiness audit
 → explicit owner implementation authorization
-→ bounded implementation + task evidence
+→ bounded implementation (inspect exact approved visual before design-bound UI code) + task evidence
 → feature convergence
 → final readiness + independent readiness review
 → owner acceptance
@@ -56,7 +59,7 @@ Safe setup
 
 ## Native-mobile specialization
 
-The Greenfield package includes dedicated Android/iOS procedures for architecture, project structure, UI frameworks, concurrency, localization/RTL, accessibility/adaptation, persistence/migrations, protected platform capabilities, runtime evidence, bounded implementation, convergence, readiness, documentation, and review.
+The Greenfield package includes dedicated Android/iOS procedures for architecture bootstrap, ADR lifecycle governance, project structure, UI frameworks, concurrency, localization/RTL, accessibility/adaptation, persistence/migrations, protected platform capabilities, runtime evidence, bounded implementation, convergence, readiness, documentation, and review. For approved external designs, it also ships an optional Design Authority workflow; local approved visuals are preferred and design-tool MCP/connectors are optional.
 
 Android and iOS skill counts are intentionally not identical. The current difference is mostly packaging aliases and a few specialist operational skills, **not missing core iOS coverage**. See [`docs/MOBILE_COVERAGE_MATRIX.md`](docs/MOBILE_COVERAGE_MATRIX.md).
 
@@ -143,7 +146,7 @@ The installer refuses to overwrite existing destination paths unless `--force` i
 
 ### What the bootstrap installs
 
-A Greenfield bootstrap installs the root `AGENTS.md`, applicable `.agents/policies/`, the selected platform skill pack, governance/architecture/mobile templates, a seeded `AI_CONTEXT.md`, and `docs/decisions/DECISION_REGISTER.md`. It intentionally does **not** fabricate the Architecture Spine, ADRs, feature contracts, plans, tasks, readiness artifacts, runtime evidence, or release records; those depend on the receiving project's approved product authority and explicit decisions.
+A Greenfield bootstrap installs the root `AGENTS.md`, applicable `.agents/policies/`, the selected platform skill pack, governance/design/architecture/mobile templates, a seeded `AI_CONTEXT.md`, and `docs/decisions/DECISION_REGISTER.md`. It intentionally does **not** fabricate the Architecture Spine, ADRs, feature contracts, plans, tasks, readiness artifacts, runtime evidence, or release records; those depend on the receiving project's approved product authority and explicit decisions.
 
 A Brownfield bootstrap installs the reusable repository-starter prompts/specifications, a composed common + platform `AGENTS.md`, reusable checklist/template material, applicable reusable skills, and the Markdown playbook as `AI_PLAYBOOK.md`. It leaves project-specific manifests, checkpoints, repository facts, and `AI_CONTEXT.md` to be created/adapted from the receiving repository rather than copying example state as truth. Graphify overrides are optional and should be created only when a verified project-specific graph gap requires them.
 
@@ -204,7 +207,10 @@ This repository is licensed under **Apache License 2.0**. See [`LICENSE`](LICENS
 
 ## Repository links
 
-- Greenfield start-here: [`Greenfield_AI_Mobile_Governance_Package_v1_9_1/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_9_1/README.md)
+- Greenfield start-here: [`Greenfield_AI_Mobile_Governance_Package_v1_10_0/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/README.md)
+- Greenfield design workflow: [`Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/design/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/design/README.md)
+- Greenfield architecture workflow: [`Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/architecture/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/architecture/README.md)
+- Greenfield feature workflow: [`Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/mobile/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/mobile/README.md)
 - Brownfield start-here: [`Brownfield_AI_Playbook_Reusable_Package_v4_4/README.md`](Brownfield_AI_Playbook_Reusable_Package_v4_4/README.md)
 - Mobile coverage/parity: [`docs/MOBILE_COVERAGE_MATRIX.md`](docs/MOBILE_COVERAGE_MATRIX.md)
 - Comparison/positioning: [`docs/COMPARISON.md`](docs/COMPARISON.md)

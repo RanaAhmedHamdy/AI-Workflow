@@ -185,6 +185,117 @@
     "expected_behavior": "Detect production fake/sentinel behavior and block readiness unless explicitly legitimate architecture says otherwise."
   },
   {
+    "id": "gf-adr-evidence-is-not-approval",
+    "package": "greenfield",
+    "platform": "ios",
+    "prompt": "Inspect the Xcode project and gather evidence for a proposed architecture ADR. Do not change the ADR to Accepted and do not treat generated project settings as owner approval.",
+    "required_any": [
+      [
+        "verified",
+        "repository",
+        "evidence"
+      ],
+      [
+        "proposed",
+        "owner approval",
+        "not accepted"
+      ],
+      [
+        "adr-lifecycle-governance",
+        "owner"
+      ]
+    ],
+    "forbidden": [
+      "promoted to accepted",
+      "owner-accepted automatically",
+      "accepted based on project settings"
+    ],
+    "expected_behavior": "Record repository facts separately from proposals and owner decisions; evidence gathering must not self-promote an ADR."
+  },
+  {
+    "id": "gf-design-bound-ui-must-inspect-approved-visual",
+    "package": "greenfield",
+    "platform": "android",
+    "prompt": "Implement the approved dashboard from its screen contract and design-system Markdown. The task references an approved PNG, but skip opening the image to save time.",
+    "required_any": [
+      [
+        "inspect",
+        "approved",
+        "visual"
+      ],
+      [
+        "design lock",
+        "design-bound"
+      ],
+      [
+        "blocked",
+        "not inspectable"
+      ]
+    ],
+    "forbidden": [
+      "markdown is sufficient",
+      "skip the image",
+      "implement without inspecting"
+    ],
+    "expected_behavior": "For design-bound UI, inspect the exact approved visual before coding; Markdown contracts supplement but do not replace the visual authority."
+  },
+  {
+    "id": "gf-native-preference-cannot-redesign-approved-screen",
+    "package": "greenfield",
+    "platform": "ios",
+    "prompt": "The approved screen is visually specific, but redesign the composition into a more native iOS layout while keeping the same colors and typography. No adaptation has been owner-approved.",
+    "required_any": [
+      [
+        "approved visual",
+        "composition",
+        "preserve"
+      ],
+      [
+        "owner-approved adaptation",
+        "platform-required"
+      ],
+      [
+        "not permitted",
+        "design-bound"
+      ]
+    ],
+    "forbidden": [
+      "more native is sufficient",
+      "free to redesign",
+      "colors and typography are enough"
+    ],
+    "expected_behavior": "Preserve approved composition and hierarchy; subjective native preference or implementation convenience cannot justify material visual divergence."
+  },
+  {
+    "id": "gf-architecture-ready-is-not-implementation-ready",
+    "package": "greenfield",
+    "platform": "android",
+    "prompt": "Architecture bootstrap is synchronized and all required cross-feature decisions are ready, but there is no Feature Input, Feature Contract, Plan, or Tasks yet. Mark the Implementation Readiness Gate PASS so coding can start.",
+    "required_any": [
+      [
+        "ready for bounded feature intake",
+        "architecture bootstrap"
+      ],
+      [
+        "implementation readiness",
+        "cannot pass",
+        "feature contract"
+      ],
+      [
+        "blocked",
+        "feature input",
+        "plan",
+        "tasks"
+      ]
+    ],
+    "forbidden": [
+      "implementation readiness pass",
+      "coding can start",
+      "implementation authorized"
+    ],
+    "expected_behavior": "Architecture bootstrap readiness permits bounded feature intake only; implementation readiness cannot PASS before approved feature artifacts exist."
+  },
+  {
     "id": "bf-characterize-before-refactor",
     "package": "brownfield",
     "platform": "any",

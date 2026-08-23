@@ -1,9 +1,13 @@
 from pathlib import Path
+import sys
 from setuptools import find_packages, setup
 
 ROOT = Path(__file__).parent
-GREEN = ROOT / "Greenfield_AI_Mobile_Governance_Package_v1_9_1"
-BROWN = ROOT / "Brownfield_AI_Playbook_Reusable_Package_v4_4"
+sys.path.insert(0, str(ROOT / "src"))
+from ai_workflow.assets import BROWN_PACKAGE, GREEN_PACKAGE
+
+GREEN = ROOT / GREEN_PACKAGE
+BROWN = ROOT / BROWN_PACKAGE
 DATA_ROOT = Path("share") / "ai-workflow"
 
 

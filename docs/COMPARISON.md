@@ -34,7 +34,7 @@ These checks are routed into planning, task authoring, bounded implementation, c
 
 ### 2. Product authority and implementation authority are separated
 
-The Greenfield package distinguishes PRD/product authority, Feature Input, Feature Contract, Architecture Spine/ADRs, Implementation Plan, Implementation Tasks, readiness, explicit implementation authorization, convergence, owner acceptance, and release authorization. Passing one stage does not silently grant authority for the next.
+The Greenfield package distinguishes PRD/product authority, optional approved Design Authority, architecture bootstrap, owner-gated ADR lifecycle decisions, Feature Input, Feature Contract, Architecture Spine/ADRs, Implementation Plan, Implementation Tasks, readiness, explicit implementation authorization, convergence, owner acceptance, and release authorization. Passing one stage does not silently grant authority for the next.
 
 ### 3. Mobile evidence is treated as a first-class artifact
 
@@ -42,7 +42,7 @@ Static code inspection or host-side tests are not treated as proof for device-on
 
 ### 4. Greenfield and Brownfield are separate operating modes
 
-The repository does not force a new-project lifecycle onto an existing application. Brownfield starts with discovery, provenance, characterization tests, no-edit audits, architecture coverage, safety-net creation, and bounded change. Greenfield starts by establishing product authority and architecture before bounded feature delivery.
+The repository does not force a new-project lifecycle onto an existing application. Brownfield starts with discovery, provenance, characterization tests, no-edit audits, architecture coverage, safety-net creation, and bounded change. Greenfield starts by establishing product authority, optional approved external design authority, and a synchronized architecture baseline before bounded feature delivery.
 
 ## Where the other projects are currently stronger
 

@@ -20,8 +20,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-GREEN_PACKAGE = "Greenfield_AI_Mobile_Governance_Package_v1_9_1"
-BROWN_PACKAGE = "Brownfield_AI_Playbook_Reusable_Package_v4_4"
+from .assets import BROWN_PACKAGE, GREEN_PACKAGE
 
 
 def _asset_root() -> Path:
@@ -124,6 +123,9 @@ def greenfield_operations(target: Path, platform: str, skills_only: bool) -> lis
 
     governance = GREEN_ROOT / "templates" / "governance"
     ops.append(Operation(target / ".templates" / "governance", src=governance))
+
+    design = GREEN_ROOT / "templates" / "design"
+    ops.append(Operation(target / ".templates" / "design", src=design))
 
     architecture = GREEN_ROOT / "templates" / "architecture"
     for name in [
@@ -269,7 +271,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.skills_only:
         if args.package == "greenfield":
             print("\nBootstrap complete. Project-specific architecture/feature/readiness artifacts were NOT fabricated.")
-            print("Next: replace placeholders, confirm product authority, then follow the Greenfield bootstrap lifecycle.")
+            print("Next: replace placeholders, confirm product authority, optionally establish approved design authority, then run architecture bootstrap.")
         else:
             print("\nStarter installed. Brownfield project-specific manifests/checkpoints were NOT created from example state.")
             print("Next: adapt docs/ai examples from repository evidence and create the project-specific AI_CONTEXT.md/router.")

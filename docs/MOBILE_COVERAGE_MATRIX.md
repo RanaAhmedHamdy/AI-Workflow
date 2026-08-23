@@ -1,11 +1,13 @@
 # Native mobile coverage matrix
 
-The Greenfield package currently contains **33 Android skill directories** and **29 iOS skill directories**. The difference does **not** mean iOS is missing four core mobile concerns.
+The Greenfield package currently contains **35 Android skill directories** and **31 iOS skill directories**. The difference does **not** mean iOS is missing four core mobile concerns.
 
 ## Core capability parity
 
 | Concern | Android | iOS |
 |---|---|---|
+| Architecture bootstrap orchestration | `architecture-bootstrap` | `architecture-bootstrap` |
+| ADR lifecycle governance | `adr-lifecycle-governance` | `adr-lifecycle-governance` |
 | Architecture readiness | `android-architecture-readiness` | `ios-architecture-readiness` |
 | Project structure | `android-project-structure-readiness` | `ios-project-structure-readiness` |
 | Concurrency | `kotlin-coroutines-readiness` | `swift-concurrency-readiness` |

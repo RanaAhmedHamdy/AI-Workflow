@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
 INSTALLER = ROOT / "tools" / "install.py"
 LEGACY_INSTALLER = ROOT / "tools" / "install_skills.py"
 
@@ -43,6 +44,7 @@ class RepositoryToolTests(unittest.TestCase):
                 "/.agents/policies/ios",
                 "/.agents/skills/ios",
                 "/.templates/governance",
+                "/.templates/design",
                 "/.templates/architecture/ARCHITECTURE_SPINE.ios.template.md",
                 "/.templates/mobile/mobile",
                 "/.templates/mobile/ios",
@@ -61,6 +63,11 @@ class RepositoryToolTests(unittest.TestCase):
             self.assertTrue((target / "docs/decisions/DECISION_REGISTER.md").is_file())
             self.assertTrue((target / ".agents/policies/android/ANDROID_ENGINEERING_POLICY.md").is_file())
             self.assertTrue((target / ".agents/skills/android/android-architecture-readiness/SKILL.md").is_file())
+            self.assertTrue((target / ".agents/skills/android/architecture-bootstrap/SKILL.md").is_file())
+            self.assertTrue((target / ".agents/skills/android/adr-lifecycle-governance/SKILL.md").is_file())
+            self.assertTrue((target / ".templates/design/README.md").is_file())
+            self.assertTrue((target / ".templates/design/DESIGN_AUTHORITY.template.md").is_file())
+            self.assertTrue((target / ".templates/design/DESIGN_ARTIFACT_INDEX.template.md").is_file())
             self.assertTrue((target / ".templates/mobile/android/IMPLEMENTATION_PLAN_TEMPLATE.md").is_file())
             self.assertFalse((target / ".agents/policies/ios").exists())
             self.assertFalse((target / ".templates/mobile/ios").exists())
@@ -171,6 +178,17 @@ class RepositoryToolTests(unittest.TestCase):
         example = starter / "docs/ai/examples/GRAPHIFY_USAGE.project-example.md"
         self.assertTrue(example.is_file())
         self.assertIn("Example only", example.read_text(encoding="utf-8"))
+
+    def test_greenfield_package_wiring_uses_current_bundle_and_design_workflow(self):
+        from ai_workflow.assets import GREEN_PACKAGE
+        from ai_workflow.cli import GREEN_ROOT
+
+        self.assertEqual(GREEN_PACKAGE, "Greenfield_AI_Mobile_Governance_Package_v1_10_0")
+        self.assertTrue(GREEN_ROOT.is_dir())
+        self.assertTrue((GREEN_ROOT / "templates/design/README.md").is_file())
+        for platform in ["android", "ios"]:
+            self.assertTrue((GREEN_ROOT / f"skills/{platform}/architecture-bootstrap/SKILL.md").is_file())
+            self.assertTrue((GREEN_ROOT / f"skills/{platform}/adr-lifecycle-governance/SKILL.md").is_file())
 
     def test_eval_corpus_has_both_packages_and_unique_ids(self):
         cases = json.loads((ROOT / "evals/cases.json").read_text())
