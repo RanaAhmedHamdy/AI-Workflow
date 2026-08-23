@@ -8,6 +8,16 @@ This package provides reusable governance policies, architecture templates, feat
 
 The root README is the operational **start-here guide**. You should be able to bootstrap a repository and run the normal delivery lifecycle from this README plus the routed templates and skills. The playbook remains the deeper reference for rationale, edge cases, reusable prompts, and detailed procedures.
 
+## Choose your workflow
+
+| Workflow | When to use it | Guide |
+|---|---|---|
+| Design Authority | Completed external designs already exist and should constrain implementation | [Design Authority workflow](templates/design/README.md) |
+| Architecture Bootstrap | Approved product authority exists and you need the cross-feature architecture baseline | [Architecture Bootstrap workflow](templates/architecture/README.md) |
+| Feature Delivery | Architecture is ready and you want to deliver one bounded feature/slice | [Feature Delivery workflow](templates/mobile/README.md) |
+
+Normal greenfield order is **Product Authority → optional Design Authority → Architecture Bootstrap → Feature Delivery**. You can also use each guide independently when the repository is already at that phase.
+
 ## Start here: authority and bootstrap
 
 A greenfield repository should begin from **approved product authority**, normally an approved PRD. The PRD defines product behavior and scope; it does not choose implementation mechanisms unless it explicitly makes them product constraints.
@@ -38,7 +48,7 @@ Do not start from a whole-app implementation request against the PRD. Establish 
 
 ## Optional design authority workflow
 
-If complete external designs already exist, use `templates/design/README.md` to register them as repository design authority before downstream feature implementation. The design tool is not prescribed and MCP is optional.
+If complete external designs already exist, use the [Design Authority workflow](templates/design/README.md) to register them as repository design authority before downstream feature implementation. The design tool is not prescribed and MCP is optional.
 
 The package does **not** require a design-ingest skill. Preserve imported/exported visual artifacts as source evidence; explicit owner approval makes the identified revision authoritative. Prefer exact local approved artifacts when practical.
 
@@ -58,7 +68,7 @@ Implement approved composition; adapt only within documented authority
 
 A screen contract/design-system Markdown file supplements the approved visual; it does not replace visual inspection. If the exact approved visual cannot be inspected, the design-bound task blocks rather than improvises.
 
-See `templates/design/README.md` for the standalone optional design workflow and optional MCP/connector guidance.
+See the [Design Authority workflow](templates/design/README.md) for the standalone procedure and optional MCP/connector guidance.
 
 ## Architecture Spine, ADRs, coverage, and readiness
 
@@ -99,7 +109,7 @@ Create `docs/architecture/IMPLEMENTATION_READINESS_GATE.md` from `templates/arch
 
 The feature Implementation Readiness Gate is not the architecture-bootstrap exit check: it cannot PASS before an approved Feature Contract, Plan, and Tasks exist. Architecture bootstrap ends at `READY FOR BOUNDED FEATURE INTAKE`.
 
-See `templates/architecture/README.md` for the detailed approved-PRD → repository evidence → Draft Spine → ADR/owner decision → synchronization → architecture-bootstrap-readiness procedure. Use `architecture-bootstrap` as the resumable orchestrator and `adr-lifecycle-governance` for ADR status transitions.
+See the [Architecture Bootstrap workflow](templates/architecture/README.md) for the short operational procedure and exact starter/resume prompts. Use `architecture-bootstrap` as the resumable orchestrator and `adr-lifecycle-governance` for ADR status transitions.
 
 ## Feature Input is journey authority
 
@@ -134,17 +144,15 @@ The same visual screen may be reused from multiple origins, but each origin keep
 ## Canonical project bootstrap lifecycle
 
 ```text
-1. Approve PRD / product authority.
-2. Install AGENTS.md, policies, AI_CONTEXT.md, Decision Register, templates, and platform skills.
-3. Optional: import already-completed designs and explicitly record approved design authority.
-4. Run architecture bootstrap: gather repository facts as evidence and extract architecture-driving constraints.
-5. Seed Draft ARCHITECTURE_SPINE.md and classify unresolved choices.
-6. Create only significant proposed ADRs; run bounded feasibility spikes when a provisional decision requires proof.
-7. Owner accepts/amends/provisionally accepts/defers/rejects decisions; agents never self-promote evidence to approval.
-8. Synchronize affected ADR/Spine/coverage/Decision Register/routing or gate definitions.
-9. Run architecture coverage + documentation consistency and reach READY FOR BOUNDED FEATURE INTAKE.
-10. Select one bounded feature and create/refine FEATURE_INPUT.md.
+1. Approve PRD / product authority and install repository governance.
+2. Optional: establish approved Design Authority for completed external designs.
+3. Run architecture-bootstrap INITIAL; answer only material owner decisions it surfaces.
+4. Run architecture-bootstrap RESUME until READY FOR BOUNDED FEATURE INTAKE.
+5. Resolve only explicit owner/feasibility/authority blockers reported by bootstrap, then RESUME.
+6. Select one bounded feature and start the Feature Delivery workflow.
 ```
+
+Go directly to: [Design Authority](templates/design/README.md) · [Architecture Bootstrap](templates/architecture/README.md) · [Feature Delivery](templates/mobile/README.md)
 
 ## Canonical feature delivery lifecycle
 

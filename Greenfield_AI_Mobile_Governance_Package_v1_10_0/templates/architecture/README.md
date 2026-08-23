@@ -1,140 +1,161 @@
-# Architecture Templates — Operational Guide
+# Architecture Bootstrap — Operational Guide
 
-Use this guide to move from approved product/design authority and verified repository facts to a synchronized architecture baseline that is **ready for bounded feature intake**. Feature implementation readiness is a later gate.
+[← Greenfield start here](../../README.md) · [Optional Design Authority](../design/README.md) · [Feature Delivery](../mobile/README.md)
 
-## Authority categories
+Use this workflow after the repository has an approved PRD/product authority and governance is installed. If approved external designs exist and affect architecture, establish their repository authority first.
 
-Keep these distinct throughout the workflow:
+**Goal:** reach `READY FOR BOUNDED FEATURE INTAKE`. This is **not** implementation authorization and is **not** `IMPLEMENTATION_READINESS_GATE = PASS`.
 
-- **Verified repository fact** — observed project/tool/configuration evidence.
-- **Architecture-driving constraint** — approved product/design/governance requirement the architecture must satisfy.
-- **Proposal** — agent-recommended technical choice.
-- **Owner decision** — explicit accept/amend/defer/reject direction.
-- **Canonical architecture** — accepted decision synchronized into the ADR/Spine.
-- **Implementation evidence** — proof that the accepted/provisional decision works.
+## Quick start
 
-A generated project setting, existing package, or current source layout is evidence of the repository state; it is not automatic owner approval.
+| Step | Goal                           | What you do / run                                                                                  | Main result                                                                  |
+| ---- | ------------------------------ | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| 0    | Confirm inputs                 | Approved PRD, governance, native project/repository, and approved Design Authority when applicable | Bootstrap inputs ready                                                       |
+| 1    | Establish initial architecture | Run `architecture-bootstrap` in `INITIAL` mode                                                     | Draft Spine + verified facts + proposed ADRs + owner questions/blockers      |
+| 2    | Make material owner decisions  | Answer the surfaced questions; use `adr-lifecycle-governance` for ADR status transitions           | Accepted/amended/provisional/deferred/rejected decisions                     |
+| 3    | Reconcile and continue         | Run `architecture-bootstrap` in `RESUME` mode                                                      | Synchronized Spine/ADRs/coverage/Decision Register + next verdict            |
+| 4    | Resolve only reported blockers | Owner decision or bounded feasibility spike, then run `RESUME` again                               | Blocker closed or next explicit blocker                                      |
+| 5    | Hand off to feature delivery   | Stop when verdict is `READY FOR BOUNDED FEATURE INTAKE`                                            | Select one bounded feature and start [Feature Delivery](../mobile/README.md) |
 
-## Architecture bootstrap — canonical procedure
+For the normal happy path, you do **not** need to invoke architecture coverage, documentation consistency, project-structure readiness, or specialist architecture skills manually. `architecture-bootstrap` orchestrates the applicable checks and should call only what the current bootstrap needs.
 
-### Step 0 — Prerequisites
+## Step 0 — Confirm prerequisites
 
-Confirm:
+Before running the skill, confirm:
 
-- approved PRD/product authority;
-- repository governance (`AGENTS.md` + applicable policy modules);
-- `AI_CONTEXT.md` and Decision Register;
-- approved design authority when designs exist and affect architecture;
-- platform project/repository exists when repository facts are needed.
+- approved PRD/product authority exists;
+- `AGENTS.md` and applicable governance/policy modules are installed;
+- `AI_CONTEXT.md` and the Decision Register exist;
+- the native project/repository exists when project facts are needed;
+- approved Design Authority exists when external designs are intended to constrain architecture.
 
-### Step 1 — Gather repository evidence
+If completed designs exist but are not yet registered as repository authority, use the [Design Authority workflow](../design/README.md) first.
 
-Inspect only relevant current project facts: project/module/target structure, toolchain, language mode, deployment/minimum SDK settings, packages/dependencies, schemes/build variants, test structure, existing dependency direction, and other facts needed by architecture.
+## Step 1 — Run architecture bootstrap INITIAL
 
-Use project-structure readiness in **evidence-only/bootstrap mode** where available. Record unknowns as `Needs verification`. Do not convert generated defaults into owner decisions.
+Use the platform skill:
 
-### Step 2 — Extract architecture-driving constraints
+- [iOS `architecture-bootstrap`](../../skills/ios/architecture-bootstrap/SKILL.md)
+- [Android `architecture-bootstrap`](../../skills/android/architecture-bootstrap/SKILL.md)
 
-Read approved product/design/governance authority and extract only constraints with architectural consequences.
+Recommended prompt:
 
-Example: `data survives relaunch` implies durable persistence is required; it does not select SwiftData, Room, Core Data, SQLite, or another mechanism.
+```text
+Run architecture-bootstrap in INITIAL mode for this repository.
 
-### Step 3 — Seed the Draft Architecture Spine
+Use current approved product authority, approved design authority when applicable,
+repository governance, and verified repository facts.
 
-Create the platform `ARCHITECTURE_SPINE.md` from the iOS or Android template and set `Status: Draft`.
+Establish the Draft Architecture Spine, identify unresolved material architecture
+decisions, and propose only ADRs that genuinely need durable independent rationale.
 
-For each section record one of:
+Do not convert repository/project evidence into owner approval.
+Do not accept ADRs for me.
+Do not implement feature code.
 
-- verified constraint/fact;
-- already accepted decision;
-- proposed direction;
-- unresolved decision;
-- justified `Not applicable`.
+Continue until you either:
+1. need a material owner decision,
+2. need bounded feasibility evidence,
+3. find an authority contradiction / missing required fact, or
+4. reach READY FOR BOUNDED FEATURE INTAKE.
+```
 
-The first Spine is a decision map, not permission for the agent to fill every gap.
+Expected output is concise: verified facts, proposed/material decisions, proposed ADRs when justified, blockers/questions for the owner, and the current bootstrap verdict.
 
-### Step 4 — Classify unresolved choices
+## Step 2 — Answer owner decisions
 
-Classify each material unresolved choice as:
+Answer only the material questions the skill surfaced. You do not need to manually edit every architecture document first.
 
-- **Derivable/routine** — no owner architecture choice needed;
-- **Spine-level decision** — material but a standalone ADR adds little value;
-- **ADR candidate** — durable independent rationale/change history is useful;
-- **Feasibility required** — evidence is needed before responsible acceptance;
-- **Owner clarification required** — authority is missing.
+Example:
 
-Treat a choice as an ADR candidate when any of these apply:
+```text
+I approve ADR-IOS-001 as proposed.
+Accept ADR-IOS-005 provisionally; implementation depending on it remains blocked
+until the named persistence spike passes.
+For navigation, follow the approved Design Authority and do not invent a different
+screen hierarchy.
+Defer the widget decision until a feature actually requires it.
+```
 
-- protected boundary;
-- cross-feature/system-wide impact;
-- reusable architecture invariant or technical policy;
-- material constraint on future implementation choices;
-- meaningful competing alternatives/tradeoffs;
-- substantial reversal, migration, security, privacy, release, or operational cost.
+Then apply the decisions through `adr-lifecycle-governance` when an ADR lifecycle state changes. The bootstrap skill may invoke that procedure, but the owner decision itself must remain explicit.
 
-Do not create one ADR per Spine heading.
+Supported lifecycle outcomes include:
 
-### Step 5 — Draft proposed ADRs
+- `Accepted`
+- `Accepted with amendments`
+- `Accepted provisionally`
+- `Deferred`
+- `Rejected`
+- `Superseded`
 
-Use `ADR.template.md`. Separate verified facts, proposed owner decisions, unresolved questions, alternatives, consequences, required evidence, and downstream synchronization.
+A repository fact, generated project default, or agent recommendation is never owner approval by itself.
 
-Status remains `Proposed` until explicit owner authority changes it.
+## Step 3 — Run architecture bootstrap RESUME
 
-### Step 6 — Owner decision loop
+Recommended prompt:
 
-The accountable owner may choose:
+```text
+Apply my explicit architecture decisions using adr-lifecycle-governance where needed,
+then run architecture-bootstrap in RESUME mode.
 
-- `Accepted`;
-- `Accepted with amendments`;
-- `Accepted provisionally`;
-- `Deferred`;
-- `Rejected`;
-- `Superseded` for historical decisions replaced by a successor.
+Synchronize only affected canonical artifacts, run the applicable bootstrap coverage
+and documentation-consistency checks, and continue until another material owner
+choice/evidence blocker is required or the repository reaches
+READY FOR BOUNDED FEATURE INTAKE.
 
-Use `adr-lifecycle-governance` for status transitions. Agents do not self-promote ADRs.
+Do not implement feature code and do not claim Implementation Readiness Gate PASS.
+```
 
-`Accepted provisionally` requires a named blocking spike/evidence set and explicit exit criteria. It may establish direction while still blocking dependent production implementation.
+`RESUME` should normally handle:
 
-### Step 7 — Feasibility spikes where required
+```text
+new owner decisions
+        ↓
+ADR lifecycle transitions where applicable
+        ↓
+Architecture Spine synchronization
+        ↓
+affected architecture coverage / Decision Register / routing updates
+        ↓
+bootstrap coverage + documentation consistency
+        ↓
+next bootstrap verdict
+```
 
-A feasibility spike answers a bounded technical question and produces evidence; it is not product-feature implementation.
+Do not mechanically modify every authority document for every ADR. Update only artifacts whose current decision, routing, gate requirement, or coverage actually changed.
 
-Record the question, alternatives if relevant, pass/fail criteria, evidence, and the owner decision needed afterward. Do not turn a spike into speculative production architecture.
+## Step 4 — Resolve only reported blockers
 
-### Step 8 — Build the canonical Spine
+Most projects should not perform every specialist procedure during bootstrap. Follow only the blocker returned by the skill.
 
-After owner decisions, integrate accepted decisions into the Spine so it describes the current architecture. ADRs retain rationale/history; the Spine is the integrated current view.
+### If an owner decision is required
 
-### Step 9 — Synchronize affected authority
+Answer it explicitly, then run `RESUME` again.
 
-For each accepted/amended decision, reconcile all **affected** canonical artifacts. At minimum consider:
+### If feasibility evidence is required
 
-`ADR → Architecture Spine → architecture coverage → Decision Register`
+Run the named bounded spike only. A spike proves a technical question; it is not feature implementation.
 
-Also update `IMPLEMENTATION_READINESS_GATE.md`, `AI_CONTEXT.md`, policies, design authority, feature artifacts, or other documentation only when the decision changes their canonical requirements/routing/content.
+Record:
 
-Do not mechanically edit every file for every ADR.
+- the question being proved;
+- pass/fail criteria;
+- exact evidence produced;
+- resulting recommendation or remaining uncertainty.
 
-### Step 10 — Run architecture coverage in BOOTSTRAP mode
+Then return to `architecture-bootstrap RESUME` so the owner can accept, amend, keep provisional, defer, or reject the affected decision.
 
-Create/update `cross-feature-architecture-coverage.md` and keep Decision / Implementation / Evidence statuses separate.
+### If authority contradicts
 
-During bootstrap it is valid for implementation/evidence to remain `Not started` / `None` while decision coverage is sufficient. Do not infer `Not applicable` from a blank.
+Resolve the contradiction in current authority before continuing. Historical text may remain only when clearly marked superseded/historical.
 
-### Step 11 — Run documentation consistency
+### If facts need verification
 
-Block current contradictions such as:
+Inspect only the missing repository/tool/platform facts. Existing settings remain evidence, not automatic approval.
 
-- repository evidence presented as accepted owner decision;
-- two current ADR decisions that conflict;
-- accepted ADR not reflected in the current Spine;
-- provisional decision presented as fully proven;
-- superseded wording still presented as current authority;
-- routing/status documents disagreeing about the current phase.
+## Step 5 — Stop at architecture bootstrap readiness
 
-### Step 12 — Architecture bootstrap exit check
-
-Return one:
+Valid bootstrap verdicts are:
 
 - `READY FOR BOUNDED FEATURE INTAKE`
 - `READY WITH EXPLICIT LIMITATIONS`
@@ -143,42 +164,101 @@ Return one:
 - `BLOCKED — AUTHORITY CONTRADICTION`
 - `NEEDS VERIFICATION`
 
-Ready means the repository has enough accepted cross-feature architecture for the intended first bounded feature and no current contradiction blocks it. Other decisions may remain explicitly deferred when they do not affect that slice.
+`READY FOR BOUNDED FEATURE INTAKE` means the repository has enough accepted cross-feature architecture for the intended first bounded slice and no current contradiction blocks that slice. Explicitly deferred decisions may remain when they do not affect it.
 
-This state does **not** approve a feature, authorize planning, authorize implementation, establish feature acceptance, or authorize release.
+It does **not** approve a feature, authorize planning, authorize implementation, accept a feature, or authorize release.
+
+**Next:** select one bounded feature and continue with [Feature Delivery](../mobile/README.md).
+
+---
+
+# How architecture-bootstrap works internally
+
+The sections below are reference material. A new user does not normally execute them one-by-one.
+
+## Authority categories
+
+Keep these distinct:
+
+- **Verified repository fact** — observed project/tool/configuration evidence.
+- **Architecture-driving constraint** — approved product/design/governance requirement the architecture must satisfy.
+- **Proposal** — agent-recommended technical choice.
+- **Owner decision** — explicit accept/amend/defer/reject direction.
+- **Canonical architecture** — accepted decision synchronized into the ADR/Spine.
+- **Implementation evidence** — proof that an accepted/provisional decision actually works.
+
+## Internal bootstrap sequence
+
+`architecture-bootstrap` should perform the following only as needed:
+
+1. Gather relevant repository evidence without treating generated defaults as approval.
+2. Extract architecture-driving constraints from approved authority.
+3. Seed/update the Draft Architecture Spine.
+4. Classify unresolved choices as routine, Spine-level, ADR candidate, feasibility-required, or owner clarification.
+5. Draft only significant ADR proposals.
+6. Stop for explicit owner architecture decisions where required.
+7. Route provisional decisions to bounded feasibility evidence when proof is genuinely needed.
+8. Integrate accepted decisions into the canonical Spine.
+9. Synchronize only affected architecture/coverage/Decision Register/routing/gate artifacts.
+10. Run `architecture-coverage-review` in `BOOTSTRAP` mode.
+11. Run `documentation-consistency-review`.
+12. Return the architecture-bootstrap verdict.
+
+## When an ADR is warranted
+
+A choice is normally an ADR candidate when one or more apply:
+
+- protected boundary;
+- cross-feature or system-wide impact;
+- reusable architecture invariant or technical policy;
+- material constraint on future implementation choices;
+- meaningful alternatives/tradeoffs worth preserving;
+- substantial reversal, migration, security, privacy, release, or operational cost.
+
+Do not create one ADR per Spine heading.
+
+## Accepted provisionally
+
+Use `Accepted provisionally` when the owner approves a direction but dependent implementation must remain blocked until named feasibility/evidence criteria pass. The ADR must state the blocker and exit criteria.
+
+## Coverage during bootstrap
+
+`cross-feature-architecture-coverage.md` keeps three independent states:
+
+- **Decision** — has the architecture been decided?
+- **Implementation** — has the accepted decision been implemented?
+- **Evidence** — has the behavior been proved?
+
+During bootstrap, `Implementation: Not started` and `Evidence: None` can be completely correct while decision coverage is sufficient. Never infer `Not applicable` merely because a concern is blank.
 
 ## Implementation readiness is later
 
-Do not claim `IMPLEMENTATION_READINESS_GATE = PASS` during architecture bootstrap. That gate requires an owner-approved Feature Contract, Implementation Plan, and Implementation Tasks.
+Architecture bootstrap may update the reusable `IMPLEMENTATION_READINESS_GATE.md` definition when an accepted architecture decision changes future requirements, but it must **not execute or PASS that feature gate**.
 
-Architecture bootstrap may update the reusable gate definition when an accepted architecture decision changes future requirements. The gate is executed only after the bounded feature lifecycle reaches the required artifacts.
+The Implementation Readiness Gate is evaluated later, after the bounded feature has an owner-approved Feature Contract, Implementation Plan, and Implementation Tasks.
 
 ## Artifact roles
 
-- `ARCHITECTURE_SPINE.<platform>.template.md` — integrated current system architecture and cross-feature boundaries.
-- `ADR.template.md` — durable record for one significant technical decision, lifecycle state, alternatives, consequences, adoption/migration, and required evidence.
-- `cross-feature-architecture-coverage.template.md` — independent Decision / Implementation / Evidence coverage; it does not replace the Spine or ADRs.
-- `IMPLEMENTATION_READINESS_GATE.template.md` — reusable feature/slice gate definition executed before bounded implementation authorization, not during architecture bootstrap.
+- `ARCHITECTURE_SPINE.<platform>.template.md` — integrated current cross-feature architecture.
+- `ADR.template.md` — durable record for one significant decision and its lifecycle/history.
+- `cross-feature-architecture-coverage.template.md` — Decision / Implementation / Evidence coverage.
+- `IMPLEMENTATION_READINESS_GATE.template.md` — later feature/slice eligibility gate; PASS still requires explicit owner implementation authorization.
 
-## Skills
+## Supporting skills
 
-Primary orchestration:
+Normal bootstrap is orchestrated by `architecture-bootstrap`. Supporting skills are called only when applicable:
 
-- `architecture-bootstrap`
 - `adr-lifecycle-governance`
-
-Supporting skills, invoked only when applicable:
-
-- platform architecture readiness in bootstrap/feature mode;
-- project-structure readiness in evidence-only/feature mode;
-- `architecture-coverage-review` in bootstrap/feature/convergence mode;
-- `documentation-consistency-review`;
-- specialist platform readiness skills for decisions/spikes that actually need them.
+- platform architecture readiness
+- project-structure readiness in evidence-only/bootstrap mode
+- `architecture-coverage-review` in bootstrap mode
+- `documentation-consistency-review`
+- specialist platform readiness skills for decisions/spikes that genuinely need them
 
 ## Efficiency rules
 
-- Read only active authority and active architecture concerns.
-- Batch owner questions by decision area instead of stopping after every small unknown.
-- Reuse verified repository evidence until the relevant files/settings change.
-- Synchronize once per coherent owner-decision batch where safe.
+- Read only active authority and architecture concerns relevant to the current decision batch.
+- Batch material owner questions instead of stopping for every small unknown.
+- Reuse verified repository evidence until relevant files/settings change.
+- Synchronize once per coherent decision batch where safe.
 - Do not run feature-only readiness/evidence procedures before Feature Input/Contract/Plan/Tasks exist.

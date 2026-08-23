@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Brownfield_AI_Playbook_Reusable_Package_v4_4/repository-starter/README.md",
+                "file": "Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/architecture/README.md",
                 "mode": "source",
                 "source": false
               },
@@ -185,6 +185,8 @@
   },
   "active": "c1b1ef09881770ae",
   "lastOpenFiles": [
+    "Greenfield_AI_Mobile_Governance_Package_v1_10_0/README.md",
+    "Brownfield_AI_Playbook_Reusable_Package_v4_4/repository-starter/README.md",
     "Brownfield_AI_Playbook_Reusable_Package_v4_4/playbook/BROWNFIELD_PLAYBOOK.md",
     "Brownfield_AI_Playbook_Reusable_Package_v4_4/checklists/cross-feature-architecture-coverage.template.md"
   ]

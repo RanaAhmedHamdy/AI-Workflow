@@ -1,65 +1,120 @@
-# Design Authority Workflow — Optional Operational Guide
+# Design Authority — Optional Workflow
 
-Use this workflow when externally created designs already exist and the repository owner wants them to constrain downstream implementation. The source tool is not prescribed: Stitch, Figma, Sketch, exported images/PDFs/HTML, or another owner-approved source may be used.
+[← Greenfield start here](../../README.md) · [Architecture Bootstrap](../architecture/README.md) · [Feature Delivery](../mobile/README.md)
 
-This workflow can be used independently of the architecture and feature-delivery workflows.
+Use this workflow only when completed external designs already exist and the repository owner wants them to constrain downstream implementation. The source tool is not prescribed: Stitch, Figma, Sketch, exported images/PDFs/HTML, or another owner-approved source can be used.
 
-## Core authority rule
+No design-tool MCP/connector is required.
 
-An imported design artifact is **source material**, not repository authority by file existence alone.
+## Quick start
+
+| Step | Goal | What you do | Result |
+|---|---|---|---|
+| 1 | Add completed designs | Export/copy the exact completed design artifacts into a stable repository path, or keep a deterministic external locator | Inspectable source artifacts |
+| 2 | Approve them | Owner explicitly states which artifacts/revisions are approved | Design approval is explicit |
+| 3 | Record authority | Update `DESIGN_AUTHORITY.md` and the artifact index; map relevant variants/screens | Canonical Design Authority |
+| 4 | Consume downstream | Feature Contract/Plan/Tasks reference exact approved visuals; design-bound implementation inspects the actual visual before UI code | Approved design constrains implementation |
+
+If your completed designs are already copied into the repository, you normally start at **Step 2**. Do not rewrite the exported design files merely to mark them approved.
+
+## Step 1 — Add completed design artifacts
+
+Prefer exact local exports when practical, for example:
 
 ```text
-Completed external design
-        ↓
-Preserve/import the exact artifact
-        ↓
-Explicit owner approval
-        ↓
-Record approval + exact artifact identity/path
-        ↓
-Approved design authority
+docs/design/approved/
+  DESIGN_AUTHORITY.md
+  DESIGN_ARTIFACT_INDEX.md
+  artifacts/
+    daily-dashboard.png
+    meal-entry.png
+    settings.png
 ```
 
-Do not rewrite exported visual artifacts merely to mark them approved. Record approval in repository governance documents.
+Keep stable names/IDs/revisions where available. Do not duplicate full visual descriptions in Markdown when the actual artifact can be inspected directly.
 
-## Recommended minimal files
+## Step 2 — Owner approves the designs
+
+Imported/downloaded files are not automatically authoritative. The owner must explicitly approve the identified artifacts or bounded set.
+
+Example prompt:
+
+```text
+I approve all design artifacts currently listed in the Design Artifact Index as the
+canonical visual and interaction design authority for their mapped screens/states.
+Preserve their visual composition, hierarchy, grouping, emphasis, action placement,
+and responsive/RTL intent except for documented required adaptations.
+Update the repository design authority and decision/routing documentation accordingly.
+Do not rewrite the source design artifacts themselves.
+```
+
+Approval may cover all artifacts or only a subset.
+
+## Step 3 — Record Design Authority
+
+Create/update:
 
 - `docs/design/approved/DESIGN_AUTHORITY.md` from `DESIGN_AUTHORITY.template.md`
 - `docs/design/approved/DESIGN_ARTIFACT_INDEX.md` from `DESIGN_ARTIFACT_INDEX.template.md`
-- exact approved visual artifacts under a stable repository path when practical
-- optional screen contracts/design-system documents when the project needs them
+- optional screen contracts/design-system docs when useful
 
-## Procedure
+Record only what downstream implementation needs, such as:
 
-1. **Preserve exact source artifacts.** Keep stable filenames/IDs and revisions where available.
-2. **Inventory only what downstream work needs.** Record screen/state, form factor/variant, local path or deterministic external locator, and approval state.
-3. **Obtain explicit owner approval.** Approval may cover all listed artifacts or a bounded subset. Do not infer approval from import/download.
-4. **Record design authority.** State what is binding: visual composition, hierarchy, grouping, emphasis, action placement, spacing rhythm, typography hierarchy, tokens, interaction behavior, responsive variants, etc.
-5. **Record permitted adaptations.** Platform-required behavior, accessibility, localization/RTL, and responsive reflow may adapt the source only within the approved authority. “More native,” framework defaults, or implementation convenience are not sufficient reasons for material redesign.
-6. **Map features/screens to exact artifacts.** Feature Contracts, Plans, and Tasks should cite the exact approved artifacts that govern each design-bound screen/state.
-7. **Do not require a separate post-hoc visual review by default.** Instead, the implementation procedure must inspect the exact approved visual artifact before writing UI code for a design-bound task.
+- source tool/project/revision where useful;
+- exact local path or deterministic external locator;
+- screen/state;
+- compact/wide/RTL/state variants;
+- approval scope;
+- permitted adaptations.
 
-## Design-bound implementation rule
+The exact approved visual remains the authority for the visual composition it governs. Screen-contract and design-system Markdown supplements it; those files do not replace inspection of the actual visual.
 
-For a UI task with approved visual authority:
+## Step 4 — Use approved visuals in feature delivery
 
-> Referencing an artifact is not the same as inspecting it. The implementation agent MUST inspect the exact approved visual artifact before implementing that screen/state. Markdown screen contracts and design-system documents supplement the visual authority; they do not replace it.
+For a design-bound UI task, downstream artifacts should carry the exact design mapping:
 
-If the approved visual cannot be inspected, the task is blocked rather than free to improvise.
+```text
+Plan
+→ maps exact approved visual(s)
 
-The task must preserve the approved composition unless a documented permitted adaptation applies. Material reordering, regrouping, substitution of framework-default composition, or redesign for subjective platform preference requires explicit owner approval.
+Task
+→ carries concise Design Lock + exact artifact/variant
 
-## Local artifacts and MCP / design-tool connectors
+Implementation readiness
+→ verifies the governing visual can actually be inspected
 
-A design-tool MCP/connector is **optional**.
+bounded-feature-implementation
+→ opens/inspects the exact approved visual before writing UI code
+```
 
-Preferred when practical: keep exact approved exports locally in the repository so downstream work is deterministic and does not depend on network access or external permissions.
+The implementation agent must preserve approved composition, hierarchy, grouping, relative sizing, action placement, spacing rhythm, typography hierarchy, icon role/placement, and navigation composition within the declared authority.
 
-Use an MCP/connector only when useful to retrieve missing artifacts/variants, inspect source metadata, or import a newly approved revision. External content never silently supersedes the repository-approved revision. A newly retrieved revision requires explicit owner approval before it becomes canonical.
+Allowed differences are limited to documented platform-required behavior, accessibility, localization/RTL, supported responsive reflow, or explicit owner-approved adaptation. “More native,” framework defaults, subjective preference, or implementation convenience are not sufficient reasons for material redesign.
+
+If the approved visual cannot be inspected, the design-bound task blocks rather than improvises from Markdown.
+
+## Optional MCP / design-tool connector
+
+Use an MCP/connector only when it saves work, for example to:
+
+- retrieve a design that was not exported locally;
+- inspect a missing variant;
+- read source metadata;
+- import a newly owner-approved revision.
+
+External design-tool content never silently supersedes repository authority. A newer external revision must be explicitly approved before it becomes canonical.
+
+## Optional visual review
+
+A separate screenshot/fidelity comparison is **not mandatory for every screen**. Use it only when risk justifies the extra cost: owner concern, a high-value/high-complexity screen, regression, major visual refactor, or an explicit final-readiness requirement.
+
+The default strategy is cheaper: prevent drift by requiring exact approved visual inspection before UI implementation.
 
 ## Efficiency rules
 
-- Keep the artifact index compact; do not duplicate full design descriptions in Markdown.
-- For a coherent task group, inspect each unchanged governing visual once and reuse that understanding during the task.
-- Do not run image-comparison/fidelity review for every screen by default. Reserve manual/fidelity review for high-risk screens, owner concerns, regressions, or explicit final-readiness requirements.
-- Do not load unrelated design artifacts.
+- Store/track only design artifacts downstream work needs.
+- Inspect each unchanged governing visual once per coherent task execution and reuse that understanding.
+- Do not load unrelated designs.
+- Do not run per-screen image comparison by default.
+
+**Next:** when architecture still needs to be established, continue with [Architecture Bootstrap](../architecture/README.md). If architecture is already ready for bounded feature intake, continue with [Feature Delivery](../mobile/README.md).

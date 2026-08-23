@@ -2,6 +2,8 @@
 
 ## 1.10.0
 
+- Simplified the Design and Architecture operational READMEs into quick-start tables with exact prompts, explicit next-step links, and a 5-step architecture happy path; detailed architecture mechanics remain as reference material.
+- Added direct root navigation links between Design Authority, Architecture Bootstrap, and Feature Delivery workflows.
 - Added a compact optional Design Authority workflow with tool-neutral local-artifact guidance; design-tool MCP/connectors remain optional.
 - Added `architecture-bootstrap` and `adr-lifecycle-governance` to both iOS and Android platform packs.
 - Added explicit ADR lifecycle states for accepted amendments, provisional acceptance, deferral/rejection, and supersession; repository/project evidence can no longer be treated as automatic owner approval.

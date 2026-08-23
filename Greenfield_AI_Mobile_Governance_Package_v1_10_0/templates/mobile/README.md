@@ -1,5 +1,7 @@
 # Mobile Governance Templates v1.10.0
 
+[← Greenfield start here](../../README.md) · [Optional Design Authority](../design/README.md) · [Architecture Bootstrap](../architecture/README.md)
+
 This package separates **product/user-journey truth** from **platform implementation mechanics**.
 
 ## Structure
