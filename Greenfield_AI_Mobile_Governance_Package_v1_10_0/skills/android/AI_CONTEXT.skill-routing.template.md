@@ -10,7 +10,7 @@
 | Compose screens | `.agents/skills/android/compose-screen-readiness/SKILL.md` | For Compose UI |
 | Views screens | `.agents/skills/android/android-views-screen-readiness/SKILL.md` | For Views/hybrid UI |
 | Localization / RTL | `.agents/skills/android/android-localization-rtl-readiness/SKILL.md` | User-facing UI |
-| Adaptation / accessibility | `.agents/skills/android/android-adaptive-accessibility-readiness/SKILL.md` | UI completion |
+| Adaptation / accessibility | `.agents/skills/android/android-adaptive-ui-readiness/SKILL.md` | UI completion |
 | Persistence / migrations | `.agents/skills/android/android-persistence-migration-readiness/SKILL.md` | Durable-data work |
 | Permissions / capabilities | `.agents/skills/android/android-permission-capability-readiness/SKILL.md` | Protected Android boundaries |
 | Runtime evidence | `.agents/skills/android/android-runtime-evidence-readiness/SKILL.md` | Task definition/completion |

@@ -79,7 +79,7 @@
     "required_any": [
       [
         "compose-screen-readiness",
-        "android-adaptive-accessibility-readiness",
+        "android-adaptive-ui-readiness",
         "adaptive"
       ],
       [

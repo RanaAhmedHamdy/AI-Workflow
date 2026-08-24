@@ -125,7 +125,7 @@ Before the relevant mutation, run the readiness procedure required by the select
 - `compose-screen-readiness` or `android-views-screen-readiness`;
 - `android-persistence-migration-readiness`;
 - `android-localization-rtl-readiness`;
-- `android-adaptive-accessibility-readiness`;
+- `android-adaptive-ui-readiness`;
 - `android-permission-capability-readiness`;
 - `protected-boundary-preflight`.
 

@@ -1,6 +1,6 @@
 # Native mobile coverage matrix
 
-The Greenfield package currently contains **35 Android skill directories** and **31 iOS skill directories**. The difference does **not** mean iOS is missing four core mobile concerns.
+The Greenfield package currently contains **32 Android skill directories** and **31 iOS skill directories**. The difference does **not** mean iOS is missing a core mobile concern.
 
 ## Core capability parity
 
@@ -14,7 +14,7 @@ The Greenfield package currently contains **35 Android skill directories** and *
 | Declarative UI | `compose-screen-readiness` | `swiftui-screen-readiness` |
 | Legacy/imperative UI | `android-views-screen-readiness` | `uikit-screen-readiness` |
 | Localization + RTL | `android-localization-rtl-readiness` | `ios-localization-rtl-readiness` |
-| Adaptive UI + accessibility | `android-adaptive-accessibility-readiness` | `ios-adaptive-accessibility-readiness` |
+| Adaptive UI + accessibility | `android-adaptive-ui-readiness` | `ios-adaptive-accessibility-readiness` |
 | Durable data + migrations | `android-persistence-migration-readiness` | `ios-persistence-migration-readiness` |
 | Platform permissions/privacy/capabilities | `android-permission-capability-readiness` | `ios-privacy-capability-readiness` |
 | Runtime evidence | `android-runtime-evidence-readiness` | `ios-runtime-evidence-readiness` |
@@ -29,12 +29,7 @@ The Greenfield package currently contains **35 Android skill directories** and *
 
 ## Why Android has more directories
 
-Android's count is inflated by packaging/history rather than a four-skill functional advantage:
-
-1. `adaptive-compose` and `android-adaptive-accessibility-readiness` are intentionally equivalent aliases except for the skill name.
-2. `localization-rtl-readiness` and `android-localization-rtl-readiness` are intentionally equivalent aliases except for the skill name.
-3. Android carries both a generic `runtime-evidence-readiness` procedure and the Android-specific `android-runtime-evidence-readiness` procedure.
-4. Android also has `protected-lifecycle-transaction-review` and `publish-ai-mr`, while iOS has `agent-drift-detection` as an iOS-only specialist procedure.
+Android has a few additional platform-specific specialist procedures, including `protected-lifecycle-transaction-review` and `publish-ai-mr`, while iOS has `agent-drift-detection` as an iOS-only specialist procedure.
 
 ## Is anything actually missing from iOS?
 

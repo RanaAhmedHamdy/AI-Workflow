@@ -53,7 +53,7 @@ data_files.append(
 
 setup(
     name="ai-workflow",
-    version="0.1.0",
+    version="0.9.0",
     description="Repository bootstrap CLI for AI-assisted native mobile governance workflows",
     long_description=(ROOT / "README.md").read_text(encoding="utf-8"),
     long_description_content_type="text/markdown",

@@ -24,7 +24,7 @@ Use this self-contained Android pack with root governance policies and `.agents/
 - `android-architecture-readiness` / `android-project-structure-readiness` in feature mode
 - `compose-screen-readiness` or `android-views-screen-readiness`
 - `android-localization-rtl-readiness`
-- `android-adaptive-accessibility-readiness`
+- `android-adaptive-ui-readiness`
 - `android-runtime-evidence-readiness`
 
 ### Protected/data work
