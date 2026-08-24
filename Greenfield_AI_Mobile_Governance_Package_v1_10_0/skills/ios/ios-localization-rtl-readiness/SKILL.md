@@ -15,6 +15,7 @@ Verify:
 - no translated sentence-fragment concatenation;
 - leading/trailing semantics;
 - Arabic/Hebrew or other approved RTL runtime;
+- language and region launch coverage, including localized accessibility content;
 - mixed-direction text, numbers, units, punctuation;
 - long translation and truncation behavior;
 - notifications, widgets, intents, extensions, and error mapping;

@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased product UX/routing
+
+- Added progressive `skills`, `safety`, `feature`, and `full` adoption profiles; Safety is the installer default.
+- Added the canonical routing registry, generated profile-aware context/first-safe-change documents, profile transition support, and the compact SMALL feature record.
+- Retired three active Android aliases, preserving useful runtime guidance in the canonical procedure and documenting compatibility aliases.
+- Expanded iOS implementation-plan authoring/review around concurrency isolation, scene/re-entry, target/configuration ownership, privacy/capabilities, accessibility, and archive evidence.
+
 ## 1.10.0
 
 - Simplified the Design and Architecture operational READMEs into quick-start tables with exact prompts, explicit next-step links, and a 5-step architecture happy path; detailed architecture mechanics remain as reference material.
@@ -18,7 +25,7 @@
 - Corrected iOS skill installation and routing documentation to use the self-contained `.agents/skills/ios/` package instead of a non-existent `shared/` directory.
 - Updated the iOS skill-package heading and layout guidance to v1.9.1 and documented intentional platform-scoped duplicate skill names for Android/iOS standalone installation.
 - Removed an accidental iOS `plist`/entitlement reference from the Android bounded implementation procedure.
-- Added repository-level validation/CI so macOS metadata and cross-platform routing leaks are caught before public distribution.
+- Added repository-level validation so macOS metadata and cross-platform routing leaks can be checked before public distribution. A repository CI workflow is not currently included.
 
 ## 1.9.1
 

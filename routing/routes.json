@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "skills": {"label": "Skills", "recommended": false, "process_weight": "minimal", "summary": "Specialist procedures plus a small, explainable router."},
+    "safety": {"label": "Safety", "recommended": true, "process_weight": "light", "summary": "Mobile risk routing, protected-boundary checks, evidence, and bounded review without the full feature lifecycle."},
+    "feature": {"label": "Feature", "recommended": false, "process_weight": "proportional", "summary": "Safety plus SMALL/STANDARD/COMPLEX feature delivery; architecture governance remains optional until escalation."},
+    "full": {"label": "Full", "recommended": false, "process_weight": "deep", "summary": "The complete Architecture Spine, ADR, design, feature, readiness, acceptance, and release-governance experience."}
+  },
+  "facts": ["ui", "legacy_ui", "persistence", "schema_migration", "concurrency", "lifecycle", "background_execution", "permissions", "privacy", "capabilities", "localization", "rtl", "accessibility", "adaptive_layout", "protected_configuration", "architecture_boundary", "production_fake", "release_sensitive", "unknown_behavior", "documentation"],
+  "hard_escalation": {
+    "standard": ["persistence", "concurrency", "lifecycle", "background_execution", "permissions", "privacy", "capabilities", "protected_configuration", "architecture_boundary", "release_sensitive", "unknown_behavior"],
+    "complex": ["schema_migration", "destructive_data", "security_boundary", "cross_feature_atomicity", "historical_integrity", "timezone_lifecycle", "durable_concurrency"]
+  },
+  "skill_registry": {
+    "android": ["adr-lifecycle-governance", "android-adaptive-ui-readiness", "android-architecture-readiness", "android-localization-rtl-readiness", "android-permission-capability-readiness", "android-persistence-migration-readiness", "android-project-structure-readiness", "android-runtime-evidence-readiness", "android-views-screen-readiness", "architecture-bootstrap", "architecture-coverage-review", "bounded-feature-implementation", "characterization-tests", "compose-screen-readiness", "documentation-consistency-review", "documentation-impact-assessment", "documentation-review", "feature-complexity-classification", "feature-contract-authoring", "feature-contract-review", "feature-implementation-convergence", "feature-readiness-review", "implementation-plan-authoring", "implementation-plan-review", "implementation-task-authoring", "implementation-task-review", "kotlin-coroutines-readiness", "pr-review", "production-fake-detection", "protected-boundary-preflight", "protected-lifecycle-transaction-review", "publish-ai-mr"],
+    "ios": ["adr-lifecycle-governance", "agent-drift-detection", "architecture-bootstrap", "architecture-coverage-review", "bounded-feature-implementation", "characterization-tests", "documentation-consistency-review", "documentation-impact-assessment", "documentation-review", "feature-complexity-classification", "feature-contract-authoring", "feature-contract-review", "feature-implementation-convergence", "feature-readiness-review", "implementation-plan-authoring", "implementation-plan-review", "implementation-task-authoring", "implementation-task-review", "ios-adaptive-accessibility-readiness", "ios-architecture-readiness", "ios-localization-rtl-readiness", "ios-persistence-migration-readiness", "ios-privacy-capability-readiness", "ios-project-structure-readiness", "ios-runtime-evidence-readiness", "pr-review", "production-fake-detection", "protected-boundary-preflight", "swift-concurrency-readiness", "swiftui-screen-readiness", "uikit-screen-readiness"],
+    "brownfield": ["adaptive-compose", "architecture-coverage-review", "characterization-tests", "documentation-impact-assessment", "documentation-review", "pr-review", "protected-boundary-preflight", "publish-ai-mr"]
+  },
+  "routes": [
+    {"id": "ui", "facts_any": ["ui"], "skills": {"android": ["compose-screen-readiness"], "ios": ["swiftui-screen-readiness"]}},
+    {"id": "legacy_ui", "facts_any": ["legacy_ui"], "skills": {"android": ["android-views-screen-readiness"], "ios": ["uikit-screen-readiness"]}},
+    {"id": "persistence", "facts_any": ["persistence", "schema_migration"], "skills": {"android": ["android-persistence-migration-readiness"], "ios": ["ios-persistence-migration-readiness"]}},
+    {"id": "concurrency", "facts_any": ["concurrency"], "skills": {"android": ["kotlin-coroutines-readiness"], "ios": ["swift-concurrency-readiness"]}},
+    {"id": "lifecycle", "facts_any": ["lifecycle", "background_execution"], "skills": {"android": ["protected-lifecycle-transaction-review", "android-runtime-evidence-readiness"], "ios": ["swift-concurrency-readiness", "ios-runtime-evidence-readiness"]}},
+    {"id": "platform_boundary", "facts_any": ["permissions", "privacy", "capabilities", "protected_configuration", "release_sensitive"], "skills": {"android": ["android-permission-capability-readiness", "protected-boundary-preflight"], "ios": ["ios-privacy-capability-readiness", "protected-boundary-preflight"]}},
+    {"id": "inclusive_ui", "facts_any": ["localization", "rtl"], "skills": {"android": ["android-localization-rtl-readiness"], "ios": ["ios-localization-rtl-readiness"]}},
+    {"id": "adaptive_accessible_ui", "facts_any": ["accessibility", "adaptive_layout"], "skills": {"android": ["android-adaptive-ui-readiness"], "ios": ["ios-adaptive-accessibility-readiness"]}},
+    {"id": "architecture", "facts_any": ["architecture_boundary"], "skills": {"android": ["android-architecture-readiness", "architecture-coverage-review"], "ios": ["ios-architecture-readiness", "architecture-coverage-review"]}},
+    {"id": "brownfield_unknown", "workflow": "brownfield", "facts_any": ["unknown_behavior"], "skills": {"android": ["characterization-tests"], "ios": ["characterization-tests"]}},
+    {"id": "runtime", "facts_any": ["persistence", "schema_migration", "concurrency", "lifecycle", "background_execution", "permissions", "privacy", "capabilities", "protected_configuration", "release_sensitive"], "skills": {"android": ["android-runtime-evidence-readiness"], "ios": ["ios-runtime-evidence-readiness"]}},
+    {"id": "fake_detection", "facts_any": ["production_fake", "release_sensitive"], "skills": {"android": ["production-fake-detection"], "ios": ["production-fake-detection"]}},
+    {"id": "documentation", "facts_any": ["documentation"], "skills": {"android": ["documentation-impact-assessment", "documentation-review"], "ios": ["documentation-impact-assessment", "documentation-review"]}}
+  ]
+}

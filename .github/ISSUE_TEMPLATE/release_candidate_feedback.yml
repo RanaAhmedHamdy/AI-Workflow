@@ -1,0 +1,60 @@
+name: 0.9.0 release-candidate feedback
+description: Share evidence from evaluating AI-Workflow 0.9.0.
+title: "[0.9.0 feedback] "
+labels: [release-candidate-feedback]
+body:
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      placeholder: Android, iOS, or both
+    validations:
+      required: true
+  - type: input
+    id: repository_shape
+    attributes:
+      label: New or existing app
+      placeholder: Greenfield or Brownfield
+    validations:
+      required: true
+  - type: input
+    id: profile
+    attributes:
+      label: Profile
+      placeholder: skills, safety, feature, or full
+    validations:
+      required: true
+  - type: input
+    id: coding_agent
+    attributes:
+      label: Coding agent
+    validations:
+      required: true
+  - type: textarea
+    id: task
+    attributes:
+      label: Task and selected routes
+      description: Include task type, stated facts, selected routes, and any route that seemed wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: safeguards
+    attributes:
+      label: Missing safeguards or too much process
+    validations:
+      required: true
+  - type: textarea
+    id: installer
+    attributes:
+      label: Installer issue
+      description: Include command, preview, status, update, or uninstall evidence. Do not include secrets.
+  - type: dropdown
+    id: reuse
+    attributes:
+      label: Would you use it again?
+      options:
+        - Yes
+        - Maybe
+        - No
+    validations:
+      required: true

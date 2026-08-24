@@ -1,0 +1,34 @@
+name: Bug report
+description: Report a reproducible defect in the CLI, routing, instructions, or examples.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please remove secrets, private paths, and proprietary source before posting.
+  - type: input
+    id: version
+    attributes:
+      label: AI-Workflow version or commit
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Installer, Routing, Android instructions, iOS instructions, Documentation, Android demo, iOS demo]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps and actual result
+      description: Include command, profile, workflow, platform, and a redacted error/result.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true

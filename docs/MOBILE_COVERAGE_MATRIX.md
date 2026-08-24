@@ -1,6 +1,6 @@
 # Native mobile coverage matrix
 
-The Greenfield package currently contains **35 Android skill directories** and **31 iOS skill directories**. The difference does **not** mean iOS is missing four core mobile concerns.
+The Greenfield package currently contains **32 canonical Android skill directories** and **31 iOS skill directories**. The one-directory difference is a platform-specific procedure, not a claim of symmetric operational depth.
 
 ## Core capability parity
 
@@ -29,16 +29,14 @@ The Greenfield package currently contains **35 Android skill directories** and *
 
 ## Why Android has more directories
 
-Android's count is inflated by packaging/history rather than a four-skill functional advantage:
+The former Android count was inflated by three retired aliases. The remaining difference is purposeful rather than a functional-coverage score:
 
-1. `adaptive-compose` and `android-adaptive-accessibility-readiness` are intentionally equivalent aliases except for the skill name.
-2. `localization-rtl-readiness` and `android-localization-rtl-readiness` are intentionally equivalent aliases except for the skill name.
-3. Android carries both a generic `runtime-evidence-readiness` procedure and the Android-specific `android-runtime-evidence-readiness` procedure.
-4. Android also has `protected-lifecycle-transaction-review` and `publish-ai-mr`, while iOS has `agent-drift-detection` as an iOS-only specialist procedure.
+1. `adaptive-compose`, `localization-rtl-readiness`, and `runtime-evidence-readiness` were retired as active Android aliases. Their compatibility mapping is recorded in [`SKILL_ALIASES.md`](SKILL_ALIASES.md); the useful runtime guidance was merged into `android-runtime-evidence-readiness`.
+2. Android retains `protected-lifecycle-transaction-review` and `publish-ai-mr`, while iOS retains `agent-drift-detection` as a distinct specialist procedure.
 
 ## Is anything actually missing from iOS?
 
-No critical Greenfield mobile category is missing based on the current lifecycle. The major iOS-specific risks—Swift concurrency, SwiftUI/UIKit, persistence/migrations, privacy manifests/required-reason APIs, capabilities/entitlements, adaptive UI/accessibility, localization/RTL, and runtime evidence—already have dedicated coverage.
+No critical Greenfield mobile category is missing based on the current lifecycle. The major iOS-specific risks—Swift concurrency, SwiftUI/UIKit, persistence/migrations, privacy manifests/required-reason APIs, capabilities/entitlements, adaptive UI/accessibility, localization/RTL, and runtime evidence—already have dedicated coverage. The iOS implementation-plan author/review procedures now explicitly review actor isolation, task lifetime, scene/re-entry, target/build ownership, extensions/background work, privacy/entitlements, and archive-sensitive evidence. This is operational parity for iOS-relevant failures, not line-count parity with Android.
 
 There are **optional parity candidates**, not current blockers:
 

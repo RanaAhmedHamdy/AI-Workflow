@@ -4,6 +4,8 @@
 
 This package separates **product/user-journey truth** from **platform implementation mechanics**.
 
+For a confirmed low-risk change, use `mobile/SMALL_FEATURE_RECORD_TEMPLATE.md` as one compact durable record. It keeps authority, implementation authorization, evidence, acceptance, and release impact distinct while avoiding separate contract/plan/task/readiness documents. Promote to STANDARD or COMPLEX when the feature-tier policy records a hard escalation.
+
 ## Structure
 
 ```text
@@ -12,6 +14,7 @@ mobile/
   FEATURE_CONTRACT_TEMPLATE.md
   IMPLEMENTATION_READINESS_AUDIT_TEMPLATE.md
   READINESS_REPORT_TEMPLATE.md
+  SMALL_FEATURE_RECORD_TEMPLATE.md
 ios/
   IMPLEMENTATION_PLAN_TEMPLATE.md
   IMPLEMENTATION_TASKS_TEMPLATE.md

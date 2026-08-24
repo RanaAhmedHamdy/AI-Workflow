@@ -14,6 +14,7 @@ Establish applicable support:
 - Catalyst or Designed for iPad;
 - Dynamic Type including accessibility sizes;
 - VoiceOver labels, values, traits, actions, headings, rotor/focus order;
+- focus-order verification after sheet, split-view, navigation, and dynamic-content transitions;
 - Increased Contrast, Reduce Motion, Reduce Transparency;
 - safe areas, keyboard, sheets, popovers, toolbars, menus.
 

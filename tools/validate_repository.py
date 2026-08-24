@@ -13,6 +13,7 @@ from ai_workflow.assets import BROWN_PACKAGE, GREEN_PACKAGE
 
 GREEN = ROOT / GREEN_PACKAGE
 BROWN = ROOT / BROWN_PACKAGE
+ROUTING = ROOT / "routing" / "routes.json"
 
 
 def fail(errors: list[str], message: str) -> None:
@@ -111,7 +112,7 @@ def validate_package_wiring(errors: list[str]) -> None:
         fail(errors, f"README.md: missing current Greenfield package link {GREEN_PACKAGE}")
 
     cli = (ROOT / "src/ai_workflow/cli.py").read_text(encoding="utf-8")
-    if 'target / ".templates" / "design"' not in cli:
+    if "def greenfield_specs" not in cli or '".templates/design"' not in cli:
         fail(errors, "Greenfield installer does not install templates/design")
 
 def validate_public_files(errors: list[str]) -> None:
@@ -139,6 +140,82 @@ def validate_evals(errors: list[str]) -> None:
                 fail(errors, f"eval case {cid}: missing {key}")
 
 
+def active_skill_names(base: Path) -> set[str]:
+    return {path.parent.name for path in base.rglob("SKILL.md")}
+
+
+def validate_routing(errors: list[str]) -> None:
+    try:
+        model = json.loads(ROUTING.read_text(encoding="utf-8"))
+    except Exception as exc:
+        fail(errors, f"routing registry cannot be parsed: {exc}")
+        return
+    if model.get("schema_version") != 1:
+        fail(errors, "routing registry has unsupported schema")
+    profiles = model.get("profiles", {})
+    if set(profiles) != {"skills", "safety", "feature", "full"}:
+        fail(errors, "routing registry must declare exactly skills, safety, feature, full profiles")
+    if not profiles.get("safety", {}).get("recommended"):
+        fail(errors, "routing registry must mark safety as the recommended profile")
+    facts = set(model.get("facts", []))
+    for category in ("standard", "complex"):
+        if not set(model.get("hard_escalation", {}).get(category, [])).issubset(facts | {"destructive_data", "security_boundary", "cross_feature_atomicity", "historical_integrity", "timezone_lifecycle", "durable_concurrency"}):
+            fail(errors, f"routing hard-escalation {category} has unknown fact")
+    roots = {"android": GREEN / "skills" / "android", "ios": GREEN / "skills" / "ios", "brownfield": BROWN / "skills"}
+    registry = model.get("skill_registry", {})
+    for platform, base in roots.items():
+        actual = active_skill_names(base)
+        registered = set(registry.get(platform, []))
+        if actual != registered:
+            fail(errors, f"routing registry drift for {platform}: missing={sorted(actual-registered)} unknown={sorted(registered-actual)}")
+    for route in model.get("routes", []):
+        if not set(route.get("facts_any", [])).issubset(facts):
+            fail(errors, f"route {route.get('id')}: unknown fact")
+        for platform, names in route.get("skills", {}).items():
+            if platform not in {"android", "ios"}:
+                fail(errors, f"route {route.get('id')}: invalid platform {platform}")
+                continue
+            unknown = set(names) - set(registry.get(platform, []))
+            if unknown:
+                fail(errors, f"route {route.get('id')}: unknown {platform} skill(s) {sorted(unknown)}")
+    for alias in ["adaptive-compose", "localization-rtl-readiness", "runtime-evidence-readiness"]:
+        if (GREEN / "skills" / "android" / alias / "SKILL.md").exists():
+            fail(errors, f"retired Android alias remains active: {alias}")
+    if not (GREEN / "templates/mobile/mobile/SMALL_FEATURE_RECORD_TEMPLATE.md").is_file():
+        fail(errors, "missing SMALL feature-record template")
+    matrix = ROOT / "docs/PROFILE_CONTENT_MATRIX.md"
+    matrix_text = matrix.read_text(encoding="utf-8") if matrix.is_file() else ""
+    if not matrix.is_file() or not all(name in matrix_text for name in ["Skills", "Safety", "Feature", "Full"]):
+        fail(errors, "profile content matrix is missing or incomplete")
+    matrix_authority = re.search(r"<!-- profile-test-authority: (\{.*?\}) -->", matrix_text)
+    try:
+        if not matrix_authority or set(json.loads(matrix_authority.group(1))) != {"skills", "safety", "feature", "full"}:
+            fail(errors, "profile content matrix test authority is missing or invalid")
+    except json.JSONDecodeError:
+        fail(errors, "profile content matrix test authority is not JSON")
+
+
+def validate_routing_cases(errors: list[str]) -> None:
+    path = ROOT / "evals/routing_cases.json"
+    try:
+        cases = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        fail(errors, f"routing corpus cannot be parsed: {exc}")
+        return
+    if len(cases) < 30:
+        fail(errors, f"routing corpus has only {len(cases)} cases; expected at least 30")
+    ids = [case.get("id") for case in cases]
+    if len(ids) != len(set(ids)):
+        fail(errors, "routing corpus contains duplicate ids")
+    for case in cases:
+        cid = case.get("id", "<missing>")
+        for field in ["workflow", "platform", "facts", "required", "forbidden", "minimum_tier", "escalation_reason"]:
+            if field not in case:
+                fail(errors, f"routing case {cid}: missing {field}")
+        if case.get("workflow") not in {"greenfield", "brownfield"} or case.get("platform") not in {"android", "ios"}:
+            fail(errors, f"routing case {cid}: invalid workflow/platform")
+
+
 def main() -> int:
     errors: list[str] = []
     validate_public_files(errors)
@@ -148,6 +225,8 @@ def main() -> int:
     validate_platform_leaks(errors)
     validate_ios_routing(errors)
     validate_evals(errors)
+    validate_routing(errors)
+    validate_routing_cases(errors)
     if errors:
         print("Repository validation FAILED:\n")
         for e in errors:
