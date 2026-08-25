@@ -113,6 +113,12 @@ The maintained fixtures are deliberately small and local:
 
 See [examples](examples/README.md) for scenarios, unsafe-but-non-executable counterexamples, exact facts, route results, and limitations.
 
+## Real-world adoption
+
+[NutriPlus AI](https://github.com/RanaAhmedHamdy/NutriPluse-IOS-AI-Workflow) is a sanitized public snapshot of a native iOS/iPadOS application developed with the Greenfield lifecycle. It includes an Architecture Spine, accepted ADRs, feature contracts, implementation plans and tasks, independent reviews, readiness reports, and scoped verification evidence.
+
+Use it as a full-governance case study: it shows how the workflow is applied across a real application, not as a production-safety certification or release authorization.
+
 ## What gets installed and how safety works
 
 The installer adds only package-owned instructions, templates chosen by profile, a route registry, and `.ai-workflow/manifest.json`. A Brownfield Safety install can include `AI_CONTEXT.md`, `FIRST_SAFE_CHANGE.md`, `AGENTS.md`, `.agents/skills/<platform>/`, `.agents/routing/routes.json`, and the manifest. It records hashes, refuses unmanaged collisions, preserves modified managed files during update/uninstall, rejects traversal/symlink hazards, and uses staged rollback. Read [Installer lifecycle](docs/INSTALLER_LIFECYCLE.md) and the [profile matrix](docs/PROFILE_CONTENT_MATRIX.md) for detail.
