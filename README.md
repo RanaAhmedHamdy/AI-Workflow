@@ -135,6 +135,46 @@ You may not need the full system for throwaway prototypes, autocomplete-only use
 
 The Full profile preserves the original deep model: Architecture Spine, ADR lifecycle, Design Authority/Lock, independent reviews, readiness, acceptance, and separate release controls. Start with Safety or Feature unless the change and team need that depth. Greenfield and Brownfield stay distinct because their sources of truth are different.
 
+### Greenfield lifecycle
+
+```text
+Approved product authority
+→ optional approved design authority
+→ architecture bootstrap (repository evidence → constraints → Draft Spine)
+→ owner-gated ADR lifecycle + synchronization
+→ architecture coverage/consistency
+→ READY FOR BOUNDED FEATURE INTAKE
+→ Feature Input
+→ complexity classification
+→ Feature Contract + independent review + owner approval
+→ Implementation Plan + exact design mapping where applicable + independent review + owner approval
+→ Implementation Tasks + Design Lock for design-bound UI + independent review + owner approval
+→ implementation-readiness audit
+→ explicit owner implementation authorization
+→ bounded implementation (inspect exact approved visual before design-bound UI code) + task evidence
+→ feature convergence
+→ final readiness + independent readiness review
+→ owner acceptance
+→ separate release authorization
+```
+
+### Brownfield lifecycle
+
+```text
+Safe setup
+→ repository discovery/provenance
+→ characterization tests
+→ feature + architecture understanding
+→ architecture coverage / no-edit audit
+→ accountable decisions
+→ testing safety net
+→ bounded refactor / feature / defect work
+→ independent review
+→ documentation impact
+→ explicit publish authorization
+→ CI/runtime/release verification
+```
+
 For the detailed source material, see the [Greenfield package](Greenfield_AI_Mobile_Governance_Package_v1_10_0/README.md) and [Brownfield package](Brownfield_AI_Playbook_Reusable_Package_v4_4/README.md).
 
 ## Compatibility, validation, and release posture
@@ -159,6 +199,14 @@ If you change skill behavior, also review the applicable cases in [`evals/cases.
 - [Comparison with other workflows](docs/COMPARISON.md)
 - [Versioning](docs/VERSIONING.md) and [intended v1 support policy](docs/V1_SUPPORT_POLICY.md)
 - [Documentation map](docs/README.md)
+
+### Package deep-links
+
+- Greenfield start-here: [`Greenfield_AI_Mobile_Governance_Package_v1_10_0/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/README.md)
+- Greenfield design workflow: [`templates/design/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/design/README.md)
+- Greenfield architecture workflow: [`templates/architecture/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/architecture/README.md)
+- Greenfield feature workflow: [`templates/mobile/README.md`](Greenfield_AI_Mobile_Governance_Package_v1_10_0/templates/mobile/README.md)
+- Brownfield start-here: [`Brownfield_AI_Playbook_Reusable_Package_v4_4/README.md`](Brownfield_AI_Playbook_Reusable_Package_v4_4/README.md)
 
 ## Contributing, support, security, license
 
