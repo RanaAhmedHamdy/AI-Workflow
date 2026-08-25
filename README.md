@@ -61,21 +61,26 @@ Safety gives a team fact routing, protected-boundary checks, evidence guidance, 
 
 ## Five-minute quickstart
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first and confirm that `uvx --version` works. Until this candidate is published as a release, use a checkout of the remediation branch:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first and confirm that `uvx --version` works.
 
 ```bash
-git clone --branch full-remediation-2026-08-24 https://github.com/RanaAhmedHamdy/AI-Workflow.git AI-Workflow
-cd AI-Workflow
-mkdir ../ai-workflow-trial
-uvx --from . ai-workflow brownfield --platform android --profile safety --target ../ai-workflow-trial --dry-run
-uvx --from . ai-workflow brownfield --platform android --profile safety --target ../ai-workflow-trial
-uvx --from . ai-workflow status --target ../ai-workflow-trial
-uvx --from . ai-workflow route --workflow brownfield --platform android --profile safety --fact persistence --fact schema_migration --fact concurrency --fact lifecycle
+mkdir ai-workflow-trial
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow brownfield --platform android --profile safety --target ai-workflow-trial --dry-run
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow brownfield --platform android --profile safety --target ai-workflow-trial
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow status --target ai-workflow-trial
+uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow route --workflow brownfield --platform android --profile safety --fact persistence --fact schema_migration --fact concurrency --fact lifecycle
 ```
 
-Run the commands from the AI-Workflow checkout. The receiving application is selected with `--target`; if `--target` is omitted, the current directory becomes the install target. Use `--dry-run` to inspect destinations before writing anything. The installer refuses unmanaged collisions and does not overwrite recipient-owned files.
+No clone needed. The receiving application is selected with `--target`; if `--target` is omitted, the current directory becomes the install target. Use `--dry-run` to inspect destinations before writing anything. The installer refuses unmanaged collisions and does not overwrite recipient-owned files.
 
-The candidate is intentionally not advertised as a published remote CLI yet; this local command is the tested route. The complete trial, exact platform paths, first agent prompt, preview, status, update, and uninstall steps are in [Quickstart](docs/QUICKSTART.md).
+For frequent use, install the CLI once so you can call `ai-workflow` directly:
+
+```bash
+uv tool install git+https://github.com/RanaAhmedHamdy/AI-Workflow.git
+ai-workflow brownfield --platform ios --profile safety --target /path/to/your-ios-app
+```
+
+The complete trial, exact platform paths, first agent prompt, preview, status, update, and uninstall steps are in [Quickstart](docs/QUICKSTART.md).
 
 ## New or existing app?
 
