@@ -6,6 +6,10 @@
 
 This package provides reusable governance policies, architecture templates, feature templates, platform-specific skills, readiness gates, convergence procedures, and owner-acceptance controls for greenfield mobile delivery.
 
+> **Pre-release notice:** AI-Workflow is under active validation. The installer
+> records ownership and supports safe status/update/uninstall; `--force` is
+> deprecated and disabled.
+
 The root README is the operational **start-here guide**. You should be able to bootstrap a repository and run the normal delivery lifecycle from this README plus the routed templates and skills. The playbook remains the deeper reference for rationale, edge cases, reusable prompts, and detailed procedures.
 
 ## Choose your workflow
@@ -381,7 +385,7 @@ cd /path/to/your/mobile-app
 uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow greenfield --platform ios --dry-run
 ```
 
-The installer performs steps 2–5 below using the applicable platform files and seeds `AI_CONTEXT.md` plus the decision register from templates. It does not create project-specific architecture, feature, readiness, evidence, or release artifacts before the receiving repository has the facts and approvals required to author them. Use `--skills-only` only when the repository already owns the rest of the governance/bootstrap structure. Existing destination paths are not replaced unless `--force` is explicitly supplied.
+The installer performs steps 2–5 below using the applicable platform files and seeds `AI_CONTEXT.md` plus the decision register from templates. It does not create project-specific architecture, feature, readiness, evidence, or release artifacts before the receiving repository has the facts and approvals required to author them. Use `--skills-only` only when the repository already owns the rest of the governance/bootstrap structure. Existing recipient paths are never replaced; inspect ownership with `ai-workflow status` and use `ai-workflow update --dry-run` before updates. See `docs/INSTALLER_LIFECYCLE.md` in the source repository.
 
 For frequent use, the CLI may be installed persistently with:
 

@@ -1,0 +1,12 @@
+{
+  "workflow": "brownfield",
+  "platform": "ios",
+  "profile": "safety",
+  "facts": ["persistence", "concurrency", "lifecycle"],
+  "expected_skills": [
+    "ios-persistence-migration-readiness",
+    "swift-concurrency-readiness",
+    "ios-runtime-evidence-readiness"
+  ],
+  "expected_minimum_tier": "STANDARD"
+}

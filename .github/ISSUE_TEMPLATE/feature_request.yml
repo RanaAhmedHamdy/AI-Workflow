@@ -1,0 +1,23 @@
+name: Feature request
+description: Propose a concrete, evidence-backed improvement.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Mobile-development problem
+      description: Describe the concrete failure mode or adoption friction.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and alternatives considered
+      description: Link a reproducible fixture, platform documentation, or observed workflow when possible.

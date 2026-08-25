@@ -1,2 +1,37 @@
-AUDIT/
-AUDIT.zip
+# macOS and editor state
+.DS_Store
+._*
+__MACOSX/
+/AUDIT.zip
+/AUDIT/
+uv.lock
+.obsidian/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python environments, caches, and build outputs
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.venv/
+venv/
+env/
+build/
+dist/
+.gradle/
+local.properties
+
+# Local credentials (keep documented examples tracked)
+.env
+.env.*
+!.env.example
+*.pem
+*.key

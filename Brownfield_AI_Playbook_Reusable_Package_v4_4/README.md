@@ -12,6 +12,10 @@ Start with `repository-starter/README.md` for the exact operational flow. The co
 
 The full playbook is the deeper governance/rationale reference. Project-specific manifests, checkpoints, evidence paths, revisions, decisions, test counts, and project status must be regenerated or adapted from the receiving repository. Graphify overrides are optional and should be created only for verified project-specific extraction/context gaps.
 
+> **Pre-release notice:** AI-Workflow is under active validation. The installer
+> records ownership and supports safe status/update/uninstall; `--force` is
+> deprecated and disabled.
+
 ## Canonical brownfield lifecycle
 
 Safe setup → repository discovery → documentation/provenance review → first characterization tests → feature understanding → architecture/design validation → architecture coverage gate → verification questions and accountable decisions → no-edit implementation audit → testing safety net → controlled refactor or bounded feature/defect work → independent review → documentation impact → explicit publish → CI/runtime/release verification.
@@ -38,7 +42,9 @@ uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow bro
   --target /path/to/existing/mobile-app
 ```
 
-Use `--dry-run` to preview the complete install plan, and use `--force` only when replacing existing destination paths is intentional.
+Use `--dry-run` to preview the complete install plan. Existing recipient paths
+are not replaced; inspect ownership with `ai-workflow status` and use
+`ai-workflow update --dry-run` before updating.
 
 The installer copies reusable prompts/specifications, composes the common + selected platform AGENTS policy, installs applicable reusable skills and the reusable architecture checklist/templates, and installs the Markdown playbook as `AI_PLAYBOOK.md`. It deliberately does not promote files under `docs/ai/examples/` into project truth or create project-specific manifests/checkpoints from guessed state. Use `--skills-only` when only the reusable skill layer is wanted.
 

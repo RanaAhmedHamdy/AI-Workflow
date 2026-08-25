@@ -1,6 +1,6 @@
 # Android Greenfield Skills Package v1.10.0
 
-Use this self-contained Android pack with root governance policies and `.agents/policies/android/ANDROID_ENGINEERING_POLICY.md`.
+Use this self-contained Android pack with the installed profile-aware `AI_CONTEXT.md`, `.agents/routing/routes.json`, and (where the selected profile includes them) root governance policies and `.agents/policies/android/ANDROID_ENGINEERING_POLICY.md`. Do not browse this list to choose a skill: state task facts and apply the router, then explain why each selected procedure applies.
 
 ## Principles
 
@@ -43,3 +43,5 @@ Use this self-contained Android pack with root governance policies and `.agents/
 - `pr-review`
 
 Keep Android and iOS skill packs in separate path namespaces when both are installed.
+
+`adaptive-compose`, `localization-rtl-readiness`, and `runtime-evidence-readiness` are retired Android compatibility aliases; route only the canonical paths listed here.

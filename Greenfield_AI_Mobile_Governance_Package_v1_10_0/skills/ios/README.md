@@ -1,6 +1,6 @@
 # iOS Greenfield Skills Package v1.10.0
 
-Use this platform package with the reusable root `AGENTS.md`, the modular `.agents/policies/` governance files, and `.agents/policies/ios/IOS_ENGINEERING_POLICY.md` overlay from the Greenfield package.
+Use this platform package with the installed profile-aware `AI_CONTEXT.md` and `.agents/routing/routes.json`; full installations additionally include the reusable root `AGENTS.md`, modular policy files, and the `.agents/policies/ios/IOS_ENGINEERING_POLICY.md` overlay. Do not ask developers to choose from this catalogue: route observable task facts, then show the selected procedures and why.
 
 ## Principles
 

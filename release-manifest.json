@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "project": "AI-Workflow",
+  "release_status": "pre-release / active validation",
+  "project_version": "0.9.0",
+  "python_distribution_version": "0.9.0",
+  "cli_version": "0.9.0",
+  "components": {
+    "greenfield_content": "1.10.0",
+    "brownfield_content": "4.4",
+    "greenfield_pipeline_document": "1.3",
+    "greenfield_playbook_document": "2.3",
+    "greenfield_historical_playbook_document": "2.2",
+    "brownfield_ios_overlay": "1.4"
+  },
+  "compatibility": {
+    "python": ">=3.10",
+    "installer_manifest": "0.9.0 candidate",
+    "force_public_workflow": "unsupported"
+  }
+}

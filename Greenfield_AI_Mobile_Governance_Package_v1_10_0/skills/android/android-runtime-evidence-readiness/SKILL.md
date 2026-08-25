@@ -19,7 +19,6 @@ Classify runtime checks by timing. Keep critical behavior and lifecycle checks a
 Use a representative risk matrix rather than exhaustive combinations. For a typical UI feature, one primary phone configuration, one approved RTL locale, one maximum-text/accessibility layout configuration, one representative tablet/adaptive configuration, and one critical screen-reader journey are usually sufficient unless product/risk authority requires more.
 
 Prefer manual validation for real screen-reader focus/announcements, subjective final visual fidelity, alternate-input ergonomics, representative adaptive/RTL quality, and physical-device-only behavior. Keep deterministic automation for navigation, state propagation, data correctness, transactions, idempotency, and migrations.
-
 ## Verification-Matrix Executability
 
 When the approved implementation plan contains `VM-*` scenarios, verify before evidence execution that each applicable scenario is runnable: the ID exists and traces to approved authority; the named emulator/device/window/OS/locale/accessibility condition is available or has an approved equivalent; preconditions are reproducible; the procedure is concrete; the expected observable result is explicit; the evidence path is usable; and runtime-only claims use runtime-capable evidence. Report unavailable scenarios as blocked/needs verification rather than silently substituting evidence.

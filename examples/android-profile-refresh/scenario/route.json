@@ -1,0 +1,13 @@
+{
+  "workflow": "brownfield",
+  "platform": "android",
+  "profile": "safety",
+  "facts": ["persistence", "schema_migration", "concurrency", "lifecycle"],
+  "expected_skills": [
+    "android-persistence-migration-readiness",
+    "kotlin-coroutines-readiness",
+    "protected-lifecycle-transaction-review",
+    "android-runtime-evidence-readiness"
+  ],
+  "expected_minimum_tier": "COMPLEX"
+}
