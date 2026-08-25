@@ -6,6 +6,17 @@ Mobile-specific guardrails and workflows that help coding agents make safer chan
 
 AI-Workflow installs repository-owned Markdown instructions and specialist procedures. It guides engineering judgement; it does not certify a release, replace owners, or make an agent autonomous.
 
+## Choose your path
+
+| Starting point | Platform | Recommended path |
+| --- | --- | --- |
+| New application | Android or iOS | Greenfield + `feature` |
+| Existing application | Android or iOS | Brownfield + `safety` |
+| Android + iOS repository | Both | Brownfield or Greenfield + `safety` |
+| Specialist procedures only | Android or iOS | `skills` |
+
+The [Greenfield package](Greenfield_AI_Mobile_Governance_Package_v1_10_0/) establishes architecture and governance for a new application. The [Brownfield package](Brownfield_AI_Playbook_Reusable_Package_v4_4/) helps you understand and safely change an existing repository. The two operating models remain separate because their sources of truth are different.
+
 ## Why mobile needs this
 
 A generic coding agent can correctly “change a model and screen” yet miss the mobile boundary around it:
@@ -50,17 +61,21 @@ Safety gives a team fact routing, protected-boundary checks, evidence guidance, 
 
 ## Five-minute quickstart
 
-From a checked-out candidate and a disposable sibling directory, preview then install the Android Safety path:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first and confirm that `uvx --version` works. Until this candidate is published as a release, use a checkout of the remediation branch:
 
 ```bash
-cd /path/to/AI-Workflow-release-candidate
+git clone --branch full-remediation-2026-08-24 https://github.com/RanaAhmedHamdy/AI-Workflow.git AI-Workflow
+cd AI-Workflow
 mkdir ../ai-workflow-trial
 uvx --from . ai-workflow brownfield --platform android --profile safety --target ../ai-workflow-trial --dry-run
 uvx --from . ai-workflow brownfield --platform android --profile safety --target ../ai-workflow-trial
+uvx --from . ai-workflow status --target ../ai-workflow-trial
 uvx --from . ai-workflow route --workflow brownfield --platform android --profile safety --fact persistence --fact schema_migration --fact concurrency --fact lifecycle
 ```
 
-The candidate is intentionally not advertised as a published remote CLI yet; this local command is the tested route. The complete five-minute trial, exact platform paths, first agent prompt, preview, status, update, and uninstall steps are in [Quickstart](docs/QUICKSTART.md).
+Run the commands from the AI-Workflow checkout. The receiving application is selected with `--target`; if `--target` is omitted, the current directory becomes the install target. Use `--dry-run` to inspect destinations before writing anything. The installer refuses unmanaged collisions and does not overwrite recipient-owned files.
+
+The candidate is intentionally not advertised as a published remote CLI yet; this local command is the tested route. The complete trial, exact platform paths, first agent prompt, preview, status, update, and uninstall steps are in [Quickstart](docs/QUICKSTART.md).
 
 ## New or existing app?
 
@@ -76,6 +91,12 @@ uvx --from . ai-workflow brownfield --platform both --profile safety --target /p
 ```
 
 Dual-platform installs retain separate `.agents/skills/android/` and `.agents/skills/ios/` paths. The intentionally mirrored procedures stay self-contained; they are not flattened simply to reduce a count.
+
+If you intentionally want only specialist procedures and routing, use the `skills` profile:
+
+```bash
+uvx --from . ai-workflow brownfield --platform android --profile skills --target /path/to/existing-android-app
+```
 
 ## How routing works
 
@@ -94,7 +115,7 @@ See [examples](examples/README.md) for scenarios, unsafe-but-non-executable coun
 
 ## What gets installed and how safety works
 
-The installer adds only package-owned instructions, templates chosen by profile, a route registry, and `.ai-workflow/manifest.json`. It records hashes, refuses unmanaged collisions, preserves modified managed files during update/uninstall, rejects traversal/symlink hazards, and uses staged rollback. Read [Installer lifecycle](docs/INSTALLER_LIFECYCLE.md) and the [profile matrix](docs/PROFILE_CONTENT_MATRIX.md) for detail.
+The installer adds only package-owned instructions, templates chosen by profile, a route registry, and `.ai-workflow/manifest.json`. A Brownfield Safety install can include `AI_CONTEXT.md`, `FIRST_SAFE_CHANGE.md`, `AGENTS.md`, `.agents/skills/<platform>/`, `.agents/routing/routes.json`, and the manifest. It records hashes, refuses unmanaged collisions, preserves modified managed files during update/uninstall, rejects traversal/symlink hazards, and uses staged rollback. Read [Installer lifecycle](docs/INSTALLER_LIFECYCLE.md) and the [profile matrix](docs/PROFILE_CONTENT_MATRIX.md) for detail.
 
 SMALL is genuinely compact: Feature/Full use one `SMALL_FEATURE_RECORD.md`. Durable data, meaningful lifecycle/concurrency work, protected boundaries, or uncertainty promote proportionally; schema migration is COMPLEX.
 
@@ -114,7 +135,14 @@ For the detailed source material, see the [Greenfield package](Greenfield_AI_Mob
 
 The format is architecturally portable because it is repository-owned Markdown rather than a proprietary prompt API. Codex instruction consumption has been manually reviewed; Claude Code and Copilot coding-agent interoperability are not yet verified. See [public claims](docs/PUBLIC_CLAIMS.md).
 
-CI validates repository/routing/installer/package checks and includes separate native demo jobs. The local Android fixture ran unit tests + debug build; the iOS fixture ran Xcode simulator build + XCTest. This remains a pre-v1 release candidate evaluation, not a production-safety or v1 claim.
+The local Android fixture ran unit tests + debug build; the iOS fixture ran Xcode simulator build + XCTest. This remains a pre-v1 release candidate evaluation, not a production-safety or v1 claim. For repository changes, run:
+
+```bash
+python3 tools/validate_repository.py
+python3 -m unittest discover -s tests
+```
+
+If you change skill behavior, also review the applicable cases in [`evals/cases.json`](evals/cases.json) and follow the evaluation instructions in [`evals/README.md`](evals/README.md).
 
 ## Documentation
 
@@ -122,9 +150,10 @@ CI validates repository/routing/installer/package checks and includes separate n
 - [Examples](examples/README.md)
 - [Profiles and tiers](docs/PROFILES_AND_TIERS.md)
 - [Android/iOS coverage](docs/MOBILE_COVERAGE_MATRIX.md)
+- [Comparison with other workflows](docs/COMPARISON.md)
 - [Versioning](docs/VERSIONING.md) and [intended v1 support policy](docs/V1_SUPPORT_POLICY.md)
 - [Documentation map](docs/README.md)
 
 ## Contributing, support, security, license
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md), [SUPPORT.md](SUPPORT.md), and [SECURITY.md](SECURITY.md). Licensed under [Apache-2.0](LICENSE); see [NOTICE](NOTICE) and [CITATION.cff](CITATION.cff).
+Read [CONTRIBUTING.md](CONTRIBUTING.md), [SUPPORT.md](SUPPORT.md), and [SECURITY.md](SECURITY.md). Contributions should preserve the Greenfield/Brownfield separation, explicit human authorization boundaries, and namespaced Android/iOS skill packs. Licensed under [Apache-2.0](LICENSE); see [NOTICE](NOTICE) and [CITATION.cff](CITATION.cff).

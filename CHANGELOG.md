@@ -12,7 +12,7 @@ promise.
 - Manifest-backed safe install/update/status/uninstall lifecycle with dual-platform composition.
 - Four adoption profiles: `skills`, `safety`, `feature`, and `full`; Safety is the recommended default.
 - Deterministic fact-based routing across 13 concern routes.
-- Android and iOS profile-refresh fixtures with deliberately isolated risky examples, route evidence, and native CI jobs.
+- Android and iOS profile-refresh fixtures with deliberately isolated risky examples and route evidence.
 - Public quickstart, claims matrix, v1 support-policy draft, support/community templates, and release-artifact policy.
 
 ### Changed
