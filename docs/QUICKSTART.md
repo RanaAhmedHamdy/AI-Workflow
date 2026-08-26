@@ -26,7 +26,7 @@ uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow sta
 uvx --from git+https://github.com/RanaAhmedHamdy/AI-Workflow.git ai-workflow route --workflow brownfield --platform android --profile safety --fact persistence --fact schema_migration --fact concurrency --fact lifecycle
 ```
 
-The install writes only package-owned instructions such as `AI_CONTEXT.md`, `FIRST_SAFE_CHANGE.md`, `AGENTS.md`, `.agents/skills/android/`, `.agents/routing/routes.json`, and `.ai-workflow/manifest.json`. It refuses recipient-owned collisions.
+The install writes one canonical `AGENTS.md`, a thin `CLAUDE.md` adapter, an `AI_CONTEXT.md` inventory, `.agents/skills/android/`, Claude-compatible `.claude/skills/` symlinks, `.agents/routing/routes.json`, and `.ai-workflow/manifest.json`. It refuses recipient-owned collisions.
 
 The final route command prints this real checked-in classification:
 
@@ -42,7 +42,7 @@ Required checks:
 Escalation: required — schema_migration
 ```
 
-Then ask your coding agent: "Read `AI_CONTEXT.md` and `FIRST_SAFE_CHANGE.md`. For this request, state observable facts, run the router, explain each selected check, and stop if an unresolved fact changes safety."
+Then ask your coding agent: "Read `AGENTS.md`, `AI_CONTEXT.md`, and `FIRST_SAFE_CHANGE.md`. For this request, state observable facts, run the router, explain each selected check, and stop if an unresolved fact changes safety." Claude Code will load `CLAUDE.md` and discover the `.claude/skills/` aliases automatically; other clients can use the same canonical Markdown paths.
 
 For frequent use, install the CLI once permanently:
 

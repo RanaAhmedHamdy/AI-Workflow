@@ -1,9 +1,10 @@
 # Installer lifecycle
 
-AI-Workflow records every installed file in `<target>/.ai-workflow/manifest.json`.
+AI-Workflow records every installed file or symlink in `<target>/.ai-workflow/manifest.json`.
 The manifest is installer metadata, not application code. It records the schema,
 workflow, selected platforms, profile, package version, file path, source identity,
-and installed SHA-256 for each package-owned file.
+and installed SHA-256 for each package-owned file. Symlink entries also record their
+relative target and are validated as links rather than by following their target.
 
 ## Ownership rules
 
@@ -16,6 +17,9 @@ and installed SHA-256 for each package-owned file.
   be removed after a complete uninstall; recipient directories remain intact.
 - A file removed by a newer package is deleted only when it still matches its recorded
   hash. A modified copy is retained and recorded as residual state.
+- `AGENTS.md` is the one canonical instruction file. `CLAUDE.md` and
+  `.claude/skills/` are thin client adapters; Claude skill directories link to the
+  canonical `.agents/skills/` directories.
 
 ## Commands
 
@@ -46,7 +50,9 @@ local conflicts.
 
 The installer preflights every destination, rejects absolute/traversal paths,
 rejects symlinked targets and destination parents, stages file contents outside the
-recipient tree, verifies staged hashes, then commits file-level changes. Existing
+recipient tree, verifies staged hashes, then commits file-level changes. Managed
+Claude skill links are the exception at the leaf path and are checked for their exact
+recorded target. Existing
 unmodified managed files are backed up before replacement/removal. A commit failure
 rolls back changed files. The manifest is written only as part of a successful
 commit. Read-only or file/directory conflicts fail without claiming success.

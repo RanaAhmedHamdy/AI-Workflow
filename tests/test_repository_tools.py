@@ -84,6 +84,44 @@ class RepositoryToolTests(unittest.TestCase):
             self.assertIn("Android", agents)
             self.assertIn("iOS", agents)
 
+    def test_single_canonical_agent_file_and_claude_skill_adapters(self):
+        for workflow in ("greenfield", "brownfield"):
+            with self.subTest(workflow=workflow), tempfile.TemporaryDirectory() as td:
+                target = Path(td)
+                self.install(target, workflow, "both", "full")
+                agents = target / "AGENTS.md"
+                claude = target / "CLAUDE.md"
+                context = target / "AI_CONTEXT.md"
+                self.assertTrue(agents.is_file())
+                self.assertEqual(list(target.glob("AGENTS*.md")), [agents])
+                self.assertNotIn("Use with `AGENTS.common.md`", agents.read_text(encoding="utf-8"))
+                self.assertEqual(list((target / ".templates/brownfield").glob("AGENTS*.md")), [])
+                self.assertIn("@AGENTS.md", claude.read_text(encoding="utf-8"))
+                self.assertIn("@AI_CONTEXT.md", claude.read_text(encoding="utf-8"))
+                context_text = context.read_text(encoding="utf-8")
+                self.assertIn(".agents/skills/android/pr-review/SKILL.md", context_text)
+                self.assertIn(".claude/skills/android-pr-review", context_text)
+                self.assertIn(".templates/mobile/mobile/SMALL_FEATURE_RECORD_TEMPLATE.md", context_text)
+                if workflow == "brownfield":
+                    self.assertIn("docs/ai/prompts/architecture-create.md", context_text)
+                alias = target / ".claude/skills/android-pr-review"
+                self.assertTrue(alias.is_symlink())
+                self.assertEqual(alias.resolve(), (target / ".agents/skills/android/pr-review").resolve())
+                manifest = json.loads((target / ".ai-workflow/manifest.json").read_text(encoding="utf-8"))
+                for entry in manifest["files"]:
+                    if entry["path"] != "AI_CONTEXT.md":
+                        self.assertIn(f"`{entry['path']}`", context_text, entry["path"])
+                link_entry = next(item for item in manifest["files"] if item["path"] == ".claude/skills/android-pr-review")
+                self.assertEqual(link_entry["kind"], "symlink")
+
+    def test_skills_profile_still_has_canonical_entry_points(self):
+        with tempfile.TemporaryDirectory() as td:
+            target = Path(td)
+            self.install(target, "greenfield", "android", "skills")
+            self.assertTrue((target / "AGENTS.md").is_file())
+            self.assertTrue((target / "CLAUDE.md").is_file())
+            self.assertTrue((target / ".claude/skills/android-pr-review").is_symlink())
+
     def test_all_profile_workflow_platform_installs_and_profile_contents(self):
         matrix = (ROOT / "docs/PROFILE_CONTENT_MATRIX.md").read_text(encoding="utf-8")
         match = re.search(r"<!-- profile-test-authority: (\{.*?\}) -->", matrix)

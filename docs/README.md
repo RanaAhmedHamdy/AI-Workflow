@@ -9,6 +9,7 @@ Choose the shortest route to your goal.
 | Use only lightweight mobile safety | [Profiles and tiers](PROFILES_AND_TIERS.md) |
 | Deliver a proportionate feature | [Profile content matrix](PROFILE_CONTENT_MATRIX.md) |
 | Understand fact-based routing | [Routing registry](../routing/routes.json) |
+| Use Claude Code, Nemotron, GLM, or another coding-agent host | [Agent compatibility](AGENT_COMPATIBILITY.md) |
 | Install, update, or remove it safely | [Installer lifecycle](INSTALLER_LIFECYCLE.md) |
 | Check Android/iOS procedure coverage | [Mobile coverage matrix](MOBILE_COVERAGE_MATRIX.md) |
 | Understand the deep governance model | [Greenfield package](../Greenfield_AI_Mobile_Governance_Package_v1_10_0/README.md) or [Brownfield package](../Brownfield_AI_Playbook_Reusable_Package_v4_4/README.md) |

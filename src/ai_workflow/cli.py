@@ -45,10 +45,12 @@ class FileSpec:
     source_id: str
     content: bytes
     platforms: tuple[str, ...]
+    symlink_target: str | None = None
 
     @property
     def digest(self) -> str:
-        return hashlib.sha256(self.content).hexdigest()
+        value = self.content if self.symlink_target is None else f"symlink:{self.symlink_target}".encode("utf-8")
+        return hashlib.sha256(value).hexdigest()
 
 
 @dataclass(frozen=True)
@@ -78,15 +80,27 @@ def _safe_relative(value: str) -> PurePosixPath:
     return candidate
 
 
-def _target_path(target: Path, relative: str) -> Path:
+def _target_path(target: Path, relative: str, allow_leaf_symlink: bool = False) -> Path:
     relative_path = _safe_relative(relative)
     destination = target.joinpath(*relative_path.parts)
     current = target
-    for part in relative_path.parts:
+    for index, part in enumerate(relative_path.parts):
         current = current / part
-        if current.is_symlink():
+        if current.is_symlink() and not (allow_leaf_symlink and index == len(relative_path.parts) - 1):
             raise InstallerError(f"refusing symlinked destination path: {current}")
     return destination
+
+
+def _path_exists(path: Path) -> bool:
+    """Return true for regular paths and broken symlinks."""
+    return path.exists() or path.is_symlink()
+
+
+def _managed_path_matches(path: Path, entry: dict) -> bool:
+    """Check ownership without following an unexpected symlink."""
+    if entry.get("kind", "file") == "symlink":
+        return path.is_symlink() and os.readlink(path) == entry.get("target") and entry.get("installed_hash") == hashlib.sha256(f"symlink:{entry.get('target')}".encode("utf-8")).hexdigest()
+    return path.is_file() and not path.is_symlink() and _hash_file(path) == entry.get("installed_hash")
 
 
 def _normalise_platforms(values: Iterable[str]) -> tuple[str, ...]:
@@ -136,11 +150,24 @@ def routing_model() -> dict[str, Any]:
     return model
 
 
-def profile_context(workflow: str, platforms: tuple[str, ...], profile: str) -> str:
+def profile_context(workflow: str, platforms: tuple[str, ...], profile: str, specs: Iterable[FileSpec] = ()) -> str:
     display = "both" if len(platforms) == 2 else platforms[0]
     profile_info = routing_model()["profiles"][profile]
     feature_path = "Use the compact `SMALL_FEATURE_RECORD.md` only in the feature/full profiles; otherwise provide a bounded change note in the receiving repository." if profile in {"feature", "full"} else "Do not create feature-governance artifacts unless the repository explicitly opts into the feature/full profile."
     full_path = "Full profile also enables Architecture Spine, ADR, Design Authority, readiness, acceptance, and release-governance routing." if profile == "full" else "Escalate to the full profile before creating or changing Architecture Spine/ADR authority."
+    installed = {spec.path: spec for spec in specs}
+    installed.update({"AGENTS.md": FileSpec("AGENTS.md", "generated:agents", b"", platforms), "CLAUDE.md": FileSpec("CLAUDE.md", "generated:claude", b"", platforms), "AI_CONTEXT.md": FileSpec("AI_CONTEXT.md", "generated:context", b"", platforms), "FIRST_SAFE_CHANGE.md": FileSpec("FIRST_SAFE_CHANGE.md", "generated:first-safe-change", b"", platforms), ".agents/routing/routes.json": FileSpec(".agents/routing/routes.json", "bundled:routing", b"", platforms)})
+    skill_paths = sorted(path for path in installed if path.startswith(".agents/skills/") and path.endswith("/SKILL.md"))
+    claude_skill_paths = sorted(path for path in installed if path.startswith(".claude/skills/"))
+    prompt_paths = sorted(path for path in installed if "/prompts/" in path)
+    template_paths = sorted(path for path in installed if path.startswith(".templates/"))
+    policy_paths = sorted(path for path in installed if path.startswith(".agents/policies/"))
+    grouped = set(skill_paths + claude_skill_paths + prompt_paths + template_paths + policy_paths)
+    other_paths = sorted(path for path in installed if path not in grouped and path not in {"AGENTS.md", "CLAUDE.md", "AI_CONTEXT.md", "FIRST_SAFE_CHANGE.md", ".agents/routing/routes.json"})
+
+    def paths(lines: Iterable[str]) -> str:
+        return "\n".join(f"- `{path}`" + (f" → `{installed[path].symlink_target}`" if installed[path].symlink_target else "") for path in lines) or "- None installed by this profile."
+
     return f"""# AI-Workflow task router
 
 Installed workflow: **{workflow}**
@@ -159,6 +186,45 @@ Example: “This changes a persisted profile schema and Flow-owned state, so I a
 {feature_path}
 
 {full_path}
+
+## Canonical entry points
+
+- `AGENTS.md` is the single canonical repository instruction file for this installation.
+- `CLAUDE.md` is a Claude Code adapter that imports `AGENTS.md` and this context index.
+- `FIRST_SAFE_CHANGE.md` is the shortest recommended first-use path.
+- `.agents/routing/routes.json` is the deterministic fact-to-procedure registry.
+
+## Installed skills
+
+Read the relevant `SKILL.md` only after routing the observable task facts. The `.claude/skills/` entries are symlinks to the same canonical skill directories, so Claude Code and Agent Skills-compatible tools share one source of truth.
+
+### Canonical skill files
+
+{paths(skill_paths)}
+
+### Claude-compatible aliases
+
+{paths(claude_skill_paths)}
+
+## Installed policies
+
+{paths(policy_paths)}
+
+## Installed prompts
+
+Prompts are optional Brownfield playbook aids; they are not automatically loaded as instructions.
+
+{paths(prompt_paths)}
+
+## Installed templates
+
+Templates are artifact shapes, not project facts or implementation authorization.
+
+{paths(template_paths)}
+
+## Other installed references
+
+{paths(other_paths)}
 """
 
 
@@ -188,16 +254,33 @@ Protected boundaries, implementation authorization, evidence, acceptance, and re
 """
 
 
+def claude_instructions(workflow: str, platforms: tuple[str, ...], profile: str) -> str:
+    display = "both" if len(platforms) == 2 else platforms[0]
+    return f"""# Claude Code project instructions
+
+This repository uses AI-Workflow ({workflow}, {display}, {profile} profile).
+
+Read the canonical repository policy and context index:
+
+@AGENTS.md
+@AI_CONTEXT.md
+
+`AGENTS.md` is the single source of truth. Do not create a second policy file or infer project facts from this adapter. Use `.claude/skills/` for Claude Code skill discovery; those entries point to the canonical `.agents/skills/` directories. Route the task's observable facts before loading a specialist skill, and preserve all authorization, evidence, and protected-boundary rules from `AGENTS.md`.
+"""
+
+
 def compose_brownfield_agents(platforms: tuple[str, ...]) -> str:
     common = (BROWN_ROOT / "templates/AGENTS.common.md").read_text(encoding="utf-8").rstrip()
+    common = common.replace("# AGENTS.md - Common Mobile Repository Policy", "# AGENTS.md — Brownfield Mobile Repository Policy")
     overlays = []
     for platform in platforms:
         name = "AGENTS.brownfield.ios.v1.4.md" if platform == "ios" else "AGENTS.brownfield.android.md"
         lines = (BROWN_ROOT / "templates" / name).read_text(encoding="utf-8").rstrip().splitlines()
         if lines and lines[0].startswith("# "):
             lines[0] = "## " + lines[0][2:]
+        lines = [line.replace("Use with `AGENTS.common.md`. ", "The common Brownfield policy above applies. ").replace("> Version 1.4. Use with `AGENTS.common.md`. ", "> Version 1.4. The common Brownfield policy above applies. ") for line in lines]
         overlays.append("\n".join(lines))
-    return common + "\n\n---\n\n# Platform overlays\n\n" + "\n\n---\n\n".join(overlays) + "\n"
+    return common + "\n\n---\n\n## Platform-specific policy\n\n" + "\n\n---\n\n".join(overlays) + "\n"
 
 
 def _deduplicate(specs: Iterable[FileSpec]) -> list[FileSpec]:
@@ -205,18 +288,47 @@ def _deduplicate(specs: Iterable[FileSpec]) -> list[FileSpec]:
     for spec in specs:
         _safe_relative(spec.path)
         old = result.get(spec.path)
-        if old is not None and old.content != spec.content:
+        if old is not None and (old.content != spec.content or old.symlink_target != spec.symlink_target):
             raise InstallerError(f"package composition produces conflicting content for {spec.path}")
         result[spec.path] = spec
     return [result[path] for path in sorted(result)]
 
 
-def _routing_specs(workflow: str, platforms: tuple[str, ...], profile: str) -> list[FileSpec]:
+def _routing_specs(workflow: str, platforms: tuple[str, ...], profile: str, specs: Iterable[FileSpec] = ()) -> list[FileSpec]:
     return [
         _file_spec(".agents/routing/routes.json", ROUTING_PATH, platforms),
-        _text_spec("AI_CONTEXT.md", profile_context(workflow, platforms, profile), f"generated:{workflow}:{profile}:context", platforms),
+        _text_spec("AI_CONTEXT.md", profile_context(workflow, platforms, profile, specs), f"generated:{workflow}:{profile}:context", platforms),
         _text_spec("FIRST_SAFE_CHANGE.md", first_safe_change(workflow, profile), f"generated:{workflow}:{profile}:first-safe-change", platforms),
     ]
+
+
+def _symlink_spec(destination: str, target: str, source_id: str, platforms: tuple[str, ...]) -> FileSpec:
+    return FileSpec(destination, source_id, b"", platforms, symlink_target=target)
+
+
+def _claude_skill_specs(specs: Iterable[FileSpec], platforms: tuple[str, ...]) -> list[FileSpec]:
+    links: list[FileSpec] = []
+    for spec in specs:
+        if not spec.path.startswith(".agents/skills/") or not spec.path.endswith("/SKILL.md"):
+            continue
+        parts = spec.path.split("/")
+        if len(parts) == 4:
+            alias = parts[2]
+        elif len(parts) == 5 and parts[2] in {"android", "ios"}:
+            alias = parts[3] if parts[3].startswith(f"{parts[2]}-") else f"{parts[2]}-{parts[3]}"
+        else:
+            continue
+        target = os.path.relpath(spec.path.rsplit("/", 1)[0], ".claude/skills").replace(os.sep, "/")
+        links.append(_symlink_spec(f".claude/skills/{alias}", target, f"symlink:{spec.path}", platforms))
+    return links
+
+
+def _integration_specs(specs: list[FileSpec], workflow: str, platforms: tuple[str, ...], profile: str) -> list[FileSpec]:
+    specs.append(_file_spec("AGENTS.md", GREEN_ROOT / "templates/mobile-agent-policy-modular/AGENTS.md", platforms) if workflow == "greenfield" and profile == "full" else _text_spec("AGENTS.md", compose_brownfield_agents(platforms) if workflow == "brownfield" and profile == "full" else lightweight_policy(workflow, profile), f"generated:{workflow}:{profile}:agents", platforms))
+    specs.append(_text_spec("CLAUDE.md", claude_instructions(workflow, platforms, profile), f"generated:{workflow}:{profile}:claude", platforms))
+    specs.extend(_claude_skill_specs(specs, platforms))
+    specs.extend(_routing_specs(workflow, platforms, profile, specs))
+    return specs
 
 
 def _feature_template_specs(platforms: tuple[str, ...]) -> list[FileSpec]:
@@ -231,31 +343,23 @@ def _feature_template_specs(platforms: tuple[str, ...]) -> list[FileSpec]:
 def greenfield_specs(platforms: tuple[str, ...], profile: str | bool) -> list[FileSpec]:
     profile = _canonical_profile(profile)
     specs = [spec for platform in platforms for spec in _tree_specs(f".agents/skills/{platform}", GREEN_ROOT / "skills" / platform, (platform,))]
-    specs.extend(_routing_specs("greenfield", platforms, profile))
-    if profile == "skills":
-        return _deduplicate(specs)
     policies = GREEN_ROOT / "templates/mobile-agent-policy-modular"
+    if profile != "skills":
+        for name in (["FEATURE_DELIVERY_INVARIANTS.md", "GOVERNANCE_LIFECYCLE.md", "IMPLEMENTATION_POLICY.md", "EVIDENCE_AND_COMPLETION.md", "PROTECTED_BOUNDARIES.md"] if profile == "full" else ["IMPLEMENTATION_POLICY.md", "EVIDENCE_AND_COMPLETION.md", "PROTECTED_BOUNDARIES.md"]):
+            specs.append(_file_spec(f".agents/policies/{name}", policies / ".agents/policies" / name, platforms))
+        specs.extend(spec for platform in platforms for spec in _tree_specs(f".agents/policies/{platform}", policies / ".agents/policies" / platform, (platform,)))
+    if profile in {"feature", "full"}:
+        specs.extend(_feature_template_specs(platforms))
     if profile == "full":
-        specs.append(_file_spec("AGENTS.md", policies / "AGENTS.md", platforms))
-    else:
-        specs.append(_text_spec("AGENTS.md", lightweight_policy("greenfield", profile), f"generated:greenfield:{profile}:policy", platforms))
-    for name in (["FEATURE_DELIVERY_INVARIANTS.md", "GOVERNANCE_LIFECYCLE.md", "IMPLEMENTATION_POLICY.md", "EVIDENCE_AND_COMPLETION.md", "PROTECTED_BOUNDARIES.md"] if profile == "full" else ["IMPLEMENTATION_POLICY.md", "EVIDENCE_AND_COMPLETION.md", "PROTECTED_BOUNDARIES.md"]):
-        specs.append(_file_spec(f".agents/policies/{name}", policies / ".agents/policies" / name, platforms))
-    specs.extend(spec for platform in platforms for spec in _tree_specs(f".agents/policies/{platform}", policies / ".agents/policies" / platform, (platform,)))
-    if profile == "safety":
-        return _deduplicate(specs)
-    specs.extend(_feature_template_specs(platforms))
-    if profile == "feature":
-        return _deduplicate(specs)
-    specs.extend(_tree_specs(".templates/governance", GREEN_ROOT / "templates/governance", platforms))
-    specs.extend(_tree_specs(".templates/design", GREEN_ROOT / "templates/design", platforms))
-    architecture = GREEN_ROOT / "templates/architecture"
-    for name in ["README.md", "ADR.template.md", "cross-feature-architecture-coverage.template.md", "IMPLEMENTATION_READINESS_GATE.template.md"]:
-        specs.append(_file_spec(f".templates/architecture/{name}", architecture / name, platforms))
-    for platform in platforms:
-        specs.append(_file_spec(f".templates/architecture/ARCHITECTURE_SPINE.{platform}.template.md", architecture / f"ARCHITECTURE_SPINE.{platform}.template.md", (platform,)))
-    specs.append(_file_spec("docs/decisions/DECISION_REGISTER.md", GREEN_ROOT / "templates/governance/DECISION_REGISTER.template.md", platforms))
-    return _deduplicate(specs)
+        specs.extend(_tree_specs(".templates/governance", GREEN_ROOT / "templates/governance", platforms))
+        specs.extend(_tree_specs(".templates/design", GREEN_ROOT / "templates/design", platforms))
+        architecture = GREEN_ROOT / "templates/architecture"
+        for name in ["README.md", "ADR.template.md", "cross-feature-architecture-coverage.template.md", "IMPLEMENTATION_READINESS_GATE.template.md"]:
+            specs.append(_file_spec(f".templates/architecture/{name}", architecture / name, platforms))
+        for platform in platforms:
+            specs.append(_file_spec(f".templates/architecture/ARCHITECTURE_SPINE.{platform}.template.md", architecture / f"ARCHITECTURE_SPINE.{platform}.template.md", (platform,)))
+        specs.append(_file_spec("docs/decisions/DECISION_REGISTER.md", GREEN_ROOT / "templates/governance/DECISION_REGISTER.template.md", platforms))
+    return _deduplicate(_integration_specs(specs, "greenfield", platforms, profile))
 
 
 def brownfield_specs(platforms: tuple[str, ...], profile: str | bool) -> list[FileSpec]:
@@ -266,21 +370,15 @@ def brownfield_specs(platforms: tuple[str, ...], profile: str | bool) -> list[Fi
     # Brownfield's source-first procedures are complemented by the same namespaced
     # platform safety skills as Greenfield; this keeps routing references installable.
     specs.extend(spec for platform in platforms for spec in _tree_specs(f".agents/skills/{platform}", GREEN_ROOT / "skills" / platform, (platform,)))
-    specs.extend(_routing_specs("brownfield", platforms, profile))
-    if profile == "skills":
-        return _deduplicate(specs)
-    specs.append(_text_spec("AGENTS.md", compose_brownfield_agents(platforms) if profile == "full" else lightweight_policy("brownfield", profile), f"generated:brownfield-{profile}-agents", platforms))
-    if profile == "safety":
-        return _deduplicate(specs)
-    specs.extend(_feature_template_specs(platforms))
-    if profile == "feature":
-        return _deduplicate(specs)
-    specs.extend(_tree_specs(".templates/brownfield", BROWN_ROOT / "templates", platforms))
-    specs.append(_file_spec("checklists/cross-feature-architecture-coverage.template.md", BROWN_ROOT / "checklists/cross-feature-architecture-coverage.template.md", platforms))
-    specs.extend(_tree_specs("docs/ai", BROWN_ROOT / "repository-starter/docs/ai", platforms))
-    specs.append(_file_spec("docs/ai/README.md", BROWN_ROOT / "repository-starter/README.md", platforms))
-    specs.append(_file_spec("AI_PLAYBOOK.md", BROWN_ROOT / "playbook/BROWNFIELD_PLAYBOOK.md", platforms))
-    return _deduplicate(specs)
+    if profile in {"feature", "full"}:
+        specs.extend(_feature_template_specs(platforms))
+    if profile == "full":
+        specs.extend(spec for spec in _tree_specs(".templates/brownfield", BROWN_ROOT / "templates", platforms) if not Path(spec.path).name.startswith("AGENTS."))
+        specs.append(_file_spec("checklists/cross-feature-architecture-coverage.template.md", BROWN_ROOT / "checklists/cross-feature-architecture-coverage.template.md", platforms))
+        specs.extend(_tree_specs("docs/ai", BROWN_ROOT / "repository-starter/docs/ai", platforms))
+        specs.append(_file_spec("docs/ai/README.md", BROWN_ROOT / "repository-starter/README.md", platforms))
+        specs.append(_file_spec("AI_PLAYBOOK.md", BROWN_ROOT / "playbook/BROWNFIELD_PLAYBOOK.md", platforms))
+    return _deduplicate(_integration_specs(specs, "brownfield", platforms, profile))
 
 
 def build_specs(workflow: str, platforms: tuple[str, ...], profile: str | bool) -> list[FileSpec]:
@@ -308,11 +406,31 @@ def load_manifest(target: Path) -> dict | None:
         if not isinstance(entry, dict) or not isinstance(entry.get("path"), str) or not isinstance(entry.get("installed_hash"), str):
             raise InstallerError("manifest contains an invalid managed-file entry")
         _safe_relative(entry["path"])
+        kind = entry.get("kind", "file")
+        if kind not in {"file", "symlink"}:
+            raise InstallerError("manifest contains an unsupported managed-file kind")
+        if kind == "symlink":
+            target = entry.get("target")
+            if not isinstance(target, str) or not target or PurePosixPath(target).is_absolute() or "\\" in target or "\x00" in target:
+                raise InstallerError("manifest contains an unsafe symlink target")
+            cursor = list(PurePosixPath(entry["path"]).parent.parts)
+            for part in PurePosixPath(target).parts:
+                if part in {"", "."}:
+                    continue
+                if part == "..":
+                    if not cursor:
+                        raise InstallerError("manifest symlink target escapes target")
+                    cursor.pop()
+                else:
+                    cursor.append(part)
     return manifest
 
 
 def manifest_entry(spec: FileSpec) -> dict:
-    return {"path": spec.path, "source_id": spec.source_id, "installed_hash": spec.digest, "platforms": list(spec.platforms)}
+    entry = {"path": spec.path, "source_id": spec.source_id, "installed_hash": spec.digest, "platforms": list(spec.platforms)}
+    if spec.symlink_target is not None:
+        entry.update({"kind": "symlink", "target": spec.symlink_target})
+    return entry
 
 
 def make_manifest(workflow: str, platforms: tuple[str, ...], profile: str | bool, entries: Iterable[dict], preserved: Iterable[dict], created_directories: Iterable[str] = ()) -> dict:
@@ -328,9 +446,9 @@ def _assert_target(target: Path, create_allowed: bool = True) -> None:
         raise InstallerError(f"target does not exist: {target}")
 
 
-def _check_destinations(target: Path, paths: Iterable[str]) -> None:
+def _check_destinations(target: Path, paths: Iterable[str], allow_leaf_symlink: bool = False) -> None:
     for path in paths:
-        _target_path(target, path)
+        _target_path(target, path, allow_leaf_symlink=allow_leaf_symlink)
 
 
 def plan_install(target: Path, workflow: str, platforms: tuple[str, ...], profile: str | bool) -> tuple[list[Action], dict]:
@@ -359,25 +477,25 @@ def plan_update(target: Path, requested_platforms: tuple[str, ...] | None = None
     desired = {spec.path: spec for spec in build_specs(old["workflow"], platforms, profile)}
     previous = {entry["path"]: entry for entry in old["files"]}
     preserved = {entry["path"]: entry for entry in old.get("preserved_removed", [])}
-    _check_destinations(target, [*desired, *previous, *preserved])
+    _check_destinations(target, [*desired, *previous, *preserved], allow_leaf_symlink=True)
     actions: list[Action] = []
     notes: list[str] = []
     next_entries: dict[str, dict] = {}
     for path, entry in previous.items():
-        destination = _target_path(target, path)
+        destination = _target_path(target, path, allow_leaf_symlink=True)
         spec = desired.pop(path, None)
         if spec is None:
-            if not destination.exists():
+            if not _path_exists(destination):
                 notes.append(f"MISSING (previous package file): {path}")
-            elif _hash_file(destination) == entry["installed_hash"]:
+            elif _managed_path_matches(destination, entry):
                 actions.append(Action("remove", path, reason="removed by newer package"))
             else:
                 notes.append(f"PRESERVE MODIFIED (removed upstream): {path}")
                 preserved[path] = entry
-        elif not destination.exists():
+        elif not _path_exists(destination):
             notes.append(f"MISSING MANAGED FILE (preserved): {path}")
             next_entries[path] = entry
-        elif _hash_file(destination) != entry["installed_hash"]:
+        elif not _managed_path_matches(destination, entry):
             notes.append(f"CONFLICT MODIFIED MANAGED FILE (preserved): {path}")
             next_entries[path] = entry
         elif spec.digest == entry["installed_hash"]:
@@ -387,14 +505,14 @@ def plan_update(target: Path, requested_platforms: tuple[str, ...] | None = None
             actions.append(Action("replace", path, spec, "safe update of unchanged managed file"))
             next_entries[path] = manifest_entry(spec)
     for path, spec in desired.items():
-        if _target_path(target, path).exists():
+        if _path_exists(_target_path(target, path, allow_leaf_symlink=True)):
             notes.append(f"UNMANAGED COLLISION (preserved): {path}")
         else:
             actions.append(Action("add", path, spec, "new package file"))
             next_entries[path] = manifest_entry(spec)
     for path, entry in list(preserved.items()):
-        destination = _target_path(target, path)
-        if not destination.exists() or _hash_file(destination) == entry["installed_hash"]:
+        destination = _target_path(target, path, allow_leaf_symlink=True)
+        if not _path_exists(destination) or _managed_path_matches(destination, entry):
             preserved.pop(path, None)
         else:
             notes.append(f"PRESERVED REMOVED FILE: {path}")
@@ -408,15 +526,15 @@ def plan_uninstall(target: Path) -> tuple[list[Action], dict | None, list[str]]:
     if old is None:
         raise InstallerError("no AI-Workflow installation manifest found in target")
     entries = [*old["files"], *old.get("preserved_removed", [])]
-    _check_destinations(target, [entry["path"] for entry in entries])
+    _check_destinations(target, [entry["path"] for entry in entries], allow_leaf_symlink=True)
     actions: list[Action] = []
     residual: list[dict] = []
     notes: list[str] = []
     for entry in entries:
-        destination = _target_path(target, entry["path"])
-        if not destination.exists():
+        destination = _target_path(target, entry["path"], allow_leaf_symlink=True)
+        if not _path_exists(destination):
             notes.append(f"ALREADY MISSING: {entry['path']}")
-        elif _hash_file(destination) == entry["installed_hash"]:
+        elif _managed_path_matches(destination, entry):
             actions.append(Action("remove", entry["path"], reason="unmodified package-owned file"))
         else:
             residual.append(entry)
@@ -427,6 +545,14 @@ def plan_uninstall(target: Path) -> tuple[list[Action], dict | None, list[str]]:
 
 def _manifest_bytes(manifest: dict) -> bytes:
     return (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode("utf-8")
+
+
+def _copy_entry(source: Path, destination: Path) -> None:
+    """Copy a regular file or preserve a symlink itself."""
+    if source.is_symlink():
+        destination.symlink_to(os.readlink(source), target_is_directory=source.is_dir())
+    else:
+        shutil.copy2(source, destination)
 
 
 def commit_plan(target: Path, actions: list[Action], manifest: dict | None, fail_after_writes: int | None = None) -> list[str]:
@@ -442,7 +568,7 @@ def commit_plan(target: Path, actions: list[Action], manifest: dict | None, fail
     target_existed = target.exists()
     try:
         for action in actions:
-            if action.kind in {"add", "replace"}:
+            if action.kind in {"add", "replace"} and action.spec is not None and action.spec.symlink_target is None:
                 assert action.spec is not None
                 path = stage / "files" / action.path
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -459,14 +585,14 @@ def commit_plan(target: Path, actions: list[Action], manifest: dict | None, fail
             created.append(".")
         writes = 0
         for action in actions:
-            destination = _target_path(target, action.path)
-            if destination.exists() and destination.is_dir():
+            destination = _target_path(target, action.path, allow_leaf_symlink=True)
+            if _path_exists(destination) and destination.is_dir() and not destination.is_symlink():
                 raise InstallerError(f"file-versus-directory conflict at {destination}")
             backup = None
-            if destination.exists():
+            if _path_exists(destination):
                 backup = backups / action.path
                 backup.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(destination, backup)
+                _copy_entry(destination, backup)
             else:
                 missing: list[Path] = []
                 parent = destination.parent
@@ -479,6 +605,10 @@ def commit_plan(target: Path, actions: list[Action], manifest: dict | None, fail
             changed.append((destination, backup))
             if action.kind == "remove":
                 destination.unlink()
+            elif action.spec is not None and action.spec.symlink_target is not None:
+                if _path_exists(destination):
+                    destination.unlink()
+                destination.symlink_to(action.spec.symlink_target, target_is_directory=True)
             else:
                 shutil.copy2(staged[action.path], destination)
             writes += 1
@@ -508,11 +638,13 @@ def commit_plan(target: Path, actions: list[Action], manifest: dict | None, fail
         for destination, backup in reversed(changed):
             try:
                 if backup is None:
-                    if destination.exists():
+                    if _path_exists(destination):
                         destination.unlink()
                 else:
+                    if _path_exists(destination):
+                        destination.unlink()
                     destination.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(backup, destination)
+                    _copy_entry(backup, destination)
             except OSError as rollback_error:
                 failures.append(str(rollback_error))
         for directory in sorted((target / item for item in created if item != "."), key=lambda path: len(path.parts), reverse=True):
@@ -611,8 +743,8 @@ def command_status(args: argparse.Namespace, parser: argparse.ArgumentParser) ->
         else:
             modified, missing = [], []
             for entry in [*manifest["files"], *manifest.get("preserved_removed", [])]:
-                destination = _target_path(target, entry["path"])
-                (missing if not destination.exists() else modified if _hash_file(destination) != entry["installed_hash"] else []).append(entry["path"])
+                destination = _target_path(target, entry["path"], allow_leaf_symlink=True)
+                (missing if not _path_exists(destination) else modified if not _managed_path_matches(destination, entry) else []).append(entry["path"])
             result = {"installed": True, "target": str(target), "workflow": manifest["workflow"], "profile": _canonical_profile(manifest.get("profile")), "platforms": manifest["platforms"], "package_version": manifest["package_version"], "manifest_schema_version": manifest["schema_version"], "tracked_file_count": len(manifest["files"]), "modified_managed_files": modified, "missing_managed_files": missing, "preserved_removed_files": [entry["path"] for entry in manifest.get("preserved_removed", [])], "update_eligible": not modified and not missing}
         if args.json:
             print(json.dumps(result, indent=2, sort_keys=True))
