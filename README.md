@@ -1,12 +1,8 @@
 # AI-Workflow
 
-[![GitHub stars](https://img.shields.io/github/stars/RanaAhmedHamdy/AI-Workflow?style=social)](https://github.com/RanaAhmedHamdy/AI-Workflow/stargazers)
-
 Mobile-specific guardrails and workflows that help coding agents make safer changes in native Android and iOS repositories—whether you are starting a new app or changing an existing one.
 
 **Native Android + iOS · New apps + existing apps · Repository-capable coding agents · Lightweight Safety profile available**
-
-> If this is useful, a ⭐ helps other mobile developers find it.
 
 AI-Workflow installs repository-owned Markdown instructions and specialist procedures. It guides engineering judgement; it does not certify a release, replace owners, or make an agent autonomous.
 
